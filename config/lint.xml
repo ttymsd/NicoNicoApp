@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+  <issue id="InvalidPackage">
+    <ignore regexp="retrofit-2.3.0.jar"/>
+    <ignore regexp="okio-1.13.0.jar"/>
+  </issue>
+  <issue id="GoogleAppIndexingWarning" severity="ignore"/>
+  <issue id="NewApi" severity="warning"/>
+  <issue id="OldTargetApi" severity="ignore" />
+  <issue id="IconLauncherFormat" severity="ignore" />
+</lint>
