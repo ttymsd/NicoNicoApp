@@ -1,6 +1,14 @@
 package com.bonborunote.niconicoviewer.domain.network
 
-import com.bonborunote.niconicoviewer.domain.network.models.SearchResponse
+import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.AND
+import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.EQUAL
+import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.NOT
+import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.OR
+import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.RANGE
+import com.bonborunote.niconicoviewer.domain.network.response.Content
+import com.bonborunote.niconicoviewer.domain.network.response.SearchResponse
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET
@@ -9,17 +17,17 @@ import retrofit2.http.Query
 abstract class NicoNicoApi(
     retrofit: Retrofit
 ) {
-  protected val api = retrofit.create(Service::class.java)
+  protected val api = retrofit.create(
+      Service::class.java)
 
   abstract fun search(keyword: String,
-      targets: String,
+      targets: List<Target>,
       sort: Sort,
-      fields: List<Target> = emptyList(),
-      filters: List<Field> = emptyList(),
-      jsonFilters: String? = null,
+      fields: List<Field> = emptyList(),
       offset: Int = 0,
       limit: Int = 10,
-      context: String? = null): SearchResponse
+      context: String? = null,
+      jsonFilters: Filter? = null): List<Content>
 
   interface Service {
     @GET("/api/v2/snapshot/video/contents/search")
@@ -59,7 +67,78 @@ abstract class NicoNicoApi(
     CONTENT_ID("contentId"),
     TITLE("title"),
     DESCRIPTION("description"),
-    TAG("tag")
+    TAG("tag"),
+    CATEGORY_TAG("categoryTags"),
+    VIEW_COUNTER("viewCounter"),
+    MYLIST_COUNTER("mylistCounter"),
+    COMMENT_COUNTER("commentCounter"),
+    START_TIME("startTime"),
+    LAST_COMMENT_TIME("lastCommentTime"),
+    LENGTH_SECONDS("lengthSeconds")
+  }
+
+  enum class Operator(val key: String) {
+    OR("or"),
+    AND("and"),
+    NOT("not"),
+    EQUAL("equal"),
+    RANGE("range")
+  }
+
+  data class Condition(
+      @SerializedName("type") val type: String,
+      @SerializedName("field") var field: String? = null,
+      @SerializedName("value") var value: String? = null,
+      @SerializedName("from") var from: String? = null,
+      @SerializedName("to") var to: String? = null,
+      @SerializedName("include_upper") var includeUpper: Boolean? = null,
+      @SerializedName("include_lower") var includeLower: Boolean? = null
+  ) {
+    infix fun Field.equal(value: String) {
+      this@Condition.field = key
+      this@Condition.value = value
+    }
+
+    infix fun Field.from(value: String): Condition {
+      this@Condition.field = key
+      this@Condition.from = value
+      this@Condition.includeLower = true
+      return this@Condition
+    }
+
+    infix fun to(value: String) {
+      this@Condition.to = value
+      this@Condition.includeUpper = true
+    }
+  }
+
+  data class Filter(
+      @SerializedName("type") val type: String,
+      @SerializedName("filters") val conditions: List<Condition>
+  ) {
+    override fun toString(): String {
+      return Gson().toJson(this)
+    }
+  }
+
+  fun or(setup: ArrayList<Condition>.() -> Unit): Filter {
+    return Filter(OR.key, arrayListOf<Condition>().apply { setup() })
+  }
+
+  fun and(setup: ArrayList<Condition>.() -> Unit): Filter {
+    return Filter(AND.key, arrayListOf<Condition>().apply { setup() })
+  }
+
+  fun not(setup: ArrayList<Condition>.() -> Unit): Filter {
+    return Filter(NOT.key, arrayListOf<Condition>().apply { setup() })
+  }
+
+  fun ArrayList<Condition>.equal(setup: Condition.() -> Unit) {
+    add(Condition(EQUAL.key).apply { setup() })
+  }
+
+  fun ArrayList<Condition>.range(setup: Condition.() -> Unit) {
+    add(Condition(RANGE.key).apply { setup() })
   }
 }
 

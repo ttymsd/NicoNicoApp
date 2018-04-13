@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.domain.network.models
+package com.bonborunote.niconicoviewer.domain.network.response
 
 import com.google.gson.annotations.SerializedName
 import java.util.Date
