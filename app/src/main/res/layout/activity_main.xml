@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  >
+  <data>
+    <variable
+      name="mainViewModel"
+      type="com.bonborunote.niconicoviewer.components.MainViewModel"
+      />
+    <variable
+      name="searchViewModel"
+      type="com.bonborunote.niconicoviewer.components.search.SearchViewModel"
+      />
+  </data>
+
+  <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fitsSystemWindows="true"
+      >
+
+      <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll|enterAlways"
+        >
+
+        <android.support.v7.widget.SearchView
+          android:id="@+id/search_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:query_text_listener="@{searchViewModel}"
+          />
+
+      </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+      android:id="@+id/container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      />
+
+  </android.support.design.widget.CoordinatorLayout>
+</layout>

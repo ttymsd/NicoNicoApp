@@ -1,6 +1,12 @@
 package com.bonborunote.niconicoviewer
 
 import android.support.multidex.MultiDexApplication
+import com.bonborunote.niconicoviewer.modules.applicationModule
+import com.bonborunote.niconicoviewer.modules.mainModule
+import com.bonborunote.niconicoviewer.modules.searchModule
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.androidModule
 
 /**
  * Copyright (C) 2017 Tetsuya Masuda
@@ -17,4 +23,11 @@ import android.support.multidex.MultiDexApplication
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class App: MultiDexApplication()
+class App : MultiDexApplication(), KodeinAware {
+  override val kodein = Kodein.lazy {
+    import(androidModule(this@App))
+    import(applicationModule)
+    import(mainModule)
+    import(searchModule)
+  }
+}
