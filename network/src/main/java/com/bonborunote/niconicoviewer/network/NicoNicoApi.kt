@@ -67,7 +67,7 @@ abstract class NicoNicoApi(
     CONTENT_ID("contentId"),
     TITLE("title"),
     DESCRIPTION("description"),
-    TAG("tag"),
+    TAG("tags"),
     CATEGORY_TAG("categoryTags"),
     VIEW_COUNTER("viewCounter"),
     MYLIST_COUNTER("mylistCounter"),

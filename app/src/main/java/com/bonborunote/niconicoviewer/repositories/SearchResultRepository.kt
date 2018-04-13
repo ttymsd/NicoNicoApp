@@ -1,6 +1,5 @@
 package com.bonborunote.niconicoviewer.repositories
 
-import android.util.Log
 import com.bonborunote.niconicoviewer.network.NicoNicoApi
 import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field
 import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field.TAG
@@ -23,20 +22,18 @@ class SearchResultRepository(
     async(CommonPool) {
       try {
         loading.onNext(true)
-        val result = s(keyword)
-        Log.d("AAA", "${result.size}:${result.firstOrNull()?.title}")
+        val result = nicoNicoApi.search(
+            keyword = keyword,
+            targets = listOf(TITLE),
+            sort = VIEW_COUNT_DESC,
+            fields = listOf(Field.TITLE, TAG))
         results.onNext(result)
       } catch (e: NicoNicoException) {
-        Log.d("AAA", e.message, e)
         error.onNext(e)
       } catch (e: Exception) {
-        Log.d("AAA", e.message, e)
       } finally {
         loading.onNext(false)
       }
     }
   }
-
-  private suspend fun s(keyword: String) = nicoNicoApi.search(keyword, listOf(TITLE),
-      VIEW_COUNT_DESC, listOf(Field.TITLE, TAG))
 }
