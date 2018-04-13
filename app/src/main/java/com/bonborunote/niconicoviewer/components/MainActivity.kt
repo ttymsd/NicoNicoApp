@@ -3,6 +3,7 @@ package com.bonborunote.niconicoviewer.components
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.components.search.SearchContainer
 import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.utils.lazyBinding
@@ -34,5 +35,16 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     binding.searchViewModel = searchViewModel
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
+
+    if (supportFragmentManager.findFragmentById(R.id.container) == null) {
+      supportFragmentManager.beginTransaction()
+          .add(R.id.container, SearchContainer.newInstance())
+          .commit()
+    }
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    lifecycle.removeObserver(mainViewModel)
   }
 }
