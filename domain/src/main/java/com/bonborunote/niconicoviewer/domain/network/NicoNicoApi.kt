@@ -77,6 +77,18 @@ abstract class NicoNicoApi(
     LENGTH_SECONDS("lengthSeconds")
   }
 
+  enum class FilterableField(val key: String) {
+    CONTENT_ID("contentId"),
+    TAG("tag"),
+    CATEGORY_TAG("categoryTags"),
+    VIEW_COUNTER("viewCounter"),
+    MYLIST_COUNTER("mylistCounter"),
+    COMMENT_COUNTER("commentCounter"),
+    START_TIME("startTime"),
+    LAST_COMMENT_TIME("lastCommentTime"),
+    LENGTH_SECONDS("lengthSeconds")
+  }
+
   enum class Operator(val key: String) {
     OR("or"),
     AND("and"),
@@ -94,12 +106,12 @@ abstract class NicoNicoApi(
       @SerializedName("include_upper") var includeUpper: Boolean? = null,
       @SerializedName("include_lower") var includeLower: Boolean? = null
   ) {
-    infix fun Field.equal(value: String) {
+    infix fun FilterableField.equal(value: String) {
       this@Condition.field = key
       this@Condition.value = value
     }
 
-    infix fun Field.from(value: String): Condition {
+    infix fun FilterableField.from(value: String): Condition {
       this@Condition.field = key
       this@Condition.from = value
       this@Condition.includeLower = true
