@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.domain;
+package com.bonborunote.niconicoviewer.network;
 
 import org.junit.Test;
 

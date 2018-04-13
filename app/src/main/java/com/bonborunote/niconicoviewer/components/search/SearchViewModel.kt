@@ -7,27 +7,52 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.v7.widget.SearchView
-import android.util.Log
+import com.bonborunote.niconicoviewer.repositories.SearchResultRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposables
+import io.reactivex.schedulers.Schedulers
 
-class SearchViewModel private constructor() : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
+class SearchViewModel private constructor(
+    private val repository: SearchResultRepository
+) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
   val keyword = MutableLiveData<String>()
-
-  init {
-    Log.d("AAA", "init")
-  }
+  private var subscription = Disposables.disposed()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   fun onCreate() {
-    Log.d("AAA", "onCreate")
+    subscription = CompositeDisposable(
+        repository.error
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+
+            },
+        repository.loading
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+
+            },
+        repository.results
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+
+            }
+    )
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   fun onDestroy() {
-    Log.d("AAA", "onDestroy")
+    subscription.dispose()
   }
 
   override fun onQueryTextSubmit(query: String?): Boolean {
+    query?.let {
+      repository.search(query)
+    }
     return true
   }
 
@@ -36,9 +61,11 @@ class SearchViewModel private constructor() : ViewModel(), LifecycleObserver, Se
   }
 
   @Suppress("UNCHECKED_CAST")
-  class Factory : ViewModelProvider.NewInstanceFactory() {
+  class Factory(
+      private val repository: SearchResultRepository
+  ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return SearchViewModel() as? T ?: throw IllegalArgumentException()
+      return SearchViewModel(repository) as? T ?: throw IllegalArgumentException()
     }
   }
 }

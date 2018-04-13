@@ -1,8 +1,8 @@
-package com.bonborunote.niconicoviewer.domain.network.impl
+package com.bonborunote.niconicoviewer.network.impl
 
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoException
-import com.bonborunote.niconicoviewer.domain.network.response.Content
+import com.bonborunote.niconicoviewer.network.NicoNicoApi
+import com.bonborunote.niconicoviewer.network.NicoNicoException
+import com.bonborunote.niconicoviewer.network.response.Content
 import retrofit2.Retrofit
 
 class NicoNicoApiImpl(retrofit: Retrofit) : NicoNicoApi(retrofit) {

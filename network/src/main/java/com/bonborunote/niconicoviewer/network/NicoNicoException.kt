@@ -1,3 +1,3 @@
-package com.bonborunote.niconicoviewer.domain.network
+package com.bonborunote.niconicoviewer.network
 
 class NicoNicoException(val status: Int, val code: String, message: String) : Exception(message)

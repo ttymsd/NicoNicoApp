@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.domain.network.response
+package com.bonborunote.niconicoviewer.network.response
 
 import com.google.gson.annotations.SerializedName
 

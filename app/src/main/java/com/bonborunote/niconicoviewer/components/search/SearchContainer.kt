@@ -1,6 +1,5 @@
 package com.bonborunote.niconicoviewer.components.search
 
-import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -44,7 +43,10 @@ class SearchContainer : Fragment(), KodeinAware {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.setLifecycleOwner(this)
-    binding.list.adapter = GroupAdapter<ViewHolder>()
+    binding.list.adapter = GroupAdapter<ViewHolder>().apply {
+      add(SearchEmptyItem())
+      add(SearchLoadingItem())
+    }
     binding.list.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     binding.executePendingBindings()
   }

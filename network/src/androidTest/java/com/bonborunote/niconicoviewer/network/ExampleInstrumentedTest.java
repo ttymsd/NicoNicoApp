@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.domain;
+package com.bonborunote.niconicoviewer.network;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -20,6 +20,6 @@ public class ExampleInstrumentedTest {
     // Context of the app under test.
     Context appContext = InstrumentationRegistry.getTargetContext();
 
-    assertEquals("com.bonborunote.niconicoviewer.domain.test", appContext.getPackageName());
+    assertEquals("com.bonborunote.niconicoviewer.network.test", appContext.getPackageName());
   }
 }

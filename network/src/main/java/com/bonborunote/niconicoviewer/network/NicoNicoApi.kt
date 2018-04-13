@@ -1,12 +1,12 @@
-package com.bonborunote.niconicoviewer.domain.network
+package com.bonborunote.niconicoviewer.network
 
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.AND
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.EQUAL
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.NOT
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.OR
-import com.bonborunote.niconicoviewer.domain.network.NicoNicoApi.Operator.RANGE
-import com.bonborunote.niconicoviewer.domain.network.response.Content
-import com.bonborunote.niconicoviewer.domain.network.response.SearchResponse
+import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.AND
+import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.EQUAL
+import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.NOT
+import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.OR
+import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.RANGE
+import com.bonborunote.niconicoviewer.network.response.Content
+import com.bonborunote.niconicoviewer.network.response.SearchResponse
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
