@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.components.search
 
+import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentSearchBinding
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -29,6 +31,8 @@ class SearchContainer : Fragment(), KodeinAware {
 
   private val searchViewModel: SearchViewModel by instance()
 
+  private val section = Section()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(searchViewModel)
@@ -44,11 +48,23 @@ class SearchContainer : Fragment(), KodeinAware {
     super.onViewCreated(view, savedInstanceState)
     binding.setLifecycleOwner(this)
     binding.list.adapter = GroupAdapter<ViewHolder>().apply {
-      add(SearchEmptyItem())
-      add(SearchLoadingItem())
+      add(section)
     }
     binding.list.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     binding.executePendingBindings()
+    searchViewModel.loading.observe(this, Observer { loading ->
+      if (loading == true) {
+        section.setFooter(SearchLoadingItem())
+      } else {
+        section.removeFooter()
+      }
+    })
+    searchViewModel.result.observe(this, Observer { result ->
+      val items = result?.map {
+        SearchContentItem(it)
+      } ?: emptyList()
+      section.update(items)
+    })
   }
 
   override fun onDestroy() {

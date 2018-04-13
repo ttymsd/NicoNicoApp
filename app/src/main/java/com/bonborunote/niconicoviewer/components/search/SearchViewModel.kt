@@ -7,39 +7,35 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.v7.widget.SearchView
+import com.bonborunote.niconicoviewer.network.NicoNicoException
+import com.bonborunote.niconicoviewer.network.response.Content
 import com.bonborunote.niconicoviewer.repositories.SearchResultRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
-import io.reactivex.schedulers.Schedulers
 
 class SearchViewModel private constructor(
     private val repository: SearchResultRepository
 ) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
-  val keyword = MutableLiveData<String>()
   private var subscription = Disposables.disposed()
+  val result = MutableLiveData<List<Content>>()
+  val loading = MutableLiveData<Boolean>()
+  val error = MutableLiveData<NicoNicoException>()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   fun onCreate() {
     subscription = CompositeDisposable(
         repository.error
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-
+              error.postValue(it)
             },
         repository.loading
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-
+              loading.postValue(it)
             },
         repository.results
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-
+              result.postValue(it)
             }
     )
   }

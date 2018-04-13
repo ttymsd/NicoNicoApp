@@ -27,11 +27,12 @@ class SearchResultRepository(
             targets = listOf(TITLE),
             sort = VIEW_COUNT_DESC,
             fields = listOf(Field.TITLE, TAG))
+        loading.onNext(false)
         results.onNext(result)
       } catch (e: NicoNicoException) {
         error.onNext(e)
+        loading.onNext(false)
       } catch (e: Exception) {
-      } finally {
         loading.onNext(false)
       }
     }
