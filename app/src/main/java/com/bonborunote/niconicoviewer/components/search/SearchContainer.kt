@@ -60,9 +60,7 @@ class SearchContainer : Fragment(), KodeinAware {
       }
     })
     searchViewModel.result.observe(this, Observer { result ->
-      val items = result?.map {
-        SearchContentItem(it)
-      } ?: emptyList()
+      val items = result ?: emptyList()
       section.update(items)
     })
   }

@@ -8,7 +8,6 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.v7.widget.SearchView
 import com.bonborunote.niconicoviewer.network.NicoNicoException
-import com.bonborunote.niconicoviewer.network.response.Content
 import com.bonborunote.niconicoviewer.repositories.SearchResultRepository
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
@@ -18,7 +17,7 @@ class SearchViewModel private constructor(
 ) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
   private var subscription = Disposables.disposed()
-  val result = MutableLiveData<List<Content>>()
+  val result = MutableLiveData<List<SearchContentItem>>()
   val loading = MutableLiveData<Boolean>()
   val error = MutableLiveData<NicoNicoException>()
 
@@ -34,6 +33,11 @@ class SearchViewModel private constructor(
               loading.postValue(it)
             },
         repository.results
+            .map {
+              it.map {
+                SearchContentItem(it)
+              }
+            }
             .subscribe {
               result.postValue(it)
             }
