@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer.repositories
 
 import com.bonborunote.niconicoviewer.network.NicoNicoApi
 import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field
+import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field.CONTENT_ID
 import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field.TAG
 import com.bonborunote.niconicoviewer.network.NicoNicoApi.Sort.VIEW_COUNT_DESC
 import com.bonborunote.niconicoviewer.network.NicoNicoApi.Target.TITLE
@@ -26,7 +27,7 @@ class SearchResultRepository(
             keyword = keyword,
             targets = listOf(TITLE),
             sort = VIEW_COUNT_DESC,
-            fields = listOf(Field.TITLE, TAG))
+            fields = listOf(CONTENT_ID, Field.TITLE, TAG))
         loading.onNext(false)
         results.onNext(result)
       } catch (e: NicoNicoException) {

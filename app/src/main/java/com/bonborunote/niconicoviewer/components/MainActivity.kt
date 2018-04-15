@@ -1,11 +1,18 @@
 package com.bonborunote.niconicoviewer.components
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.components.player.JavaScriptEngine
+import com.bonborunote.niconicoviewer.components.player.PlaybackFragment
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
 import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
+import com.bonborunote.niconicoviewer.network.response.Content
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
 import org.kodein.di.Kodein
@@ -27,18 +34,27 @@ class MainActivity : AppCompatActivity(), KodeinAware {
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
   private val mainViewModel: MainViewModel by instance()
   private val searchViewModel: SearchViewModel by instance()
+  private val contentObserver = Observer<Content> {
+    it?.contentId?.let {
+      supportFragmentManager.beginTransaction()
+          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(it))
+          .commit()
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(mainViewModel)
+    lifecycle.addObserver(searchViewModel)
     binding.mainViewModel = mainViewModel
     binding.searchViewModel = searchViewModel
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
+    searchViewModel.playableContent.observe(this, contentObserver)
 
-    if (supportFragmentManager.findFragmentById(R.id.container) == null) {
+    if (supportFragmentManager.findFragmentById(R.id.coordinator_layout) == null) {
       supportFragmentManager.beginTransaction()
-          .add(R.id.container, SearchContainer.newInstance())
+          .add(R.id.coordinator_layout, SearchContainer.newInstance())
           .commit()
     }
   }
@@ -46,5 +62,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
   override fun onDestroy() {
     super.onDestroy()
     lifecycle.removeObserver(mainViewModel)
+    lifecycle.removeObserver(searchViewModel)
   }
 }

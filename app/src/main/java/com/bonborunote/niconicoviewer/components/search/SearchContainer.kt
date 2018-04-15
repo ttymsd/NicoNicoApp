@@ -30,7 +30,6 @@ class SearchContainer : Fragment(), KodeinAware {
   private lateinit var binding: FragmentSearchBinding
 
   private val searchViewModel: SearchViewModel by instance()
-
   private val section = Section()
 
   override fun onCreate(savedInstanceState: Bundle?) {

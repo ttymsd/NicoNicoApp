@@ -158,6 +158,14 @@ dependencies {
   implementation "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
   implementation "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
 
+  // exoplayer
+  implementation 'com.google.android.exoplayer:exoplayer-core:2.7.2'
+  implementation 'com.google.android.exoplayer:exoplayer-dash:2.7.2'
+  implementation 'com.google.android.exoplayer:exoplayer-hls:2.7.2'
+  implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.2'
+  implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.2'
+  implementation 'com.google.android.exoplayer:extension-okhttp:2.7.2'
+
   // parser
   implementation "com.google.code.gson:gson:$GSON_VERSION"
 
