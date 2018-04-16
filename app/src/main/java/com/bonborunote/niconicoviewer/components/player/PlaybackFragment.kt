@@ -57,6 +57,7 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
   private val player: ExoPlayer by lazy {
     val renderer = DefaultRenderersFactory(activity)
     ExoPlayerFactory.newSimpleInstance(renderer, trackSelector).apply {
+      playWhenReady = true
       addListener(this@PlaybackFragment)
     }
   }

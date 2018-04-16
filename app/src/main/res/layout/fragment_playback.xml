@@ -6,6 +6,7 @@
   <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:maxHeight="240dp"
     app:layout_behavior="@string/coordinator_behaviors_youtube_behavior"
     >
 
@@ -20,7 +21,7 @@
       android:id="@+id/player_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:maxHeight="200dp"
+      android:maxHeight="240dp"
       />
 
   </android.support.constraint.ConstraintLayout>
