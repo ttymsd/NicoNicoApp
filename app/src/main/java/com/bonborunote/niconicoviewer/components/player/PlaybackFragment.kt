@@ -13,12 +13,18 @@ import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
 import com.bonborunote.niconicoviewer.player.NicoDataSource
 import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.ads.AdsMediaSource.MediaSourceFactory
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.util.EventLogger
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
@@ -31,10 +37,10 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 import timber.log.Timber
 
-class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehaviorStateListener {
+class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeLikeBehavior.OnBehaviorStateListener {
   // instance作った時点ではactivity = null なので getterをoverrideする
   override val kodeinContext: KodeinContext<*>
-    get() = kcontext(activity)
+    get() = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
   private val contentId: String by lazy {
@@ -52,7 +58,9 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   private lateinit var mediaSourceFactory: MediaSourceFactory
   private val player: ExoPlayer by lazy {
     val renderer = DefaultRenderersFactory(activity)
-    ExoPlayerFactory.newSimpleInstance(renderer, trackSelector)
+    ExoPlayerFactory.newSimpleInstance(renderer, trackSelector).apply {
+      addListener(this@PlaybackFragment)
+    }
   }
   private var javascriptEngine: JavaScriptEngine? = null
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
@@ -100,6 +108,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onStop() {
     super.onStop()
+    playbackViewModel.seekPosition.postValue(player.currentPosition)
     player.stop()
   }
 
@@ -115,7 +124,39 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     activity?.runOnUiThread {
       binding.playerView.player = player
       player.prepare(mediaSourceFactory.createMediaSource(Uri.parse(url), handler, logger))
+      player.seekTo(playbackViewModel.seekPosition.value ?: 0)
     }
+  }
+
+  override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
+  }
+
+  override fun onSeekProcessed() {
+  }
+
+  override fun onTracksChanged(trackGroups: TrackGroupArray?,
+      trackSelections: TrackSelectionArray?) {
+  }
+
+  override fun onPlayerError(error: ExoPlaybackException?) {
+  }
+
+  override fun onLoadingChanged(isLoading: Boolean) {
+  }
+
+  override fun onPositionDiscontinuity(reason: Int) {
+  }
+
+  override fun onRepeatModeChanged(repeatMode: Int) {
+  }
+
+  override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+  }
+
+  override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
+  }
+
+  override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
   }
 
   interface OnPlayerStateChangedListener {

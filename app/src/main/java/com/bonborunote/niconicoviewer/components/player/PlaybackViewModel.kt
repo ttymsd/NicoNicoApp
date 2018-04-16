@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModelProvider
 
 class PlaybackViewModel : ViewModel() {
   val movieUrl = MutableLiveData<String>()
+  val seekPosition = MutableLiveData<Long>()
+
   @Suppress("UNCHECKED_CAST")
   class Factory(
   ) : ViewModelProvider.NewInstanceFactory() {
