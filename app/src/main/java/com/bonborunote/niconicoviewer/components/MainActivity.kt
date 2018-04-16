@@ -3,12 +3,9 @@ package com.bonborunote.niconicoviewer.components
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.bonborunote.niconicoviewer.R
-import com.bonborunote.niconicoviewer.components.player.JavaScriptEngine
 import com.bonborunote.niconicoviewer.components.player.PlaybackFragment
+import com.bonborunote.niconicoviewer.components.player.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
 import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
@@ -23,8 +20,7 @@ import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class MainActivity : AppCompatActivity(), KodeinAware {
-
+class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListener {
   private val _parentKodein by closestKodein()
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by retainedKodein {
@@ -37,7 +33,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
   private val contentObserver = Observer<Content> {
     it?.contentId?.let {
       supportFragmentManager.beginTransaction()
-          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(it))
+          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(it), PlaybackFragment.TAG)
           .commit()
     }
   }
@@ -63,5 +59,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     super.onDestroy()
     lifecycle.removeObserver(mainViewModel)
     lifecycle.removeObserver(searchViewModel)
+  }
+
+  override fun remove() {
+    supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+      supportFragmentManager.beginTransaction()
+          .remove(it)
+          .commit()
+    }
   }
 }
