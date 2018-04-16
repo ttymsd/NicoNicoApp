@@ -33,6 +33,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   private val contentObserver = Observer<Content> {
     it?.contentId?.let {
       supportFragmentManager.beginTransaction()
+          .apply {
+            supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+              remove(it)
+            }
+          }
           .add(R.id.coordinator_layout, PlaybackFragment.newInstance(it), PlaybackFragment.TAG)
           .commit()
     }
@@ -50,7 +55,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
     if (supportFragmentManager.findFragmentById(R.id.coordinator_layout) == null) {
       supportFragmentManager.beginTransaction()
-          .add(R.id.coordinator_layout, SearchContainer.newInstance())
+          .add(R.id.coordinator_layout, SearchContainer.newInstance(), SearchContainer.TAG)
           .commit()
     }
   }

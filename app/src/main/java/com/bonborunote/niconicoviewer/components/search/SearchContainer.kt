@@ -70,6 +70,8 @@ class SearchContainer : Fragment(), KodeinAware {
   }
 
   companion object {
+    const val TAG = "SearchContainer"
+
     fun newInstance(): SearchContainer = SearchContainer().apply {
       arguments = Bundle()
     }
