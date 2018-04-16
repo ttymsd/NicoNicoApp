@@ -38,9 +38,7 @@ import org.kodein.di.generic.kcontext
 import timber.log.Timber
 
 class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeLikeBehavior.OnBehaviorStateListener {
-  // instance作った時点ではactivity = null なので getterをoverrideする
-  override val kodeinContext: KodeinContext<*>
-    get() = kcontext(this)
+  override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
   private val contentId: String by lazy {
