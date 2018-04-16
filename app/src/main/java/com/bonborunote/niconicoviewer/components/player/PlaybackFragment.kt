@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.components.player
 
+import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
@@ -40,6 +41,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     arguments?.getString(PlaybackFragment::contentId.name, "") ?: ""
   }
 
+  private val playbackViewModel: PlaybackViewModel by instance()
   private val okHttpClient: OkHttpClient by instance()
   private val handler = Handler()
   private val adaptiveTrackSelectionFactory = AdaptiveTrackSelection.Factory(
@@ -61,6 +63,11 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     super.onCreate(savedInstanceState)
     mediaSourceFactory = ExtractorMediaSource.Factory(
         NicoDataSource.Factory(activity, okHttpClient))
+    playbackViewModel.movieUrl.observe(this, Observer {
+      it?.let {
+        initializePlayer(it)
+      }
+    })
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -78,9 +85,16 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       javascriptEngine?.apply {
         findMediaUrl(contentId) {
           Timber.d("id:$contentId, $it")
-          initializePlayer(it)
+          playbackViewModel.movieUrl.postValue(it)
         }
       }
+    }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    playbackViewModel.movieUrl.value?.let {
+      initializePlayer(it)
     }
   }
 
