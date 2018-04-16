@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.components.description.DescriptionFragment
 import com.bonborunote.niconicoviewer.components.player.PlaybackFragment
 import com.bonborunote.niconicoviewer.components.player.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
@@ -37,8 +38,13 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
             supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
               remove(it)
             }
+            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+              remove(it)
+            }
           }
           .add(R.id.coordinator_layout, PlaybackFragment.newInstance(it), PlaybackFragment.TAG)
+          .add(R.id.coordinator_layout, DescriptionFragment.newInstance(it),
+              DescriptionFragment.TAG)
           .commit()
     }
   }
@@ -70,6 +76,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
       supportFragmentManager.beginTransaction()
           .remove(it)
+          .apply {
+            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+              remove(it)
+            }
+          }
           .commit()
     }
   }
