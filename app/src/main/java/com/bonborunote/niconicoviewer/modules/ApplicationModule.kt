@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.modules
 
+import com.bonborunote.niconicoviewer.components.player.CookieJar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -13,6 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val applicationModule = Kodein.Module {
+  bind<CookieJar>() with singleton { CookieJar() }
   bind<Gson>() with singleton { GsonBuilder().create() }
   bind<HttpLoggingInterceptor>("log") with singleton {
     HttpLoggingInterceptor().apply {
@@ -22,6 +24,7 @@ val applicationModule = Kodein.Module {
   bind<OkHttpClient>() with singleton {
     OkHttpClient.Builder()
         .addNetworkInterceptor(instance("log"))
+        .cookieJar(instance())
         .build()
   }
   bind<Retrofit>() with singleton {
