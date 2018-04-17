@@ -1,10 +1,10 @@
 package com.bonborunote.niconicoviewer.network
 
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.AND
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.EQUAL
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.NOT
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.OR
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Operator.RANGE
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Operator.AND
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Operator.EQUAL
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Operator.NOT
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Operator.OR
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Operator.RANGE
 import com.bonborunote.niconicoviewer.network.response.Content
 import com.bonborunote.niconicoviewer.network.response.SearchResponse
 import com.google.gson.Gson
@@ -14,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-abstract class NicoNicoApi(
+abstract class NicoNicoSearchApi(
     retrofit: Retrofit
 ) {
   protected val api = retrofit.create(

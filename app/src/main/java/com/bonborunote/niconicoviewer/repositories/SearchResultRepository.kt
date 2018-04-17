@@ -1,12 +1,12 @@
 package com.bonborunote.niconicoviewer.repositories
 
-import com.bonborunote.niconicoviewer.network.NicoNicoApi
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field.CONTENT_ID
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field.LENGTH_SECONDS
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Field.TAG
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Sort.VIEW_COUNT_DESC
-import com.bonborunote.niconicoviewer.network.NicoNicoApi.Target.TITLE
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.CONTENT_ID
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.LENGTH_SECONDS
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.TAG
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Sort.VIEW_COUNT_DESC
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Target.TITLE
 import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.network.response.Content
 import io.reactivex.subjects.BehaviorSubject
@@ -14,7 +14,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
 class SearchResultRepository(
-    private val nicoNicoApi: NicoNicoApi
+    private val nicoNicoSearchApi: NicoNicoSearchApi
 ) {
   val loading = BehaviorSubject.createDefault(false)
   val error = BehaviorSubject.create<NicoNicoException>()
@@ -24,7 +24,7 @@ class SearchResultRepository(
     async(CommonPool) {
       try {
         loading.onNext(true)
-        val result = nicoNicoApi.search(
+        val result = nicoNicoSearchApi.search(
             keyword = keyword,
             targets = listOf(TITLE),
             sort = VIEW_COUNT_DESC,

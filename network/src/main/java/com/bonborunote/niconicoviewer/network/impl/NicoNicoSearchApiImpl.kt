@@ -1,11 +1,11 @@
 package com.bonborunote.niconicoviewer.network.impl
 
-import com.bonborunote.niconicoviewer.network.NicoNicoApi
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.network.response.Content
 import retrofit2.Retrofit
 
-class NicoNicoApiImpl(retrofit: Retrofit) : NicoNicoApi(retrofit) {
+class NicoNicoSearchApiImpl(retrofit: Retrofit) : NicoNicoSearchApi(retrofit) {
 
   override fun search(keyword: String,
       targets: List<Target>,
