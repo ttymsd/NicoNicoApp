@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.components.search
 
 import android.arch.lifecycle.Observer
+import android.arch.paging.PagedListAdapter
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentSearchBinding
+import com.bonborunote.niconicoviewer.network.response.Content
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
