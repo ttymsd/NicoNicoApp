@@ -1,7 +1,6 @@
 package com.bonborunote.groupie.aac.plugin
 
 import android.support.v7.util.DiffUtil
-import android.support.v7.util.ListUpdateCallback
 import com.xwray.groupie.Group
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
@@ -18,25 +17,6 @@ class PagedSection(
   private var isHeaderAndFooterVisible: Boolean = false
   private var hideWhenEmpty: Boolean = false
   private var isPlaceholderVisible: Boolean = false
-
-  private val listUpdateCallback = object : ListUpdateCallback {
-    override fun onInserted(position: Int, count: Int) {
-      notifyItemRangeInserted(getHeaderItemCount() + position, count)
-    }
-
-    override fun onRemoved(position: Int, count: Int) {
-      notifyItemRangeRemoved(getHeaderItemCount() + position, count)
-    }
-
-    override fun onMoved(fromPosition: Int, toPosition: Int) {
-      val headerItemCount = getHeaderItemCount()
-      notifyItemMoved(headerItemCount + fromPosition, headerItemCount + toPosition)
-    }
-
-    override fun onChanged(position: Int, count: Int, payload: Any) {
-      notifyItemRangeChanged(getHeaderItemCount() + position, count)
-    }
-  }
 
   init {
     this.header = header

@@ -13,7 +13,7 @@ import com.xwray.groupie.Item
 abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
   private val observable = GroupDataObservable()
 
-  private val listUpdateCallback = object : ListUpdateCallback {
+  protected val listUpdateCallback = object : ListUpdateCallback {
     override fun onChanged(position: Int, count: Int, payload: Any?) {
       observable.onItemRangeChanged(this@PagedListNestedGroup, position, count)
     }
@@ -31,7 +31,7 @@ abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
     }
   }
 
-  private val diffCallback = object : DiffUtil.ItemCallback<T>() {
+  protected val diffCallback = object : DiffUtil.ItemCallback<T>() {
     override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
       return oldItem.isSameAs(newItem)
     }

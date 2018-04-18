@@ -58,7 +58,7 @@ class SearchViewModel private constructor(
 
   override fun onQueryTextSubmit(query: String?): Boolean {
     query?.let {
-      repository.search(query)
+      repository.search(query, 0)
     }
     return true
   }
