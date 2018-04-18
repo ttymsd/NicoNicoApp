@@ -1,7 +1,6 @@
 package com.bonborunote.niconicoviewer.components.search
 
 import android.arch.lifecycle.Observer
-import android.arch.paging.PagedListAdapter
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,11 +8,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bonborunote.groupie.aac.plugin.PagedSection
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentSearchBinding
-import com.bonborunote.niconicoviewer.network.response.Content
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -32,7 +30,7 @@ class SearchContainer : Fragment(), KodeinAware {
   private lateinit var binding: FragmentSearchBinding
 
   private val searchViewModel: SearchViewModel by instance()
-  private val section = Section()
+  private val section = PagedSection()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

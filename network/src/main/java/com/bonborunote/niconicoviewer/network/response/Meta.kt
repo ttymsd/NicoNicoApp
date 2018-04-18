@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Meta(
     @SerializedName("status") val status: Int,
+    @SerializedName("totalCount") val totalCount: Long,
     @SerializedName("errorCode") val errorCode: String,
     @SerializedName("errorMessage") val errorMessage: String
 )
