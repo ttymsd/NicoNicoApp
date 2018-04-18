@@ -3,12 +3,11 @@ package com.bonborunote.groupie.aac.plugin
 import android.support.v7.util.DiffUtil
 import com.xwray.groupie.Group
 import com.xwray.groupie.Item
-import com.xwray.groupie.ViewHolder
 
-class PagedSection(
+class PagedSection<T: Item<*>>(
     groups: List<Group> = emptyList(),
     header: Group? = null
-) : PagedListNestedGroup<Item<ViewHolder>>() {
+) : PagedListNestedGroup<T>() {
 
   private var header: Group? = null
   private val children: MutableList<Group> = arrayListOf()
@@ -106,7 +105,7 @@ class PagedSection(
   }
 
   fun update(groups: List<Group>) {
-    val section = PagedSection(groups)
+    val section = PagedSection<T>(groups)
 
 
     val headerItemCount = getHeaderItemCount()

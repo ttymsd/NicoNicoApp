@@ -14,7 +14,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
 class SearchResultRepository(
-    private val nicoNicoSearchApi: NicoNicoSearchApi
+    val nicoNicoSearchApi: NicoNicoSearchApi
 ) {
   val loading = BehaviorSubject.createDefault(false)
   val error = BehaviorSubject.create<NicoNicoException>()

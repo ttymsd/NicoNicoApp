@@ -2,23 +2,30 @@ package com.bonborunote.niconicoviewer.components.search
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.paging.LivePagedListBuilder
+import android.arch.paging.PagedList
 import android.support.v7.widget.SearchView
 import com.bonborunote.niconicoviewer.network.NicoNicoException
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.bonborunote.niconicoviewer.network.response.Content
+import com.bonborunote.niconicoviewer.paging.datasources.SearchResultDataSourceFactory
 import com.bonborunote.niconicoviewer.repositories.SearchResultRepository
+import com.xwray.groupie.Item
+import com.xwray.groupie.ViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 
 class SearchViewModel private constructor(
-    private val repository: SearchResultRepository
+    private val repository: SearchResultRepository,
+    private val api: NicoNicoSearchApi
 ) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
-  val result = MutableLiveData<List<SearchContentItem>>()
+  val contents: LiveData<PagedList<SearchContentItem>>
   val loading = MutableLiveData<Boolean>()
   val error = MutableLiveData<NicoNicoException>()
   val playableContent = MutableLiveData<Content>()
@@ -26,6 +33,11 @@ class SearchViewModel private constructor(
   private var subscription = Disposables.disposed()
   private val itemClickCallback: (content: Content) -> Unit = {
     playableContent.postValue(it)
+  }
+
+  init {
+    contents = LivePagedListBuilder<Int, SearchContentItem>(SearchResultDataSourceFactory(api), 20)
+        .build()
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -38,15 +50,6 @@ class SearchViewModel private constructor(
         repository.loading
             .subscribe {
               loading.postValue(it)
-            },
-        repository.results
-            .map {
-              it.map {
-                SearchContentItem(it, itemClickCallback)
-              }
-            }
-            .subscribe {
-              result.postValue(it)
             }
     )
   }
@@ -58,7 +61,7 @@ class SearchViewModel private constructor(
 
   override fun onQueryTextSubmit(query: String?): Boolean {
     query?.let {
-      repository.search(query, 0)
+//      repository.search(query, 0)
     }
     return true
   }
@@ -72,7 +75,7 @@ class SearchViewModel private constructor(
       private val repository: SearchResultRepository
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return SearchViewModel(repository) as? T ?: throw IllegalArgumentException()
+      return SearchViewModel(repository, repository.nicoNicoSearchApi) as? T ?: throw IllegalArgumentException()
     }
   }
 }

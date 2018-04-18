@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class SearchContainer : Fragment(), KodeinAware {
   private lateinit var binding: FragmentSearchBinding
 
   private val searchViewModel: SearchViewModel by instance()
-  private val section = PagedSection()
+  private val section = PagedSection<SearchContentItem>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -58,9 +59,11 @@ class SearchContainer : Fragment(), KodeinAware {
         section.removeFooter()
       }
     })
-    searchViewModel.result.observe(this, Observer { result ->
-      val items = result ?: emptyList()
-      section.update(items)
+    searchViewModel.contents.observe(this, Observer {
+      it?.let {
+        Log.d("OkHttp", "submitList")
+        section.submitList(it)
+      }
     })
   }
 
