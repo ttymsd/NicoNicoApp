@@ -1,6 +1,6 @@
 package com.bonborunote.niconicoviewer.paging.datasources
 
-import android.arch.paging.PageKeyedDataSource
+import android.arch.paging.PositionalDataSource
 import android.util.Log
 import com.bonborunote.niconicoviewer.components.search.SearchContentItem
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
@@ -13,32 +13,32 @@ import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Target.TITLE
 
 class SearchResultDataSource(
     private val nicoSearchApi: NicoNicoSearchApi
-) : PageKeyedDataSource<Int, SearchContentItem>() {
-  override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, SearchContentItem>) {
-  }
+) : PositionalDataSource<SearchContentItem>() {
 
-  override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, SearchContentItem>) {
-    Log.d("OkHttp", "more")
-    val result = nicoSearchApi.search(
-        keyword = "シャドバ",
-        targets = listOf(TITLE),
-        sort = VIEW_COUNT_DESC,
-        fields = listOf(CONTENT_ID, Field.TITLE, TAG, LENGTH_SECONDS),
-        offset = params.key,
-        limit = params.requestedLoadSize)
-    callback.onResult(result.map { SearchContentItem(it, {}) }, params.key + params.requestedLoadSize)
-  }
-
-  override fun loadInitial(params: LoadInitialParams<Int>,
-      callback: LoadInitialCallback<Int, SearchContentItem>) {
-    Log.d("OkHttp", "initialize")
+  override fun loadInitial(params: LoadInitialParams,
+      callback: LoadInitialCallback<SearchContentItem>) {
     val result = nicoSearchApi.search(
         keyword = "シャドバ",
         targets = listOf(TITLE),
         sort = VIEW_COUNT_DESC,
         fields = listOf(CONTENT_ID, Field.TITLE, TAG, LENGTH_SECONDS),
         offset = 0,
-        limit = params.requestedLoadSize)
-    callback.onResult(result.map { SearchContentItem(it, {}) }, 0, params.requestedLoadSize)
+        limit = params.pageSize)
+    Log.d("AAA", "initialize:${params.requestedLoadSize}:${params.pageSize}:${result.size}")
+    callback.onResult(result.map { SearchContentItem(it, {}) }, 0)
+  }
+
+  override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<SearchContentItem>) {
+    Log.d("AAA", "loadRange")
+    Thread.sleep(10 * 1000)
+    val result = nicoSearchApi.search(
+        keyword = "シャドバ",
+        targets = listOf(TITLE),
+        sort = VIEW_COUNT_DESC,
+        fields = listOf(CONTENT_ID, Field.TITLE, TAG, LENGTH_SECONDS),
+        offset = params.startPosition,
+        limit = params.loadSize)
+    Log.d("AAA", "loadRange:${params.startPosition}:${params.loadSize}:${result.size}")
+    callback.onResult(result.map { SearchContentItem(it, {}) })
   }
 }

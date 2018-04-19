@@ -6,6 +6,7 @@ import android.support.annotation.CallSuper
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.util.DiffUtil
 import android.support.v7.util.ListUpdateCallback
+import android.util.Log
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
@@ -13,21 +14,25 @@ import com.xwray.groupie.Item
 abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
   private val observable = GroupDataObservable()
 
-  protected val listUpdateCallback = object : ListUpdateCallback {
+  protected val listUpdateCallback: ListUpdateCallback = object : ListUpdateCallback {
     override fun onChanged(position: Int, count: Int, payload: Any?) {
-      observable.onItemRangeChanged(this@PagedListNestedGroup, position, count)
+      Log.d("OkHttp", "onChanged")
+      onItemRangeChanged(this@PagedListNestedGroup, position, count)
     }
 
     override fun onMoved(fromPosition: Int, toPosition: Int) {
-      observable.onItemMoved(this@PagedListNestedGroup, fromPosition, toPosition)
+      Log.d("OkHttp", "onMoved")
+      onItemMoved(this@PagedListNestedGroup, fromPosition, toPosition)
     }
 
     override fun onInserted(position: Int, count: Int) {
-      observable.onItemRangeInserted(this@PagedListNestedGroup, position, count)
+      Log.d("OkHttp", "onInserted:${differ.currentList?.size}")
+      onItemRangeInserted(this@PagedListNestedGroup, position, count)
     }
 
     override fun onRemoved(position: Int, count: Int) {
-      observable.onItemRangeRemoved(this@PagedListNestedGroup, position, count)
+      Log.d("OkHttp", "onRemoved")
+      onItemRangeRemoved(this@PagedListNestedGroup, position, count)
     }
   }
 
@@ -44,7 +49,7 @@ abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
   private val differ = AsyncPagedListDiffer<T>(listUpdateCallback,
       AsyncDifferConfig.Builder<T>(diffCallback).build())
 
-  fun submitList(pagedList: PagedList<T>) {
+  @CallSuper open fun submitList(pagedList: PagedList<T>) {
     differ.submitList(pagedList)
   }
 

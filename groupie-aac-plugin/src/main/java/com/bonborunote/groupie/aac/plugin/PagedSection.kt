@@ -1,5 +1,6 @@
 package com.bonborunote.groupie.aac.plugin
 
+import android.arch.paging.PagedList
 import android.support.v7.util.DiffUtil
 import com.xwray.groupie.Group
 import com.xwray.groupie.Item
@@ -49,6 +50,11 @@ class PagedSection<T: Item<*>>(
 
   private fun isPlaceHolderShown(): Boolean {
     return getPlaceholderItemCount() > 0
+  }
+
+  override fun submitList(pagedList: PagedList<T>) {
+    super.submitList(pagedList)
+    addAll(pagedList)
   }
 
   override fun add(group: Group) {

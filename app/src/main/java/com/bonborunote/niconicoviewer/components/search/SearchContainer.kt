@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.groupie.aac.plugin.PagedSection
+import com.bonborunote.groupie.aac.plugin.PagedSection2
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentSearchBinding
 import com.xwray.groupie.GroupAdapter
@@ -31,7 +32,7 @@ class SearchContainer : Fragment(), KodeinAware {
   private lateinit var binding: FragmentSearchBinding
 
   private val searchViewModel: SearchViewModel by instance()
-  private val section = PagedSection<SearchContentItem>()
+  private val section = PagedSection2<SearchContentItem>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -53,11 +54,11 @@ class SearchContainer : Fragment(), KodeinAware {
     binding.list.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     binding.executePendingBindings()
     searchViewModel.loading.observe(this, Observer { loading ->
-      if (loading == true) {
-        section.setFooter(SearchLoadingItem())
-      } else {
-        section.removeFooter()
-      }
+//      if (loading == true) {
+//        section.setFooter(SearchLoadingItem())
+//      } else {
+//        section.removeFooter()
+//      }
     })
     searchViewModel.contents.observe(this, Observer {
       it?.let {
