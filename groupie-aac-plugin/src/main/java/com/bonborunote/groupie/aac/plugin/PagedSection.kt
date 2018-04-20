@@ -1,301 +1,193 @@
 package com.bonborunote.groupie.aac.plugin
 
+import android.arch.paging.AsyncPagedListDiffer
 import android.arch.paging.PagedList
+import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.util.DiffUtil
+import android.support.v7.util.ListUpdateCallback
 import com.xwray.groupie.Group
+import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 
-class PagedSection<T: Item<*>>(
-    groups: List<Group> = emptyList(),
-    header: Group? = null
-) : PagedListNestedGroup<T>() {
+ open class PagedSection<T : Item<*>> : Group, GroupDataObserver {
+  private val observable = GroupDataObservable()
 
-  private var header: Group? = null
-  private val children: MutableList<Group> = arrayListOf()
-  private var footer: Group? = null
-  private val placeholder: Group? = null
-  private var isHeaderAndFooterVisible: Boolean = false
-  private var hideWhenEmpty: Boolean = false
-  private var isPlaceholderVisible: Boolean = false
+  private val listUpdateCallback: ListUpdateCallback = object : ListUpdateCallback {
+    override fun onChanged(position: Int, count: Int, payload: Any?) {
+      onItemRangeChanged(this@PagedSection, position, count)
+    }
 
-  init {
-    this.header = header
-    addAll(groups)
-  }
+    override fun onMoved(fromPosition: Int, toPosition: Int) {
+      onItemMoved(this@PagedSection, fromPosition, toPosition)
+    }
 
-  override fun getGroup(position: Int): Group {
-    var p = position
-    if (isHeaderShown() && p == 0) return header!!
-    p -= getHeaderCount()
-    if (isPlaceHolderShown() && p == 0) return placeholder!!
-    p -= getPlaceholderCount()
-    if (p == children.size) {
-      if (isFooterShown()) {
-        return footer!!
-      } else {
-        throw IndexOutOfBoundsException()
-      }
-    } else {
-      return children[p]
+    override fun onInserted(position: Int, count: Int) {
+      onItemRangeInserted(this@PagedSection, position, count)
+    }
+
+    override fun onRemoved(position: Int, count: Int) {
+      onItemRangeRemoved(this@PagedSection, position, count)
     }
   }
 
-  override fun getGroupCount(): Int {
-    return getHeaderCount() + getFooterCount() + getPlaceholderCount() + children.size
-  }
-
-  private fun isHeaderShown(): Boolean {
-    return getHeaderCount() > 0
-  }
-
-  private fun isPlaceHolderShown(): Boolean {
-    return getPlaceholderItemCount() > 0
-  }
-
-  override fun submitList(pagedList: PagedList<T>) {
-    super.submitList(pagedList)
-    addAll(pagedList)
-  }
-
-  override fun add(group: Group) {
-    super.add(group)
-    val position = getItemCountWithoutFooter()
-    children.add(group)
-    notifyItemRangeInserted(position, group.itemCount)
-    refreshEmptyState()
-  }
-
-  override fun add(position: Int, group: Group) {
-    super.add(position, group)
-    children.add(position, group)
-    val notifyPosition = getHeaderItemCount() + getItemCount(children.subList(0, position))
-    notifyItemRangeInserted(notifyPosition, group.itemCount)
-    refreshEmptyState()
-  }
-
-  override fun addAll(groups: List<Group>) {
-    if (groups.isEmpty()) return
-    super.addAll(groups)
-    val position = getItemCountWithoutFooter()
-    children.addAll(groups)
-    notifyItemRangeInserted(position, getItemCount(groups))
-    refreshEmptyState()
-  }
-
-  override fun addAll(position: Int, groups: List<Group>) {
-    if (groups.isEmpty()) return
-    super.addAll(position, groups)
-    children.addAll(position, groups)
-    val notifyPosition = getHeaderItemCount() + getItemCount(children.subList(0, position))
-    notifyItemRangeInserted(notifyPosition, getItemCount(groups))
-    refreshEmptyState()
-  }
-
-  override fun remove(group: Group) {
-    super.remove(group)
-    val position = getItemCountBeforeGroup(group)
-    children.remove(group)
-    notifyItemRangeRemoved(position, group.itemCount)
-    refreshEmptyState()
-  }
-
-  override fun removeAll(groups: List<Group>) {
-    if (groups.isEmpty()) return
-    super.removeAll(groups)
-    groups.forEach {
-      val position = getItemCountBeforeGroup(it)
-      children.remove(it)
-      notifyItemRangeRemoved(position, it.itemCount)
+  protected val diffCallback = object : DiffUtil.ItemCallback<T>() {
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+      return oldItem.isSameAs(newItem)
     }
-    refreshEmptyState()
-  }
 
-  fun update(groups: List<Group>) {
-    val section = PagedSection<T>(groups)
-
-
-    val headerItemCount = getHeaderItemCount()
-    val oldBodyItemCount = getItemCount(children)
-    val newBodyItemCount = section.itemCount
-
-    val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-      override fun getOldListSize(): Int {
-        return oldBodyItemCount
-      }
-
-      override fun getNewListSize(): Int {
-        return newBodyItemCount
-      }
-
-      override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = getItem(headerItemCount + oldItemPosition)
-        val newItem = section.getItem(newItemPosition)
-        return newItem.isSameAs(oldItem)
-      }
-
-      override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = getItem(headerItemCount + oldItemPosition)
-        val newItem = section.getItem(newItemPosition)
-        return newItem == oldItem
-      }
-    })
-
-    super.removeAll(children)
-    children.clear()
-    children.addAll(groups)
-    super.addAll(groups)
-    diffResult.dispatchUpdatesTo(listUpdateCallback)
-    refreshEmptyState()
-  }
-
-  fun getItemCount(groups: List<Group>): Int {
-    return groups.sumBy { it.itemCount }
-  }
-
-  fun getItemCountBeforeGroup(group: Group): Int {
-    return getItemCountBeforeGroup(getPosition(group))
-  }
-
-  fun getItemCountBeforeGroup(groupIndex: Int): Int {
-    return (0 until groupIndex).sumBy { getGroup(it).itemCount }
-  }
-
-  override fun getPosition(group: Group): Int {
-    var count = 0
-    if (isHeaderShown()) {
-      if (group === header) return count
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+      return oldItem == newItem
     }
-    count += getHeaderCount()
-    if (isPlaceholderShown()) {
-      if (group === placeholder) return count
-    }
-    count += getPlaceholderCount()
+  }
 
-    val index = children.indexOf(group)
-    if (index >= 0) return count + index
-    count += children.size
+  private val differ = AsyncPagedListDiffer<T>(listUpdateCallback,
+      AsyncDifferConfig.Builder<T>(diffCallback).build())
 
-    if (isFooterShown()) {
-      if (footer === group) {
-        return count
+  fun submitList(pagedList: PagedList<T>) {
+    differ.submitList(pagedList)
+  }
+
+  fun getGroupCount(): Int {
+    return differ.currentList?.size ?: 0
+  }
+
+  fun getGroup(position: Int): Group {
+    return differ.getItem(position) ?: throw IndexOutOfBoundsException()
+  }
+
+  fun getPosition(group: Group): Int {
+    return differ.currentList?.indexOf(group) ?: -1
+  }
+
+  override fun registerGroupDataObserver(groupDataObserver: GroupDataObserver) {
+    observable.registerObserver(groupDataObserver)
+  }
+
+  override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
+    observable.unregisterObserver(groupDataObserver)
+  }
+
+  override fun getItemCount(): Int {
+    return differ.currentList?.sumBy { it.itemCount } ?: 0
+  }
+
+  override fun getItem(position: Int): Item<*> {
+    return differ.getItem(position) ?:
+    throw IndexOutOfBoundsException(
+        "Wanted item at $position but there are only $itemCount items")
+  }
+
+  override fun getPosition(item: Item<*>): Int {
+    return differ.currentList?.indexOf(item) ?: -1
+  }
+
+  override fun onChanged(group: Group) {
+    observable.onChanged(group)
+  }
+
+  override fun onItemRangeRemoved(group: Group, positionStart: Int, itemCount: Int) {
+    observable.onItemRangeRemoved(group, positionStart, itemCount)
+  }
+
+  override fun onItemInserted(group: Group, position: Int) {
+    observable.onItemInserted(group, position)
+  }
+
+  override fun onItemRemoved(group: Group, position: Int) {
+    observable.onItemRemoved(group, position)
+  }
+
+  override fun onItemChanged(group: Group, position: Int) {
+    observable.onItemChanged(group, position)
+  }
+
+  override fun onItemChanged(group: Group, position: Int, payload: Any?) {
+    observable.onItemChanged(group, position, payload)
+  }
+
+  override fun onItemRangeInserted(group: Group, positionStart: Int, itemCount: Int) {
+    observable.onItemRangeInserted(group, positionStart, itemCount)
+  }
+
+  override fun onItemMoved(group: Group, fromPosition: Int, toPosition: Int) {
+    observable.onItemMoved(group, fromPosition, toPosition)
+  }
+
+  override fun onItemRangeChanged(group: Group, positionStart: Int, itemCount: Int) {
+    observable.onItemRangeChanged(group, positionStart, itemCount)
+  }
+
+  inner class GroupDataObservable : GroupDataObserver {
+    private val observers: MutableList<GroupDataObserver> = arrayListOf()
+
+    fun registerObserver(observer: GroupDataObserver) {
+      synchronized(observers) {
+        if (observers.contains(observer)) {
+          throw IllegalStateException("Observer $observer is already registered.")
+        }
+        observers.add(observer)
       }
     }
 
-    return -1
-  }
-
-  private fun refreshEmptyState() {
-    if (isEmpty()) {
-      if (hideWhenEmpty) {
-        hideDecorations()
-      } else {
-        showPlaceholder()
-        showHeadersAndFooters()
+    fun unregisterObserver(observer: GroupDataObserver) {
+      synchronized(observers) {
+        observers.remove(observer)
       }
-    } else {
-      hidePlaceholder()
-      showHeadersAndFooters()
     }
-  }
 
-  private fun hideDecorations() {
-    if (!isHeaderAndFooterVisible && !isPlaceholderVisible) return
-
-    val count = getHeaderItemCount() + getPlaceholderItemCount() + getFooterItemCount()
-    isHeaderAndFooterVisible = false
-    isPlaceholderVisible = false
-    notifyItemRangeRemoved(0, count)
-  }
-
-  private fun getPlaceholderItemCount(): Int {
-    return if (isPlaceholderVisible && placeholder != null) {
-      return placeholder.itemCount
-    } else {
-      0
+    override fun onChanged(group: Group) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onChanged(group)
+      }
     }
-  }
 
-  private fun getFooterItemCount(): Int {
-    return if (getFooterCount() == 0) 0 else footer?.itemCount ?: 0
-  }
-
-  private fun showHeadersAndFooters() {
-    if (isHeaderAndFooterVisible) return
-
-    isHeaderAndFooterVisible = true
-    notifyItemRangeInserted(0, getHeaderItemCount())
-    notifyItemRangeInserted(getItemCountWithoutFooter(), getFooterItemCount())
-  }
-
-  private fun getItemCountWithoutFooter(): Int {
-    return getBodyItemCount() + getHeaderItemCount()
-  }
-
-  private fun getBodyItemCount(): Int {
-    return if (isPlaceholderVisible) getPlaceholderItemCount() else getItemCount(children)
-  }
-
-  private fun showPlaceholder() {
-    if (isPlaceholderVisible || placeholder == null) return
-    isPlaceholderVisible = true
-    notifyItemRangeInserted(getHeaderItemCount(), placeholder.itemCount)
-  }
-
-  private fun hidePlaceholder() {
-    if (!isPlaceholderVisible || placeholder == null) return
-    isPlaceholderVisible = false
-    notifyItemRangeRemoved(getHeaderItemCount(), placeholder.itemCount)
-  }
-
-  private fun isEmpty(): Boolean {
-    return children.isEmpty() || getItemCount(children) == 0
-  }
-
-  private fun getHeaderItemCount(): Int {
-    return if (getHeaderCount() == 0) 0 else header?.itemCount ?: 0
-  }
-
-  private fun getHeaderCount(): Int {
-    return if (header == null || !isHeaderAndFooterVisible) 0 else 1
-  }
-
-  private fun getPlaceholderCount(): Int {
-    return if (placeholder == null || !isPlaceholderVisible) 0 else 1
-  }
-
-  private fun isFooterShown(): Boolean {
-    return getFooterCount() > 0
-  }
-
-  private fun getFooterCount(): Int {
-    return if (footer == null || !isHeaderAndFooterVisible) 0 else 1
-  }
-
-  private fun isPlaceholderShown(): Boolean {
-    return getPlaceholderCount() > 0
-  }
-
-  fun setFooter(footer: Group?) {
-    if (footer == null)
-      throw NullPointerException("Footer can't be null.  Please use removeFooter() instead!")
-    val previousFooterItemCount = getFooterItemCount()
-    this.footer = footer
-    notifyFooterItemsChanged(previousFooterItemCount)
-  }
-
-  fun removeFooter() {
-    val previousFooterItemCount = getFooterItemCount()
-    this.footer = null
-    notifyFooterItemsChanged(previousFooterItemCount)
-  }
-
-  private fun notifyFooterItemsChanged(previousFooterItemCount: Int) {
-    val newFooterItemCount = getFooterItemCount()
-    if (previousFooterItemCount > 0) {
-      notifyItemRangeRemoved(getItemCountWithoutFooter(), previousFooterItemCount)
+    override fun onItemRangeRemoved(group: Group, positionStart: Int, itemCount: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemRangeRemoved(group, positionStart, itemCount)
+      }
     }
-    if (newFooterItemCount > 0) {
-      notifyItemRangeInserted(getItemCountWithoutFooter(), newFooterItemCount)
+
+    override fun onItemInserted(group: Group, position: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemInserted(group, position)
+      }
+    }
+
+    override fun onItemRemoved(group: Group, position: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemRemoved(group, position)
+      }
+    }
+
+    override fun onItemChanged(group: Group, position: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemChanged(group, position)
+      }
+    }
+
+    override fun onItemChanged(group: Group, position: Int, payload: Any?) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemChanged(group, position, payload)
+      }
+    }
+
+    override fun onItemRangeInserted(group: Group, positionStart: Int, itemCount: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemRangeInserted(group, positionStart, itemCount)
+      }
+    }
+
+    override fun onItemMoved(group: Group, fromPosition: Int, toPosition: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemMoved(group, fromPosition, toPosition)
+      }
+    }
+
+    override fun onItemRangeChanged(group: Group, positionStart: Int, itemCount: Int) {
+      (observers.size - 1 downTo 0).forEach {
+        observers[it].onItemRangeChanged(group, positionStart, itemCount)
+      }
     }
   }
 }
+

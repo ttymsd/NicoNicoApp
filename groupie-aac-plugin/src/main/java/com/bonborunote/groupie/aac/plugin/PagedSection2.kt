@@ -5,7 +5,6 @@ import android.arch.paging.PagedList
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.util.DiffUtil
 import android.support.v7.util.ListUpdateCallback
-import android.util.Log
 import com.xwray.groupie.Group
 import com.xwray.groupie.Item
 import com.xwray.groupie.NestedGroup
@@ -16,22 +15,18 @@ class PagedSection2<T : Item<*>>(
 ) : NestedGroup() {
   protected val listUpdateCallback: ListUpdateCallback = object : ListUpdateCallback {
     override fun onChanged(position: Int, count: Int, payload: Any?) {
-      Log.d("AAA", "onChanged")
       this@PagedSection2.onItemRangeChanged(this@PagedSection2, position, count)
     }
 
     override fun onMoved(fromPosition: Int, toPosition: Int) {
-      Log.d("AAA", "onMoved")
       this@PagedSection2.onItemMoved(this@PagedSection2, fromPosition, toPosition)
     }
 
     override fun onInserted(position: Int, count: Int) {
-      Log.d("AAA", "onInserted:${position}:${count}:${differ.currentList?.size}")
       this@PagedSection2.onItemRangeInserted(this@PagedSection2, position, count)
     }
 
     override fun onRemoved(position: Int, count: Int) {
-      Log.d("AAA", "onRemoved")
       this@PagedSection2.onItemRangeRemoved(this@PagedSection2, position, count)
     }
   }
@@ -50,12 +45,10 @@ class PagedSection2<T : Item<*>>(
       AsyncDifferConfig.Builder(diffCallback).build())
 
   override fun getGroup(position: Int): Group {
-    Log.d("AAA", "getGroup:$position")
     return differ.currentList?.get(position) ?: throw IndexOutOfBoundsException()
   }
 
   override fun getPosition(group: Group): Int {
-    Log.d("AAA", "getPosition:${group}")
     return differ.currentList?.indexOf(group) ?: -1
   }
 

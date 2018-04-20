@@ -2,37 +2,31 @@ package com.bonborunote.groupie.aac.plugin
 
 import android.arch.paging.AsyncPagedListDiffer
 import android.arch.paging.PagedList
-import android.support.annotation.CallSuper
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.util.DiffUtil
 import android.support.v7.util.ListUpdateCallback
-import android.util.Log
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 
-abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
+ open class PagedNestedGroup<T : Item<*>> : Group, GroupDataObserver {
   private val observable = GroupDataObservable()
 
-  protected val listUpdateCallback: ListUpdateCallback = object : ListUpdateCallback {
+  private val listUpdateCallback: ListUpdateCallback = object : ListUpdateCallback {
     override fun onChanged(position: Int, count: Int, payload: Any?) {
-      Log.d("OkHttp", "onChanged")
-      onItemRangeChanged(this@PagedListNestedGroup, position, count)
+      onItemRangeChanged(this@PagedNestedGroup, position, count)
     }
 
     override fun onMoved(fromPosition: Int, toPosition: Int) {
-      Log.d("OkHttp", "onMoved")
-      onItemMoved(this@PagedListNestedGroup, fromPosition, toPosition)
+      onItemMoved(this@PagedNestedGroup, fromPosition, toPosition)
     }
 
     override fun onInserted(position: Int, count: Int) {
-      Log.d("OkHttp", "onInserted:${differ.currentList?.size}")
-      onItemRangeInserted(this@PagedListNestedGroup, position, count)
+      onItemRangeInserted(this@PagedNestedGroup, position, count)
     }
 
     override fun onRemoved(position: Int, count: Int) {
-      Log.d("OkHttp", "onRemoved")
-      onItemRangeRemoved(this@PagedListNestedGroup, position, count)
+      onItemRangeRemoved(this@PagedNestedGroup, position, count)
     }
   }
 
@@ -49,64 +43,20 @@ abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
   private val differ = AsyncPagedListDiffer<T>(listUpdateCallback,
       AsyncDifferConfig.Builder<T>(diffCallback).build())
 
-  @CallSuper open fun submitList(pagedList: PagedList<T>) {
+  fun submitList(pagedList: PagedList<T>) {
     differ.submitList(pagedList)
   }
 
-  @CallSuper open fun add(group: Group) {
-    group.registerGroupDataObserver(this)
+  fun getGroupCount(): Int {
+    return differ.currentList?.size ?: 0
   }
 
-  @CallSuper open fun add(position: Int, group: Group) {
-    group.registerGroupDataObserver(this)
+  fun getGroup(position: Int): Group {
+    return differ.getItem(position) ?: throw IndexOutOfBoundsException()
   }
 
-  @CallSuper open fun addAll(groups: List<Group>) {
-    groups.forEach {
-      it.registerGroupDataObserver(this)
-    }
-  }
-
-  @CallSuper open fun addAll(position: Int, groups: List<Group>) {
-    groups.forEach {
-      it.registerGroupDataObserver(this)
-    }
-  }
-
-  @CallSuper open fun remove(group: Group) {
-    group.registerGroupDataObserver(this)
-  }
-
-  @CallSuper open fun removeAll(groups: List<Group>) {
-    groups.forEach {
-      it.unregisterGroupDataObserver(this)
-    }
-  }
-
-  @CallSuper open fun notifyItemRangeInserted(positionStart: Int, itemCount: Int) {
-    observable.onItemRangeInserted(this, positionStart, itemCount)
-  }
-
-  @CallSuper open fun notifyItemRangeRemoved(positionStart: Int, itemCount: Int) {
-    observable.onItemRangeRemoved(this, positionStart, itemCount)
-  }
-
-  @CallSuper open fun notifyItemMoved(fromPosition: Int, toPosition: Int) {
-    observable.onItemMoved(this, fromPosition, toPosition)
-  }
-
-  @CallSuper open fun notifyItemRangeChanged(positionStart: Int, itemCount: Int) {
-    observable.onItemRangeChanged(this, positionStart, itemCount)
-  }
-
-  abstract fun getGroup(position: Int): Group
-
-  abstract fun getGroupCount(): Int
-
-  abstract fun getPosition(group: Group): Int
-
-  override fun getItemCount(): Int {
-    return (0 until getGroupCount()).sumBy { getGroup(it).itemCount }
+  fun getPosition(group: Group): Int {
+    return differ.currentList?.indexOf(group) ?: -1
   }
 
   override fun registerGroupDataObserver(groupDataObserver: GroupDataObserver) {
@@ -117,32 +67,18 @@ abstract class PagedListNestedGroup<T : Item<*>> : Group, GroupDataObserver {
     observable.unregisterObserver(groupDataObserver)
   }
 
-  override fun getItem(position: Int): Item<*> {
-    var previousPosition = 0
-    (0 until getGroupCount()).forEach {
-      val group = getGroup(it)
-      val size = group.itemCount
-      if (size + previousPosition > position) {
-        return group.getItem(position - previousPosition)
-      }
-      previousPosition += size
-    }
+  override fun getItemCount(): Int {
+    return differ.currentList?.sumBy { it.itemCount } ?: 0
+  }
 
+  override fun getItem(position: Int): Item<*> {
+    return differ.getItem(position) ?:
     throw IndexOutOfBoundsException(
         "Wanted item at $position but there are only $itemCount items")
   }
 
   override fun getPosition(item: Item<*>): Int {
-    var previousPosition = 0
-    (0 until getGroupCount()).forEach {
-      val group = getGroup(it)
-      val position = group.getPosition(item)
-      if (position >= 0) {
-        return position + previousPosition
-      }
-      previousPosition += group.itemCount
-    }
-    return -1
+    return differ.currentList?.indexOf(item) ?: -1
   }
 
   override fun onChanged(group: Group) {
