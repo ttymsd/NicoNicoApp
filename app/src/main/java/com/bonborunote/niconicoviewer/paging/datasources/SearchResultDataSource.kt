@@ -9,31 +9,34 @@ import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.LENGTH_SEC
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.TAG
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Sort.VIEW_COUNT_DESC
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Target.TITLE
+import com.bonborunote.niconicoviewer.network.response.Content
 
 class SearchResultDataSource(
-    private val nicoSearchApi: NicoNicoSearchApi
+    private val keyword: String,
+    private val nicoSearchApi: NicoNicoSearchApi,
+    private val clickCallback: (content: Content) -> Unit
 ) : PositionalDataSource<SearchContentItem>() {
 
   override fun loadInitial(params: LoadInitialParams,
       callback: LoadInitialCallback<SearchContentItem>) {
     val result = nicoSearchApi.search(
-        keyword = "シャドバ",
+        keyword = keyword,
         targets = listOf(TITLE),
         sort = VIEW_COUNT_DESC,
         fields = listOf(CONTENT_ID, Field.TITLE, TAG, LENGTH_SECONDS),
         offset = 0,
         limit = params.pageSize)
-    callback.onResult(result.map { SearchContentItem(it, {}) }, 0)
+    callback.onResult(result.map { SearchContentItem(it, clickCallback) }, 0)
   }
 
   override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<SearchContentItem>) {
     val result = nicoSearchApi.search(
-        keyword = "シャドバ",
+        keyword = keyword,
         targets = listOf(TITLE),
         sort = VIEW_COUNT_DESC,
         fields = listOf(CONTENT_ID, Field.TITLE, TAG, LENGTH_SECONDS),
         offset = params.startPosition,
         limit = params.loadSize)
-    callback.onResult(result.map { SearchContentItem(it, {}) })
+    callback.onResult(result.map { SearchContentItem(it, clickCallback) })
   }
 }

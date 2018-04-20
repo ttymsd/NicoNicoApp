@@ -32,7 +32,8 @@ class SearchViewModel private constructor(
       .build()
   val keyword = MutableLiveData<String>()
   val contents: LiveData<PagedList<SearchContentItem>> = switchMap(keyword, {
-    LivePagedListBuilder<Int, SearchContentItem>(SearchResultDataSourceFactory(api), pagedConfig)
+    LivePagedListBuilder<Int, SearchContentItem>(
+        SearchResultDataSourceFactory(it, api, itemClickCallback), pagedConfig)
         .setFetchExecutor(Executors.newFixedThreadPool(5))
         .build()
   })

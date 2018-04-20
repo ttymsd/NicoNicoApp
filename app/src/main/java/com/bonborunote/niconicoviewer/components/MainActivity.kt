@@ -72,6 +72,21 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     lifecycle.removeObserver(searchViewModel)
   }
 
+  override fun onBackPressed() {
+    supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+      supportFragmentManager.beginTransaction()
+          .remove(it)
+          .apply {
+            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+              remove(it)
+            }
+          }
+          .commit()
+    } ?: run {
+      super.onBackPressed()
+    }
+  }
+
   override fun remove() {
     supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
       supportFragmentManager.beginTransaction()
