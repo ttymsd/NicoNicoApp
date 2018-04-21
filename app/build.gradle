@@ -146,16 +146,16 @@ dependencies {
   implementation "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
 
   // glide
-  implementation 'com.github.bumptech.glide:glide:4.7.1'
-  kapt 'com.github.bumptech.glide:compiler:4.7.1'
+  implementation "com.github.bumptech.glide:glide:4.7.1"
+  kapt "com.github.bumptech.glide:compiler:4.7.1"
 
   // exoplayer
-  implementation 'com.google.android.exoplayer:exoplayer-core:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-dash:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-hls:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.2'
-  implementation 'com.google.android.exoplayer:extension-okhttp:2.7.2'
+  implementation "com.google.android.exoplayer:exoplayer-core:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-dash:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-hls:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-ui:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:extension-okhttp:$EXOPLAYER"
 
   // parser
   implementation "com.google.code.gson:gson:$GSON_VERSION"
@@ -172,7 +172,7 @@ dependencies {
   debugImplementation "com.facebook.stetho:stetho:$STETHO_VERSION"
   debugImplementation "com.facebook.stetho:stetho-okhttp3:$STETHO_VERSION"
 
-  testImplementation 'junit:junit:4.12'
+  testImplementation "junit:junit:4.12"
 
   // for instrumentation
   androidTestImplementation "org.hamcrest:hamcrest-library:$HAMCREST_VERSION"

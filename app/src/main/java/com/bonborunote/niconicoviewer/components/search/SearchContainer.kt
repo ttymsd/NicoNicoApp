@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bonborunote.groupie.aac.plugin.PagedNestedGroup
+import com.bonborunote.groupie.aac.plugin.PagedSection
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentSearchBinding
 import com.xwray.groupie.GroupAdapter
@@ -30,7 +30,7 @@ class SearchContainer : Fragment(), KodeinAware {
   private lateinit var binding: FragmentSearchBinding
 
   private val searchViewModel: SearchViewModel by instance()
-  private val section = PagedNestedGroup<SearchContentItem>()
+  private val section = PagedSection<SearchContentItem>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

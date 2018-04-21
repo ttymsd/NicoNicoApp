@@ -111,7 +111,7 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
     player.stop()
   }
 
-  override fun onBehaviorStateChanged(newState: Long) {
+  override fun onBehaviorStateChanged(newState: Int) {
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
         || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
       player.stop()
