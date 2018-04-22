@@ -4,7 +4,7 @@ import android.support.multidex.MultiDexApplication
 import com.bonborunote.niconicoviewer.modules.applicationModule
 import com.bonborunote.niconicoviewer.modules.mainModule
 import com.bonborunote.niconicoviewer.modules.playbackModule
-import com.bonborunote.niconicoviewer.modules.searchModule
+import com.bonborunote.niconicoviewer.search.ui.searchModule
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.androidModule

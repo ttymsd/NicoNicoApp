@@ -35,4 +35,8 @@ val applicationModule = Kodein.Module {
         .client(instance())
         .build()
   }
+  bind<NicoNicoSearchApi>() with singleton {
+    val retrofit: Retrofit = instance("search")
+    retrofit.create(NicoNicoSearchApi::class.java)
+  }
 }

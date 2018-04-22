@@ -10,7 +10,7 @@
       />
     <variable
       name="searchViewModel"
-      type="com.bonborunote.niconicoviewer.components.search.SearchViewModel"
+      type="com.bonborunote.niconicoviewer.search.ui.SearchViewModel"
       />
   </data>
 
