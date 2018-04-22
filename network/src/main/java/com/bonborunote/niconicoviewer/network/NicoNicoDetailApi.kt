@@ -4,6 +4,7 @@ import com.bonborunote.niconicoviewer.network.response.ContentDetail
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 abstract class NicoNicoDetailApi(
@@ -14,7 +15,11 @@ abstract class NicoNicoDetailApi(
   abstract fun detail(contentId: String): ContentDetail
 
   interface Service {
-    @GET("")
-    fun detail(@Query("id") contentId: String): Call<ContentDetail>
+    @GET("/{id}")
+    fun detail(@Path("id") contentId: String): Call<ContentDetailResponse>
+  }
+
+  companion object {
+    const val BASE_URL = "http://ext.nicovideo.jp/api/getthumbinfo"
   }
 }

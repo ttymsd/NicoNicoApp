@@ -29,6 +29,10 @@ abstract class NicoNicoSearchApi(
       context: String? = null,
       jsonFilters: Filter? = null): List<Content>
 
+  companion object {
+    const val BASE_URL = "http://api.search.nicovideo.jp"
+  }
+
   interface Service {
     @GET("/api/v2/snapshot/video/contents/search")
     fun search(@Query("q") keyword: String,

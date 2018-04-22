@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.modules
 
 import com.bonborunote.niconicoviewer.components.player.CookieJar
+import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -27,9 +28,9 @@ val applicationModule = Kodein.Module {
         .cookieJar(instance())
         .build()
   }
-  bind<Retrofit>() with singleton {
+  bind<Retrofit>("search") with singleton {
     Retrofit.Builder()
-        .baseUrl("http://api.search.nicovideo.jp")
+        .baseUrl(NicoNicoSearchApi.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(instance()))
         .client(instance())
         .build()
