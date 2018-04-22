@@ -3,13 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-  compileSdkVersion 27
+  compileSdkVersion COMPILE_SDK_VERSION as int
+  buildToolsVersion BUILD_TOOLS_VERSION
 
   defaultConfig {
     minSdkVersion 21
-    targetSdkVersion 27
-    versionCode 1
-    versionName "1.0.0"
+    targetSdkVersion TARGET_SDK_VERSION as int
+    versionCode VERSION_CODE as int
+    versionName VERSION_NAME
 
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
@@ -24,12 +25,12 @@ android {
 
 dependencies {
   // exoplayer
-  implementation 'com.google.android.exoplayer:exoplayer-core:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-dash:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-hls:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.2'
-  implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.2'
-  implementation 'com.google.android.exoplayer:extension-okhttp:2.7.2'
+  implementation "com.google.android.exoplayer:exoplayer-core:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-dash:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-hls:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:exoplayer-ui:$EXOPLAYER"
+  implementation "com.google.android.exoplayer:extension-okhttp:$EXOPLAYER"
   implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
 
   testImplementation 'junit:junit:4.12'

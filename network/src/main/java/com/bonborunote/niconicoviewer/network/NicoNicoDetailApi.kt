@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.network
 
 import com.bonborunote.niconicoviewer.network.response.ContentDetail
+import com.bonborunote.niconicoviewer.network.response.ContentDetailResponse
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET

@@ -1,2 +1,9 @@
-include ':app', ':network', ':player', ':groupie-aac-plugin'
+include ':app', ':network', ':player', ':groupie-aac-plugin', ':common'
+
+def searchModuleDir = new File('search')
+include ':search-ui', ':search-domain', ':search-infra', ':search-usecase'
+project(':search-ui').projectDir = new File(searchModuleDir, 'search-ui')
+project(':search-domain').projectDir = new File(searchModuleDir, 'search-domain')
+project(':search-infra').projectDir = new File(searchModuleDir, 'search-infra')
+project(':search-usecase').projectDir = new File(searchModuleDir, 'search-usecase')
 
