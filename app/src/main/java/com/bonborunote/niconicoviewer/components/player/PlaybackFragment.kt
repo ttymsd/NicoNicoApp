@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
 import com.bonborunote.niconicoviewer.player.NicoDataSource
+import com.bonborunote.niconicoviewer.search.domain.ContentId
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
@@ -165,9 +166,9 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
   companion object {
     const val TAG = "PlaybackFragment"
 
-    fun newInstance(contentId: String): Fragment = PlaybackFragment().apply {
+    fun newInstance(contentId: ContentId): Fragment = PlaybackFragment().apply {
       arguments = Bundle().apply {
-        putString(PlaybackFragment::contentId.name, contentId)
+        putString(PlaybackFragment::contentId.name, contentId.value)
       }
     }
   }

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentDescriptionBinding
+import com.bonborunote.niconicoviewer.search.domain.ContentId
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -47,9 +48,9 @@ class DescriptionFragment : Fragment(), KodeinAware {
   companion object {
     const val TAG = "DescriptionFragment"
 
-    fun newInstance(contentId: String): Fragment = DescriptionFragment().apply {
+    fun newInstance(contentId: ContentId): Fragment = DescriptionFragment().apply {
       arguments = Bundle().apply {
-        putString(DescriptionFragment::contentId.name, contentId)
+        putString(DescriptionFragment::contentId.name, contentId.value)
       }
     }
   }

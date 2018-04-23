@@ -1,10 +1,8 @@
 package com.bonborunote.niconicoviewer.search.ui
 
-import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.Transformations.switchMap
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
@@ -14,10 +12,12 @@ import android.support.v7.widget.SearchView
 import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.search.domain.Content
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository
+import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase
+import com.bonborunote.niconivoviewer.search.usecase.impl.SearchUseCaseFactory
 import java.util.concurrent.Executors
 
 class SearchViewModel private constructor(
-    private val contentRepository: ContentRepository
+    private val searchUseCase: SearchUseCase
 ) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
   private val pagedConfig = PagedList.Config.Builder()
@@ -26,37 +26,24 @@ class SearchViewModel private constructor(
       .setInitialLoadSizeHint(30)
       .build()
   val keyword = MutableLiveData<String>()
-  val contents: LiveData<PagedList<SearchContentItem>> = switchMap(keyword, {
-    LivePagedListBuilder<Int, SearchContentItem>(
-        SearchResultDataSourceFactory(it, contentRepository, itemClickCallback), pagedConfig)
+  private val dataSourceFactory = switchMap(keyword, {
+    MutableLiveData<SearchResultDataSourceFactory>().apply {
+      postValue(SearchResultDataSourceFactory(it, searchUseCase, itemClickCallback))
+    }
+  })
+  private val dataSource = switchMap(dataSourceFactory, {
+    it.dataSourceLiveData
+  })
+  val contents: LiveData<PagedList<SearchContentItem>> = switchMap(dataSourceFactory, {
+    LivePagedListBuilder<Int, SearchContentItem>(it, pagedConfig)
         .setFetchExecutor(Executors.newFixedThreadPool(5))
         .build()
   })
-  val loading = MutableLiveData<Boolean>()
+  val loading = switchMap(dataSource, { it.networkState })
   val error = MutableLiveData<NicoNicoException>()
   val playableContent = MutableLiveData<Content>()
   private val itemClickCallback: (content: Content) -> Unit = {
     playableContent.postValue(it)
-  }
-//  private var subscription = Disposables.disposed()
-
-  @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-  fun onCreate() {
-//    subscription = CompositeDisposable(
-//        repository.error
-//            .subscribe {
-//              error.postValue(it)
-//            },
-//        repository.loading
-//            .subscribe {
-//              loading.postValue(it)
-//            }
-//    )
-  }
-
-  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-  fun onDestroy() {
-//    subscription.dispose()
   }
 
   override fun onQueryTextSubmit(query: String?): Boolean {
@@ -75,7 +62,8 @@ class SearchViewModel private constructor(
       private val contentRepository: ContentRepository
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return SearchViewModel(contentRepository) as? T ?: throw IllegalArgumentException()
+      return SearchViewModel(SearchUseCaseFactory(contentRepository).create()) as? T
+          ?: throw IllegalArgumentException()
     }
   }
 }

@@ -13,8 +13,8 @@ interface ContentRepository {
       sort: Sort,
       offset: Int,
       limit: Int,
-      context: String?,
-      jsonFilters: Filter?): List<Content>
+      context: String? = null,
+      jsonFilters: Filter? = null): List<Content>
 
   enum class FilterableField(val key: String) {
     CONTENT_ID("contentId"),

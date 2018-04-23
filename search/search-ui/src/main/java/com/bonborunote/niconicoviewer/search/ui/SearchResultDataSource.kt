@@ -1,38 +1,43 @@
 package com.bonborunote.niconicoviewer.search.ui
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PositionalDataSource
-import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
+import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.search.domain.Content
-import com.bonborunote.niconicoviewer.search.domain.ContentRepository
 import com.bonborunote.niconicoviewer.search.domain.Sort.VIEW_COUNT_DESC
+import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase
 
 class SearchResultDataSource(
     private val keyword: String,
-    private val contentRepository: ContentRepository,
+    private val searchUseCase: SearchUseCase,
     private val clickCallback: (content: Content) -> Unit
 ) : PositionalDataSource<SearchContentItem>() {
 
+  val networkState = MutableLiveData<Boolean>()
+  val error = MutableLiveData<NicoNicoException>()
+
   override fun loadInitial(params: LoadInitialParams,
       callback: LoadInitialCallback<SearchContentItem>) {
-    val result = contentRepository.search(
+    networkState.postValue(true)
+    val result = searchUseCase.search(
         keyword = keyword,
         sort = VIEW_COUNT_DESC,
-        context = null,
-        jsonFilters = null,
         offset = 0,
         limit = params.pageSize
     )
     callback.onResult(result.map { SearchContentItem(it, clickCallback) }, 0)
+    networkState.postValue(false)
   }
 
   override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<SearchContentItem>) {
-//    val result = nicoSearchApi.search(
-//        keyword = keyword,
-//        targets = listOf(TITLE),
-//        sort = VIEW_COUNT_DESC,
-//        fields = listOf(CONTENT_ID, Field.TITLE, TAG, LENGTH_SECONDS),
-//        offset = params.startPosition,
-//        limit = params.loadSize)
-//    callback.onResult(result.map { SearchContentItem(it, clickCallback) })
+    networkState.postValue(true)
+    val result = searchUseCase.search(
+        keyword = keyword,
+        sort = VIEW_COUNT_DESC,
+        offset = params.startPosition,
+        limit = params.loadSize
+    )
+    callback.onResult(result.map { SearchContentItem(it, clickCallback) })
+    networkState.postValue(false)
   }
 }

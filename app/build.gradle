@@ -75,9 +75,11 @@ repositories {
 }
 
 dependencies {
+  implementation project(':common')
   implementation project(':network')
   implementation project(':player')
   implementation project(':groupie-aac-plugin')
+  implementation project(':search-domain')
   implementation project(':search-ui')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINES_VERSION"
@@ -110,6 +112,7 @@ dependencies {
   implementation "com.xwray:groupie:$GROUPIE"
   implementation "com.xwray:groupie-databinding:$GROUPIE"
   implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
+  kapt 'com.android.databinding:compiler:3.1.1'
 
   // multidex
   implementation "com.android.support:multidex:$MULTI_DEX_VERSION"

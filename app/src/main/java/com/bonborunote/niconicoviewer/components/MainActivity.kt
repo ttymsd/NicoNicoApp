@@ -8,6 +8,7 @@ import com.bonborunote.niconicoviewer.components.description.DescriptionFragment
 import com.bonborunote.niconicoviewer.components.player.PlaybackFragment
 import com.bonborunote.niconicoviewer.components.player.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
+import com.bonborunote.niconicoviewer.search.domain.Content
 import com.bonborunote.niconicoviewer.search.ui.SearchContainer
 import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
@@ -30,23 +31,24 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
   private val mainViewModel: MainViewModel by instance()
   private val searchViewModel: SearchViewModel by instance()
-//  private val contentObserver = Observer<Content> {
-//    it?.contentId?.let {
-//      supportFragmentManager.beginTransaction()
-//          .apply {
-//            supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
-//              remove(it)
-//            }
-//            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
-//              remove(it)
-//            }
-//          }
-//          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(it), PlaybackFragment.TAG)
-//          .add(R.id.coordinator_layout, DescriptionFragment.newInstance(it),
-//              DescriptionFragment.TAG)
-//          .commit()
-//    }
-//  }
+  private val contentObserver = Observer<Content> {
+    it?.let { content ->
+      supportFragmentManager.beginTransaction()
+          .apply {
+            supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+              remove(it)
+            }
+            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+              remove(it)
+            }
+          }
+          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(content.id),
+              PlaybackFragment.TAG)
+          .add(R.id.coordinator_layout, DescriptionFragment.newInstance(content.id),
+              DescriptionFragment.TAG)
+          .commit()
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     binding.searchViewModel = searchViewModel
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
-//    searchViewModel.playableContent.observe(this, contentObserver)
+    searchViewModel.playableContent.observe(this, contentObserver)
 
     if (supportFragmentManager.findFragmentById(R.id.coordinator_layout) == null) {
       supportFragmentManager.beginTransaction()

@@ -15,7 +15,6 @@ android {
 
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
-
   dataBinding {
     enabled = true
   }
@@ -58,6 +57,7 @@ dependencies {
   implementation "com.xwray:groupie-databinding:$GROUPIE"
   implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
   implementation "jp.bglb.bonboru:coordinator-behaviors:$COORDINATOR_BEHAVIORS_VERSION"
+  kapt 'com.android.databinding:compiler:3.1.1'
 
   // PDS
   // ViewModel and LiveData
