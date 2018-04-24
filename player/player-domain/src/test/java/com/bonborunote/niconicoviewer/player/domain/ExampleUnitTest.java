@@ -1,4 +1,4 @@
-package com.example.player_domain;
+package com.bonborunote.niconicoviewer.player.domain;
 
 import org.junit.Test;
 

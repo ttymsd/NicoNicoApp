@@ -1,4 +1,4 @@
-include ':app', ':network', ':groupie-aac-plugin', ':common'
+include ':app', ':network', ':groupie-aac-plugin', ':common', ':player-domain'
 
 def searchModuleDir = new File('search')
 include ':search-ui', ':search-domain', ':search-infra', ':search-usecase'
