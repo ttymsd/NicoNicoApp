@@ -1,4 +1,4 @@
-package com.bonborunote.niconivoviewer.player.ui
+package com.bonborunote.niconicoviewer.player.ui
 
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
@@ -10,10 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.Identifier
-import com.bonborunote.niconicoviewer.components.player.PlaybackViewModel
 import com.bonborunote.niconicoviewer.player.domain.JavaScriptEngine
 import com.bonborunote.niconicoviewer.player.domain.NicoDataSource
-import com.bonborunote.niconicoviewer.player.ui.R
 import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException

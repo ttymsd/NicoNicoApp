@@ -10,8 +10,8 @@ import com.bonborunote.niconicoviewer.search.domain.Content
 import com.bonborunote.niconicoviewer.search.ui.SearchContainer
 import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
-import com.bonborunote.niconivoviewer.player.ui.PlaybackFragment
-import com.bonborunote.niconivoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
+import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
+import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
 import org.kodein.di.Copy.All
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

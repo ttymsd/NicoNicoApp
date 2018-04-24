@@ -2,7 +2,7 @@ package com.bonborunote.niconicoviewer.modules
 
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
-import com.bonborunote.niconicoviewer.components.player.PlaybackViewModel
+import com.bonborunote.niconicoviewer.player.ui.PlaybackViewModel
 import org.kodein.di.Kodein
 import org.kodein.di.android.androidScope
 import org.kodein.di.generic.bind
