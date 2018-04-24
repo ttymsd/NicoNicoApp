@@ -78,6 +78,7 @@ dependencies {
   implementation project(':common')
   implementation project(':network')
   implementation project(':player-domain')
+  implementation project(':player-ui')
   implementation project(':groupie-aac-plugin')
   implementation project(':search-domain')
   implementation project(':search-ui')

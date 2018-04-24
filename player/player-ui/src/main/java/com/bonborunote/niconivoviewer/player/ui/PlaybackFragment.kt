@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.components.player
+package com.bonborunote.niconivoviewer.player.ui
 
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bonborunote.niconicoviewer.R
-import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
+import com.bonborunote.niconicoviewer.common.Identifier
+import com.bonborunote.niconicoviewer.components.player.PlaybackViewModel
+import com.bonborunote.niconicoviewer.player.domain.JavaScriptEngine
 import com.bonborunote.niconicoviewer.player.domain.NicoDataSource
-import com.bonborunote.niconicoviewer.search.domain.ContentId
+import com.bonborunote.niconicoviewer.player.ui.R
+import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
@@ -53,7 +55,6 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
       DefaultBandwidthMeter())
   private val trackSelector = DefaultTrackSelector(adaptiveTrackSelectionFactory)
   private val logger = EventLogger(trackSelector)
-  private lateinit var binding: FragmentPlaybackBinding
   private lateinit var mediaSourceFactory: MediaSourceFactory
   private val player: ExoPlayer by lazy {
     val renderer = DefaultRenderersFactory(activity)
@@ -66,6 +67,7 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
     activity as? OnPlayerStateChangedListener
   }
+  private lateinit var binding: FragmentPlaybackBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -166,7 +168,7 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
   companion object {
     const val TAG = "PlaybackFragment"
 
-    fun newInstance(contentId: ContentId): Fragment = PlaybackFragment().apply {
+    fun newInstance(contentId: Identifier<String>): Fragment = PlaybackFragment().apply {
       arguments = Bundle().apply {
         putString(PlaybackFragment::contentId.name, contentId.value)
       }

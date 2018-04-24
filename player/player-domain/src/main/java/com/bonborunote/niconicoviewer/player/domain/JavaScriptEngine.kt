@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.components.player
+package com.bonborunote.niconicoviewer.player.domain
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.bonborunote.niconicoviewer.BuildConfig
+import com.bonborunote.niconicoviewer.components.player.MediaUrlSource
 import kotlin.properties.Delegates
 
 class JavaScriptEngine(context: Context, attributeSet: AttributeSet? = null,

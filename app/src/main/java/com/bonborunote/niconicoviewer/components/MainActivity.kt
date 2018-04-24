@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.components.description.DescriptionFragment
-import com.bonborunote.niconicoviewer.components.player.PlaybackFragment
-import com.bonborunote.niconicoviewer.components.player.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.search.domain.Content
 import com.bonborunote.niconicoviewer.search.ui.SearchContainer
 import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
+import com.bonborunote.niconivoviewer.player.ui.PlaybackFragment
+import com.bonborunote.niconivoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
 import org.kodein.di.Copy.All
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     it?.let { content ->
       supportFragmentManager.beginTransaction()
           .apply {
-            supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+            supportFragmentManager.findFragmentByTag(
+                PlaybackFragment.TAG)?.let {
               remove(it)
             }
             supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
@@ -74,7 +75,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   }
 
   override fun onBackPressed() {
-    supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+    supportFragmentManager.findFragmentByTag(
+        PlaybackFragment.TAG)?.let {
       supportFragmentManager.beginTransaction()
           .remove(it)
           .apply {
@@ -89,7 +91,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   }
 
   override fun remove() {
-    supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+    supportFragmentManager.findFragmentByTag(
+        PlaybackFragment.TAG)?.let {
       supportFragmentManager.beginTransaction()
           .remove(it)
           .apply {

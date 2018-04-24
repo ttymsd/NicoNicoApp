@@ -1,6 +1,5 @@
 package com.bonborunote.niconicoviewer.components.player
 
-import android.util.Log
 import android.webkit.CookieManager
 import okhttp3.Cookie
 import okhttp3.CookieJar

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion COMPILE_SDK_VERSION as int
@@ -14,7 +15,9 @@ android {
 
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
-
+  dataBinding {
+    enabled = true
+  }
   buildTypes {
     release {
       minifyEnabled false
@@ -24,7 +27,37 @@ android {
 }
 
 dependencies {
+  implementation project(':common')
+  implementation project(':player-domain')
+  implementation project(':player-infra')
+  implementation project(':player-usecase')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // ui
+  implementation "com.android.support:support-annotations:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:support-compat:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:support-fragment:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:design:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:appcompat-v7:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:recyclerview-v7:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT_VERSION"
+  implementation "com.xwray:groupie:$GROUPIE"
+  implementation "com.xwray:groupie-databinding:$GROUPIE"
+  implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
+  implementation "jp.bglb.bonboru:coordinator-behaviors:$COORDINATOR_BEHAVIORS_VERSION"
+  kapt 'com.android.databinding:compiler:3.1.1'
+
+  // DI
+  implementation "org.kodein.di:kodein-di-generic-jvm:$KODEIN_VERSION"
+  implementation "org.kodein.di:kodein-di-framework-android:$KODEIN_VERSION"
+  // PDS
+  // ViewModel and LiveData
+  implementation "android.arch.lifecycle:extensions:1.1.1"
+  // alternatively, just ViewModel
+  implementation "android.arch.lifecycle:viewmodel:1.1.1"
+  // alternatively, just LiveData
+  implementation "android.arch.lifecycle:livedata:1.1.1"
+  kapt "android.arch.lifecycle:compiler:1.1.1"
+
   // exoplayer
   implementation "com.google.android.exoplayer:exoplayer-core:$EXOPLAYER"
   implementation "com.google.android.exoplayer:exoplayer-dash:$EXOPLAYER"
@@ -40,4 +73,5 @@ dependencies {
 }
 repositories {
   mavenCentral()
+  maven { url "http://dl.bintray.com/ttymsd/maven" }
 }
