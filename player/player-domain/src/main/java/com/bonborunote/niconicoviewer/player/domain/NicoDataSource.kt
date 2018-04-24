@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.player
+package com.bonborunote.niconicoviewer.player.domain
 
 import android.content.Context
 import android.net.Uri

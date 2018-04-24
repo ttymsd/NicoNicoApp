@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
-import com.bonborunote.niconicoviewer.player.NicoDataSource
+import com.bonborunote.niconicoviewer.player.domain.NicoDataSource
 import com.bonborunote.niconicoviewer.search.domain.ContentId
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException

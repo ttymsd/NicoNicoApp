@@ -1,4 +1,4 @@
-include ':app', ':network', ':groupie-aac-plugin', ':common', ':player-domain'
+include ':app', ':network', ':groupie-aac-plugin', ':common'
 
 def searchModuleDir = new File('search')
 include ':search-ui', ':search-domain', ':search-infra', ':search-usecase'
@@ -8,8 +8,7 @@ project(':search-infra').projectDir = new File(searchModuleDir, 'search-infra')
 project(':search-usecase').projectDir = new File(searchModuleDir, 'search-usecase')
 
 def playerModuleDir = new File('player')
-include ':player-ui', ':player-domain', ':player-infra', ':player-usecase', ':player-dp'
-project(':player-dp').projectDir = new File(playerModuleDir, 'player-dp')
+include ':player-ui', ':player-domain', ':player-infra', ':player-usecase'
 project(':player-ui').projectDir = new File(playerModuleDir, 'player-ui')
 project(':player-domain').projectDir = new File(playerModuleDir, 'player-domain')
 project(':player-infra').projectDir = new File(playerModuleDir, 'player-infra')
