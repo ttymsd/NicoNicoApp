@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bonborunote.niconicoviewer.common.Identifier
 import com.bonborunote.niconicoviewer.common.higherMashmallow
+import com.bonborunote.niconicoviewer.player.domain.ContentId
 import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
 import org.kodein.di.Kodein
@@ -100,7 +100,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   companion object {
     const val TAG = "PlaybackFragment"
 
-    fun newInstance(contentId: Identifier<String>): Fragment = PlaybackFragment().apply {
+    fun newInstance(contentId: ContentId): Fragment = PlaybackFragment().apply {
       arguments = Bundle().apply {
         putString(PlaybackFragment::contentId.name, contentId.value)
       }

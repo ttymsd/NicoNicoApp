@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.detail.ui.DescriptionFragment
+import com.bonborunote.niconicoviewer.player.domain.ContentId
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.search.domain.Content
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
               remove(it)
             }
           }
-          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(content.id),
+          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(ContentId(content.id.value)),
               PlaybackFragment.TAG)
           .add(R.id.coordinator_layout, DescriptionFragment.newInstance(content.id),
               DescriptionFragment.TAG)
