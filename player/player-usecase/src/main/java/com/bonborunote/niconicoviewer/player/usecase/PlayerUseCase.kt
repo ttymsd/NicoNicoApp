@@ -1,9 +1,20 @@
 package com.bonborunote.niconicoviewer.player.usecase
 
+import android.support.annotation.MainThread
+import android.view.ViewGroup
+import com.google.android.exoplayer2.ui.PlayerView
+
 interface PlayerUseCase {
-  fun load(contentId: String)
-  fun play()
-  fun pause()
-  fun stop()
-  fun seekTo()
+
+  @MainThread
+  fun findMediaUrl(contentId: String, container: ViewGroup, callback: (mediaUrl: String) -> Unit)
+
+  @MainThread
+  fun bind(playerView: PlayerView)
+
+  fun play(mediaUrl: String)
+  fun pause(): Long
+  fun stop(): Long
+  fun seekTo(positionMs: Long)
+  fun currentPosition(): Long
 }

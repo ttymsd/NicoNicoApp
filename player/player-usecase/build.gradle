@@ -24,6 +24,8 @@ android {
 }
 
 dependencies {
+  implementation project(':player-domain')
+  implementation project(':player-infra')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   // exoplayer
   implementation "com.google.android.exoplayer:exoplayer-core:$EXOPLAYER"

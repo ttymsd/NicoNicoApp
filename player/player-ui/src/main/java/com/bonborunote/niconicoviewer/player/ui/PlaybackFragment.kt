@@ -2,33 +2,15 @@ package com.bonborunote.niconicoviewer.player.ui
 
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.Identifier
-import com.bonborunote.niconicoviewer.player.domain.NicoDataSource
+import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
-import com.google.android.exoplayer2.DefaultRenderersFactory
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.PlaybackParameters
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Timeline
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.source.ads.AdsMediaSource.MediaSourceFactory
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.util.EventLogger
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
-import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
@@ -36,7 +18,7 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeLikeBehavior.OnBehaviorStateListener {
+class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehaviorStateListener {
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
@@ -45,20 +27,7 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
   }
 
   private val playbackViewModel: PlaybackViewModel by instance()
-  private val okHttpClient: OkHttpClient by instance()
-  private val handler = Handler()
-  private val adaptiveTrackSelectionFactory = AdaptiveTrackSelection.Factory(
-      DefaultBandwidthMeter())
-  private val trackSelector = DefaultTrackSelector(adaptiveTrackSelectionFactory)
-  private val logger = EventLogger(trackSelector)
-  private lateinit var mediaSourceFactory: MediaSourceFactory
-  private val player: ExoPlayer by lazy {
-    val renderer = DefaultRenderersFactory(activity)
-    ExoPlayerFactory.newSimpleInstance(renderer, trackSelector).apply {
-      playWhenReady = true
-      addListener(this@PlaybackFragment)
-    }
-  }
+
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
     activity as? OnPlayerStateChangedListener
   }
@@ -66,11 +35,13 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    mediaSourceFactory = ExtractorMediaSource.Factory(
-        NicoDataSource.Factory(activity, okHttpClient))
     playbackViewModel.movieUrl.observe(this, Observer {
+      playbackViewModel.bind(binding.playerView)
+      playbackViewModel.play()
+    })
+    playbackViewModel.seekPosition.observe(this, Observer {
       it?.let {
-        initializePlayer(it)
+        playbackViewModel.seekTo(it)
       }
     })
   }
@@ -89,62 +60,37 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
 
   override fun onStart() {
     super.onStart()
-    playbackViewModel.movieUrl.value?.let {
-      initializePlayer(it)
+    if (higherMashmallow()) {
+      playbackViewModel.play()
+    }
+  }
+
+  override fun onResume() {
+    super.onResume()
+    if (!higherMashmallow()) {
+      playbackViewModel.play()
+    }
+  }
+
+  override fun onPause() {
+    super.onPause()
+    if (!higherMashmallow()) {
+      playbackViewModel.stop()
     }
   }
 
   override fun onStop() {
     super.onStop()
-    playbackViewModel.seekPosition.postValue(player.currentPosition)
-    player.stop()
+    if (higherMashmallow()) {
+      playbackViewModel.stop()
+    }
   }
 
   override fun onBehaviorStateChanged(newState: Int) {
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
         || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
-      player.stop()
       onPlayerStateChangedListener?.remove()
     }
-  }
-
-  private fun initializePlayer(url: String) {
-    activity?.runOnUiThread {
-      binding.playerView.player = player
-      player.prepare(mediaSourceFactory.createMediaSource(Uri.parse(url), handler, logger))
-      player.seekTo(playbackViewModel.seekPosition.value ?: 0)
-    }
-  }
-
-  override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
-  }
-
-  override fun onSeekProcessed() {
-  }
-
-  override fun onTracksChanged(trackGroups: TrackGroupArray?,
-      trackSelections: TrackSelectionArray?) {
-  }
-
-  override fun onPlayerError(error: ExoPlaybackException?) {
-  }
-
-  override fun onLoadingChanged(isLoading: Boolean) {
-  }
-
-  override fun onPositionDiscontinuity(reason: Int) {
-  }
-
-  override fun onRepeatModeChanged(repeatMode: Int) {
-  }
-
-  override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-  }
-
-  override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
-  }
-
-  override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
   }
 
   interface OnPlayerStateChangedListener {

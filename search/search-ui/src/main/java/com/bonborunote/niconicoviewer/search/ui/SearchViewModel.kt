@@ -40,7 +40,7 @@ class SearchViewModel private constructor(
         .build()
   })
   val loading = switchMap(dataSource, { it.networkState })
-  val error = MutableLiveData<NicoNicoException>()
+  val error = switchMap(dataSource, { it.error })
   val playableContent = MutableLiveData<Content>()
   private val itemClickCallback: (content: Content) -> Unit = {
     playableContent.postValue(it)
