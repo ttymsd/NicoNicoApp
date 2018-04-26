@@ -7,11 +7,10 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.bonborunote.niconicoviewer.components.player.MediaUrlSource
 import kotlin.properties.Delegates
 
 class JavaScriptEngine(context: Context, attributeSet: AttributeSet? = null,
-    styleDef: Int = 0) : WebView(context, attributeSet, styleDef), MediaUrlSource {
+    styleDef: Int = 0) : WebView(context, attributeSet, styleDef), MediaUrlRepository {
 
   init {
     CookieManager.getInstance().setAcceptCookie(true)

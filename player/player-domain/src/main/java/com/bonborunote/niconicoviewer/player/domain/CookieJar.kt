@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.components.player
+package com.bonborunote.niconicoviewer.player.domain
 
 import android.webkit.CookieManager
 import okhttp3.Cookie
