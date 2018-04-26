@@ -1,0 +1,85 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+  compileSdkVersion COMPILE_SDK_VERSION as int
+  buildToolsVersion BUILD_TOOLS_VERSION
+
+  defaultConfig {
+    minSdkVersion 21
+    targetSdkVersion TARGET_SDK_VERSION as int
+    versionCode VERSION_CODE as int
+    versionName VERSION_NAME
+
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  dataBinding {
+    enabled = true
+  }
+  buildTypes {
+    release {
+      postprocessing {
+        removeUnusedCode false
+        removeUnusedResources false
+        obfuscate false
+        optimizeCode false
+        proguardFile 'proguard-rules.pro'
+      }
+    }
+  }
+}
+
+repositories {
+  jcenter()
+  maven { url "http://dl.bintray.com/ttymsd/maven" }
+}
+
+dependencies {
+  implementation project(':common')
+  implementation project(':network')
+  implementation project(':groupie-aac-plugin')
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+  // ui
+  implementation "com.android.support:support-annotations:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:support-compat:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:support-fragment:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:design:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:appcompat-v7:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support:recyclerview-v7:$SUPPORT_PACKAGE_VERSION"
+  implementation "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT_VERSION"
+  implementation "com.xwray:groupie:$GROUPIE"
+  implementation "com.xwray:groupie-databinding:$GROUPIE"
+  implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
+  implementation "jp.bglb.bonboru:coordinator-behaviors:$COORDINATOR_BEHAVIORS_VERSION"
+  kapt 'com.android.databinding:compiler:3.1.1'
+
+  // PDS
+  // ViewModel and LiveData
+  implementation "android.arch.lifecycle:extensions:1.1.1"
+  // alternatively, just ViewModel
+  implementation "android.arch.lifecycle:viewmodel:1.1.1"
+  // alternatively, just LiveData
+  implementation "android.arch.lifecycle:livedata:1.1.1"
+  kapt "android.arch.lifecycle:compiler:1.1.1"
+
+  // glide
+  implementation "com.github.bumptech.glide:glide:4.7.1"
+  kapt "com.github.bumptech.glide:compiler:4.7.1"
+
+  implementation "com.jakewharton.threetenabp:threetenabp:$THREE_TEN_ABP_VERSION"
+
+  // Paging
+  implementation "android.arch.paging:runtime:$PAGING_VERSION"
+
+  // DI
+  implementation "org.kodein.di:kodein-di-generic-jvm:$KODEIN_VERSION"
+  implementation "org.kodein.di:kodein-di-framework-android:$KODEIN_VERSION"
+
+  implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
+
+  testImplementation 'junit:junit:4.12'
+  androidTestImplementation 'com.android.support.test:runner:1.0.1'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}

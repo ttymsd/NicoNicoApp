@@ -13,3 +13,10 @@ project(':player-ui').projectDir = new File(playerModuleDir, 'player-ui')
 project(':player-domain').projectDir = new File(playerModuleDir, 'player-domain')
 project(':player-infra').projectDir = new File(playerModuleDir, 'player-infra')
 project(':player-usecase').projectDir = new File(playerModuleDir, 'player-usecase')
+
+def detailModuleDir = new File('detail')
+include ':detail-ui', ':detail-usecase', ':detail-domain', ':detail-infra'
+project(':detail-ui').projectDir = new File(detailModuleDir, 'detail-ui')
+project(':detail-domain').projectDir = new File(detailModuleDir, 'detail-domain')
+project(':detail-infra').projectDir = new File(detailModuleDir, 'detail-infra')
+project(':detail-usecase').projectDir = new File(detailModuleDir, 'detail-usecase')
