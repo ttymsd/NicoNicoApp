@@ -17,7 +17,7 @@ class CookieJar : CookieJar {
     }
   }
 
-  override fun loadForRequest(url: HttpUrl?): MutableList<Cookie> {
+  override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
     val urlString = url.toString()
     val cookiesString = cookieManager.getCookie(urlString)
 

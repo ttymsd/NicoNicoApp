@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.player.domain
+package com.bonborunote.niconicoviewer.player.infra
 
 import android.content.Context
 import android.util.AttributeSet
@@ -10,7 +10,7 @@ import android.webkit.WebViewClient
 import kotlin.properties.Delegates
 
 class JavaScriptEngine(context: Context, attributeSet: AttributeSet? = null,
-    styleDef: Int = 0) : WebView(context, attributeSet, styleDef), MediaUrlRepository {
+    styleDef: Int = 0) : WebView(context, attributeSet, styleDef) {
 
   init {
     CookieManager.getInstance().setAcceptCookie(true)
@@ -29,7 +29,7 @@ class JavaScriptEngine(context: Context, attributeSet: AttributeSet? = null,
 
   private var find: (mediaUrl: String) -> Unit = {}
 
-  override fun findMediaUrl(contentId: String, callback: (mediaUrl: String) -> Unit) {
+  fun findMediaUrl(contentId: String, callback: (mediaUrl: String) -> Unit) {
     find = callback
     loadUrl("http://www.nicovideo.jp/watch/$contentId")
   }

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.Identifier
-import com.bonborunote.niconicoviewer.player.domain.JavaScriptEngine
 import com.bonborunote.niconicoviewer.player.domain.NicoDataSource
 import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
 import com.google.android.exoplayer2.DefaultRenderersFactory
@@ -36,7 +35,6 @@ import org.kodein.di.KodeinContext
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
-import timber.log.Timber
 
 class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeLikeBehavior.OnBehaviorStateListener {
   override val kodeinContext: KodeinContext<*> = kcontext(this)
@@ -61,7 +59,6 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
       addListener(this@PlaybackFragment)
     }
   }
-  private var javascriptEngine: JavaScriptEngine? = null
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
     activity as? OnPlayerStateChangedListener
   }
@@ -87,16 +84,7 @@ class PlaybackFragment : Fragment(), KodeinAware, Player.EventListener, YoutubeL
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     YoutubeLikeBehavior.from(binding.root)?.listener = this
-    activity?.let {
-      javascriptEngine = JavaScriptEngine(it)
-      binding.dummyContainer.addView(javascriptEngine)
-      javascriptEngine?.apply {
-        findMediaUrl(contentId) {
-          Timber.d("id:$contentId, $it")
-          playbackViewModel.movieUrl.postValue(it)
-        }
-      }
-    }
+    playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
   }
 
   override fun onStart() {
