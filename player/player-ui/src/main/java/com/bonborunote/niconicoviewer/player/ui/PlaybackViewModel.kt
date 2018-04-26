@@ -36,10 +36,6 @@ class PlaybackViewModel(
     }
   }
 
-  fun pause() {
-    playbackUseCase.pause()
-  }
-
   fun stop() {
     playbackUseCase.stop()
     seekPosition.postValue(playbackUseCase.currentPosition())

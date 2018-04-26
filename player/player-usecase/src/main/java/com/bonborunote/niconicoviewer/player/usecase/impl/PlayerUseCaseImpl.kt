@@ -50,10 +50,6 @@ internal class PlayerUseCaseImpl(
     player.prepare(mediaSourceFactory.createMediaSource(Uri.parse(mediaUrl), handler, logger))
   }
 
-  override fun pause(): Long {
-    return 0
-  }
-
   override fun stop(): Long {
     player.stop()
     return player.currentPosition

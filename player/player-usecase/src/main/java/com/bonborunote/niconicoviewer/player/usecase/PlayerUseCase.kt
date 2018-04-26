@@ -13,7 +13,6 @@ interface PlayerUseCase {
   fun bind(playerView: PlayerView)
 
   fun play(mediaUrl: String)
-  fun pause(): Long
   fun stop(): Long
   fun seekTo(positionMs: Long)
   fun currentPosition(): Long
