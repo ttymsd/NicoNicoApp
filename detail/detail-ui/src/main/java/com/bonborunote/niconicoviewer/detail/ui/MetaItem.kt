@@ -1,7 +1,6 @@
-package com.bonborunote.niconicoviewer.components.description
+package com.bonborunote.niconicoviewer.detail.ui
 
-import com.bonborunote.niconicoviewer.R
-import com.bonborunote.niconicoviewer.databinding.LayoutMetaBinding
+import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutMetaBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class MetaItem: BindableItem<LayoutMetaBinding>() {

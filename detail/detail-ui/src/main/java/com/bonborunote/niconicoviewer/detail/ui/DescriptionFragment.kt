@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.components.description
+package com.bonborunote.niconicoviewer.detail.ui
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -7,9 +7,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bonborunote.niconicoviewer.R
-import com.bonborunote.niconicoviewer.databinding.FragmentDescriptionBinding
-import com.bonborunote.niconicoviewer.search.domain.ContentId
+import com.bonborunote.niconicoviewer.common.Identifier
+import com.bonborunote.niconicoviewer.detail.ui.databinding.FragmentDescriptionBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -48,7 +47,7 @@ class DescriptionFragment : Fragment(), KodeinAware {
   companion object {
     const val TAG = "DescriptionFragment"
 
-    fun newInstance(contentId: ContentId): Fragment = DescriptionFragment().apply {
+    fun newInstance(contentId: Identifier<String>): Fragment = DescriptionFragment().apply {
       arguments = Bundle().apply {
         putString(DescriptionFragment::contentId.name, contentId.value)
       }
