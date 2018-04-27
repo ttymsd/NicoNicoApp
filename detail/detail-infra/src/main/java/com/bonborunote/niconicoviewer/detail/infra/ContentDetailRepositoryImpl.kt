@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.detail.infra
 
+import android.util.Log
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetailRepository
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
@@ -14,6 +15,11 @@ class ContentDetailRepositoryImpl(private val api: NicoNicoDetailApi) : ContentD
       throw NicoNicoException(response.code(), "detail error", response.errorBody().toString())
     }
     val responseXml = response.body() ?: throw RuntimeException()
+    Log.d("OkHttp", "start:${responseXml.status}")
+    responseXml.thumbXml.tags.forEach {
+      Log.d("OkHttp", it.value)
+    }
+    Log.d("OkHttp", "end")
     return responseXml.toEntity()
   }
 

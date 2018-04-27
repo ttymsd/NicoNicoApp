@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer.detail.ui
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import android.util.Log
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetailRepository
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
 import com.bonborunote.niconicoviewer.detail.infra.ContentDetailRepositoryImpl
@@ -15,7 +16,11 @@ class DetailViewModel(
 
   fun detail(contentId: ContentId) {
     async(CommonPool) {
-      repository.getDetail(contentId)
+      try {
+        repository.getDetail(contentId)
+      } catch (e: Exception) {
+        Log.d("OkHttp", e.message, e)
+      }
     }
   }
 
