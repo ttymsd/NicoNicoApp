@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer
 
 import android.support.multidex.MultiDexApplication
 import com.bonborunote.niconicoviewer.modules.applicationModule
+import com.bonborunote.niconicoviewer.modules.detailModule
 import com.bonborunote.niconicoviewer.modules.mainModule
 import com.bonborunote.niconicoviewer.modules.playbackModule
 import com.bonborunote.niconicoviewer.search.ui.searchModule
@@ -31,5 +32,6 @@ class App : MultiDexApplication(), KodeinAware {
     import(mainModule)
     import(searchModule)
     import(playbackModule)
+    import(detailModule)
   }
 }

@@ -14,7 +14,7 @@ import com.bonborunote.niconicoviewer.search.domain.ContentRepository.Filter
 import com.bonborunote.niconicoviewer.search.domain.Sort
 import com.bonborunote.niconicoviewer.search.domain.Sort.*
 
-class ContentRepositoryImpl(val api: NicoNicoSearchApi) : ContentRepository {
+class ContentRepositoryImpl(private val api: NicoNicoSearchApi) : ContentRepository {
 
   override fun search(keyword: String,
       sort: Sort,

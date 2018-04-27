@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NicoNicoSearchApi {
-  @GET("/api/v2/snapshot/video/contents/search")
+  @GET("api/v2/snapshot/video/contents/search")
   fun search(@Query("q") keyword: String,
       @Query("targets") targets: String,
       @Query("_sort") sort: String,
@@ -53,7 +53,7 @@ interface NicoNicoSearchApi {
   }
 
   companion object {
-    const val BASE_URL = "http://api.search.nicovideo.jp"
+    const val BASE_URL = "http://api.search.nicovideo.jp/"
   }
 }
 

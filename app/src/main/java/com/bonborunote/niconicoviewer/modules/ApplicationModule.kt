@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.modules
 
+import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.bonborunote.niconicoviewer.player.domain.CookieJar
 import com.google.gson.Gson
@@ -13,6 +14,7 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 val applicationModule = Kodein.Module {
   bind<okhttp3.CookieJar>() with singleton { CookieJar() }
@@ -38,5 +40,16 @@ val applicationModule = Kodein.Module {
   bind<NicoNicoSearchApi>() with singleton {
     val retrofit: Retrofit = instance("search")
     retrofit.create(NicoNicoSearchApi::class.java)
+  }
+  bind<Retrofit>("detail") with singleton {
+    Retrofit.Builder()
+        .baseUrl(NicoNicoDetailApi.BASE_URL)
+        .addConverterFactory(SimpleXmlConverterFactory.create())
+        .client(instance())
+        .build()
+  }
+  bind<NicoNicoDetailApi>() with singleton {
+    val retrofit: Retrofit = instance("detail")
+    retrofit.create(NicoNicoDetailApi::class.java)
   }
 }
