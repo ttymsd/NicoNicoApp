@@ -32,6 +32,9 @@ android {
 }
 
 dependencies {
+  implementation project(":common")
+  implementation project(":detail-domain")
+  implementation project(":detail-infra")
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
   implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
 

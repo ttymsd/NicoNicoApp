@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.detail.ui
 
+import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.Identifier
+import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
 import com.bonborunote.niconicoviewer.detail.ui.databinding.FragmentDescriptionBinding
 import com.xwray.groupie.GroupAdapter
@@ -45,7 +47,14 @@ class DescriptionFragment : Fragment(), KodeinAware {
     binding.description.adapter = GroupAdapter<ViewHolder>().apply {
       add(section)
     }
-    viewModel.detail(ContentId(contentId))
+    viewModel.detail.observe(this, Observer {
+      it ?: return@Observer
+      update(it)
+    })
+    viewModel.load(ContentId(contentId))
+  }
+
+  private fun update(detail : ContentDetail) {
   }
 
   companion object {

@@ -13,12 +13,12 @@ import org.kodein.di.generic.singleton
 
 val searchModule = Kodein.Module {
   bind<ContentRepository>() with scoped(androidScope<FragmentActivity>())
-      .singleton {
-        ContentRepositoryImpl(instance())
-      }
+    .singleton {
+      ContentRepositoryImpl(instance())
+    }
   bind<SearchViewModel>() with scoped(androidScope<FragmentActivity>())
-      .singleton {
-        ViewModelProviders.of(context, SearchViewModel.Factory(instance()))
-            .get(SearchViewModel::class.java)
-      }
+    .singleton {
+      ViewModelProviders.of(context, SearchViewModel.Factory(instance()))
+        .get(SearchViewModel::class.java)
+    }
 }

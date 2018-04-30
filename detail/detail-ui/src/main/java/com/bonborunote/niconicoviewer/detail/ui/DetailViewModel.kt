@@ -1,36 +1,36 @@
 package com.bonborunote.niconicoviewer.detail.ui
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.util.Log
-import com.bonborunote.niconicoviewer.detail.domain.ContentDetailRepository
+import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
-import com.bonborunote.niconicoviewer.detail.infra.ContentDetailRepositoryImpl
-import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
+import com.bonboruntoe.niconicoviewer.detail.usecase.DetailUseCase
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
 class DetailViewModel(
-    private val repository: ContentDetailRepository
+  private val detailUseCase: DetailUseCase
 ) : ViewModel() {
 
-  fun detail(contentId: ContentId) {
+  val detail = MutableLiveData<ContentDetail>()
+
+  fun load(contentId: ContentId) {
     async(CommonPool) {
       try {
-        repository.getDetail(contentId)
-      } catch (e: Exception) {
-        Log.d("OkHttp", e.message, e)
+        detail.postValue(detailUseCase.getDetail(contentId))
+      } catch (exeption: Exception) {
       }
     }
   }
 
   @Suppress("UNCHECKED_CAST")
   class Factory(
-      private val api: NicoNicoDetailApi
+    private val detailUseCase: DetailUseCase
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return DetailViewModel(ContentDetailRepositoryImpl(api))as? T
-          ?: throw IllegalArgumentException()
+      return DetailViewModel(detailUseCase)as? T
+        ?: throw IllegalArgumentException()
     }
   }
 }

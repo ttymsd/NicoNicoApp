@@ -5,12 +5,12 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
 @Root(name = "nicovideo_thumb_response", strict = false)
-data class ContentDetailResponseXml(
-    @get:Attribute(name = "status")
-    @set:Attribute(name = "status")
-    var status: String,
+class ContentDetailResponseXml {
+  @get:Attribute(name = "status")
+  @set:Attribute(name = "status")
+  var status: String = "ok"
 
-    @set:Element(name = "thumb")
-    @get:Element(name = "thumb")
-    var thumbXml: ThumbXml
-)
+  @set:Element(name = "thumb")
+  @get:Element(name = "thumb")
+  var thumbXml: ThumbXml? = null
+}
