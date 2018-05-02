@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
-import com.bonborunote.niconicoviewer.detail.ui.DescriptionFragment
+import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
 import com.bonborunote.niconicoviewer.player.domain.ContentId
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
@@ -40,14 +40,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
                 PlaybackFragment.TAG)?.let {
               remove(it)
             }
-            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
               remove(it)
             }
           }
           .add(R.id.coordinator_layout, PlaybackFragment.newInstance(ContentId(content.id.value)),
               PlaybackFragment.TAG)
-          .add(R.id.coordinator_layout, DescriptionFragment.newInstance(content.id),
-              DescriptionFragment.TAG)
+          .add(R.id.coordinator_layout, DetailFragment.newInstance(content.id),
+              DetailFragment.TAG)
           .commit()
     }
   }
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
       supportFragmentManager.beginTransaction()
           .remove(it)
           .apply {
-            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
               remove(it)
             }
           }
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
       supportFragmentManager.beginTransaction()
           .remove(it)
           .apply {
-            supportFragmentManager.findFragmentByTag(DescriptionFragment.TAG)?.let {
+            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
               remove(it)
             }
           }

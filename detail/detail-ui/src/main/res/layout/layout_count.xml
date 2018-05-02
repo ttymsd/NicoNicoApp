@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <data>
+    <variable
+      name="viewCount"
+      type="long"
+      />
+    <variable
+      name="commentCount"
+      type="long"
+      />
+    <variable
+      name="myListCount"
+      type="long"
+      />
+  </data>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp"
+    android:weightSum="3"
+    >
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="24dp"
+      android:layout_weight="1"
+      android:layout_marginStart="2dp"
+      android:text="@{String.valueOf(viewCount)}"
+      />
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="24dp"
+      android:layout_weight="1"
+      android:layout_marginStart="2dp"
+      android:text="@{String.valueOf(commentCount)}"
+      />
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="24dp"
+      android:layout_weight="1"
+      android:layout_marginStart="2dp"
+      android:text="@{String.valueOf(myListCount)}"
+      />
+  </LinearLayout>
+</layout>

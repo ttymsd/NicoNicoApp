@@ -5,14 +5,19 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.Identifier
+import com.bonborunote.niconicoviewer.detail.domain.ChannelId
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
+import com.bonborunote.niconicoviewer.detail.domain.OwnerId
+import com.bonborunote.niconicoviewer.detail.domain.Tag
 import com.bonborunote.niconicoviewer.detail.ui.databinding.FragmentDescriptionBinding
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Item
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import org.kodein.di.Kodein
@@ -22,20 +27,32 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class DescriptionFragment : Fragment(), KodeinAware {
+class DetailFragment : Fragment(), KodeinAware {
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
   private val contentId: String by lazy {
-    arguments?.getString(DescriptionFragment::contentId.name, "") ?: ""
+    arguments?.getString(DetailFragment::contentId.name, "") ?: ""
+  }
+
+  private val tagClickListener: (Tag) -> Unit = {
+    Log.d("AAA", it.toString())
+  }
+
+  private val channelCallback: (ChannelId) -> Unit = {
+
+  }
+
+  private val userCallback: (OwnerId) -> Unit = {
+
   }
 
   private lateinit var binding: FragmentDescriptionBinding
-  private val viewModel:DetailViewModel by instance()
+  private val viewModel: DetailViewModel by instance()
   private val section = Section()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?): View? {
+    savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_description, container, false)
     return binding.root
   }
@@ -43,7 +60,7 @@ class DescriptionFragment : Fragment(), KodeinAware {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.description.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
-        false)
+      false)
     binding.description.adapter = GroupAdapter<ViewHolder>().apply {
       add(section)
     }
@@ -54,15 +71,26 @@ class DescriptionFragment : Fragment(), KodeinAware {
     viewModel.load(ContentId(contentId))
   }
 
-  private fun update(detail : ContentDetail) {
+  private fun update(detail: ContentDetail) {
+    val items = mutableListOf<Item<*>>()
+    items.add(TagItem(requireContext(), detail.tags, tagClickListener))
+    items.add(DescriptionItem(detail.description))
+    items.add(CountItem(detail.viewCount, detail.commentCount, detail.myListCount))
+    detail.channel?.let {
+      items.add(ChannelItem(it.id, it.name, it.thumb, channelCallback))
+    }
+    detail.owner?.let {
+      items.add(UserItem(it.id, it.name, it.thumb, userCallback))
+    }
+    section.update(items)
   }
 
   companion object {
-    const val TAG = "DescriptionFragment"
+    const val TAG = "DetailFragment"
 
-    fun newInstance(contentId: Identifier<String>): Fragment = DescriptionFragment().apply {
+    fun newInstance(contentId: Identifier<String>): Fragment = DetailFragment().apply {
       arguments = Bundle().apply {
-        putString(DescriptionFragment::contentId.name, contentId.value)
+        putString(DetailFragment::contentId.name, contentId.value)
       }
     }
   }

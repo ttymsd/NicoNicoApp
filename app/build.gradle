@@ -94,8 +94,8 @@ dependencies {
   implementation "com.google.android.gms:play-services-wearable:$GOOGLE_SERVICE_VERSION"
 
   // firebase
-//  implementation "com.google.firebase:firebase-core:$GOOGLE_SERVICE_VERSION"
-//  implementation "com.google.firebase:firebase-perf:$GOOGLE_SERVICE_VERSION"
+  //  implementation "com.google.firebase:firebase-core:$GOOGLE_SERVICE_VERSION"
+  //  implementation "com.google.firebase:firebase-perf:$GOOGLE_SERVICE_VERSION"
 
   // support library
   implementation "com.android.support:support-annotations:$SUPPORT_PACKAGE_VERSION"
@@ -161,6 +161,9 @@ dependencies {
 
   // glide
   implementation "com.github.bumptech.glide:glide:4.7.1"
+  implementation("com.github.bumptech.glide:okhttp3-integration:4.7.1") {
+    exclude group: "com.squareup.okhttp3", module: "okhttp"
+  }
   kapt "com.github.bumptech.glide:compiler:4.7.1"
 
   // exoplayer
@@ -190,12 +193,14 @@ dependencies {
 
   // for instrumentation
   androidTestImplementation "org.hamcrest:hamcrest-library:$HAMCREST_VERSION"
-  androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION") {
+  androidTestImplementation(
+      "com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION") {
     exclude group: 'com.android.support', module: 'support-v4'
     exclude group: 'com.android.support', module: 'recyclerview-v7'
     exclude group: 'com.android.support', module: 'design'
   }
-  androidTestImplementation("com.android.support.test.espresso:espresso-intents:$ESPRESSO_VERSION") {
+  androidTestImplementation(
+      "com.android.support.test.espresso:espresso-intents:$ESPRESSO_VERSION") {
     exclude group: 'com.android.support', module: 'support-annotations'
   }
   androidTestImplementation "com.android.support.test.uiautomator:uiautomator-v18:2.1.3"

@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.bonborunote.niconicoviewer.search.domain.ContentId
 import com.bumptech.glide.Glide
 
-@BindingAdapter("load_image")
+@BindingAdapter("load_image_from_id")
 fun ImageView.load(contentId: ContentId) {
   val base = "http://tn.smilevideo.jp/smile?i="
   Glide.with(context)

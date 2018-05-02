@@ -27,6 +27,7 @@ android {
 }
 
 dependencies {
+  implementation project(':resources')
   implementation project(':common')
   implementation project(':player-domain')
   implementation project(':player-infra')

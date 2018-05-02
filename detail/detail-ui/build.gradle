@@ -37,6 +37,7 @@ repositories {
 }
 
 dependencies {
+  implementation project(':resources')
   implementation project(':common')
   implementation project(':network')
   implementation project(':groupie-aac-plugin')
@@ -58,6 +59,7 @@ dependencies {
   implementation "com.xwray:groupie-databinding:$GROUPIE"
   implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
   implementation "jp.bglb.bonboru:coordinator-behaviors:$COORDINATOR_BEHAVIORS_VERSION"
+  implementation 'com.google.android:flexbox:0.3.2'
   kapt 'com.android.databinding:compiler:3.1.1'
 
   // network
