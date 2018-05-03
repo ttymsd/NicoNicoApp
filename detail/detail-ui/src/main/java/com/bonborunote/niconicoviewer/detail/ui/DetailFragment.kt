@@ -14,6 +14,7 @@ import com.bonborunote.niconicoviewer.detail.domain.ChannelId
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
 import com.bonborunote.niconicoviewer.detail.domain.OwnerId
+import com.bonborunote.niconicoviewer.detail.domain.RelationVideo
 import com.bonborunote.niconicoviewer.detail.domain.Tag
 import com.bonborunote.niconicoviewer.detail.ui.databinding.FragmentDescriptionBinding
 import com.xwray.groupie.GroupAdapter
@@ -47,9 +48,14 @@ class DetailFragment : Fragment(), KodeinAware {
 
   }
 
+  private val relationCallback: (RelationVideo) -> Unit = {
+
+  }
+
   private lateinit var binding: FragmentDescriptionBinding
   private val viewModel: DetailViewModel by instance()
   private val section = Section()
+  private val relationSection = Section()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?): View? {
@@ -63,10 +69,19 @@ class DetailFragment : Fragment(), KodeinAware {
       false)
     binding.description.adapter = GroupAdapter<ViewHolder>().apply {
       add(section)
+      add(relationSection)
     }
     viewModel.detail.observe(this, Observer {
       it ?: return@Observer
       update(it)
+    })
+    viewModel.usersVideos.observe(this, Observer {
+      it ?: return@Observer
+      updateRelationItems(it)
+    })
+    viewModel.channelVideos.observe(this, Observer {
+      it ?: return@Observer
+      updateRelationItems(it)
     })
     viewModel.load(ContentId(contentId))
   }
@@ -83,6 +98,12 @@ class DetailFragment : Fragment(), KodeinAware {
       items.add(UserItem(it.id, it.name, it.thumb, userCallback))
     }
     section.update(items)
+  }
+
+  private fun updateRelationItems(items: List<RelationVideo>) {
+    relationSection.update(items.map {
+      RelationVideoItem(it, relationCallback)
+    })
   }
 
   companion object {

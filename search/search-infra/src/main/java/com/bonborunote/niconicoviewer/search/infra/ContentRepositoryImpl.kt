@@ -22,7 +22,7 @@ class ContentRepositoryImpl(private val api: NicoNicoSearchApi) : ContentReposit
       limit: Int,
       context: String?,
       jsonFilters: Filter?): List<Content> {
-    val response = api.search(
+    val response = api.searchVideo(
         keyword = keyword,
         targets = listOf(Target.TITLE, DESCRIPTION, Target.TAGS).joinToString(",") { it.key },
         sort = sort.convertToNetwork().key,

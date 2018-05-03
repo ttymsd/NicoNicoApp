@@ -7,15 +7,15 @@ import retrofit2.http.Query
 
 interface NicoNicoSearchApi {
   @GET("api/v2/snapshot/video/contents/search")
-  fun search(@Query("q") keyword: String,
-      @Query("targets") targets: String,
-      @Query("_sort") sort: String,
-      @Query("fields") fields: String? = null,
-      @Query("filters") filters: String? = null,
-      @Query("jsonFilter") jsonFilters: String? = null,
-      @Query("_offset") offset: Int = 0,
-      @Query("_limit") limit: Int = 10,
-      @Query("_context") context: String? = null): Call<SearchResponseJson>
+  fun searchVideo(@Query("q") keyword: String,
+    @Query("targets") targets: String,
+    @Query("_sort") sort: String,
+    @Query("fields") fields: String? = null,
+    @Query("filters") filters: String? = null,
+    @Query("jsonFilter") jsonFilters: String? = null,
+    @Query("_offset") offset: Int = 0,
+    @Query("_limit") limit: Int = 10,
+    @Query("_context") context: String? = null): Call<SearchResponseJson>
 
   enum class Sort(val key: String) {
     VIEW_COUNT_ASC("+viewCounter"),

@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer.modules
 
 import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
+import com.bonborunote.niconicoviewer.network.RssApi
 import com.bonborunote.niconicoviewer.player.domain.CookieJar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -26,16 +27,16 @@ val applicationModule = Kodein.Module {
   }
   bind<OkHttpClient>() with singleton {
     OkHttpClient.Builder()
-        .addNetworkInterceptor(instance("log"))
-        .cookieJar(instance())
-        .build()
+      .addNetworkInterceptor(instance("log"))
+      .cookieJar(instance())
+      .build()
   }
   bind<Retrofit>("search") with singleton {
     Retrofit.Builder()
-        .baseUrl(NicoNicoSearchApi.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(instance()))
-        .client(instance())
-        .build()
+      .baseUrl(NicoNicoSearchApi.BASE_URL)
+      .addConverterFactory(GsonConverterFactory.create(instance()))
+      .client(instance())
+      .build()
   }
   bind<NicoNicoSearchApi>() with singleton {
     val retrofit: Retrofit = instance("search")
@@ -43,13 +44,35 @@ val applicationModule = Kodein.Module {
   }
   bind<Retrofit>("detail") with singleton {
     Retrofit.Builder()
-        .baseUrl(NicoNicoDetailApi.BASE_URL)
-        .addConverterFactory(SimpleXmlConverterFactory.create())
-        .client(instance())
-        .build()
+      .baseUrl(NicoNicoDetailApi.BASE_URL)
+      .addConverterFactory(SimpleXmlConverterFactory.create())
+      .client(instance())
+      .build()
   }
   bind<NicoNicoDetailApi>() with singleton {
     val retrofit: Retrofit = instance("detail")
     retrofit.create(NicoNicoDetailApi::class.java)
+  }
+  bind<Retrofit>("rss") with singleton {
+    Retrofit.Builder()
+      .baseUrl(RssApi.BASE_URL)
+      .addConverterFactory(SimpleXmlConverterFactory.create())
+      .client(instance())
+      .build()
+  }
+  bind<Retrofit>("channel_rss") with singleton {
+    Retrofit.Builder()
+      .baseUrl(RssApi.CHANNEL_BASE_URL)
+      .addConverterFactory(SimpleXmlConverterFactory.create())
+      .client(instance())
+      .build()
+  }
+  bind<RssApi>("video_rss") with singleton {
+    val retrofit: Retrofit = instance("rss")
+    retrofit.create(RssApi::class.java)
+  }
+  bind<RssApi>("channel_rss") with singleton {
+    val retrofit: Retrofit = instance("channel_rss")
+    retrofit.create(RssApi::class.java)
   }
 }

@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.detail.infra
 
+import android.net.Uri
 import com.bonborunote.niconicoviewer.detail.domain.Channel
 import com.bonborunote.niconicoviewer.detail.domain.ChannelId
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
@@ -7,20 +8,45 @@ import com.bonborunote.niconicoviewer.detail.domain.ContentDetailRepository
 import com.bonborunote.niconicoviewer.detail.domain.ContentId
 import com.bonborunote.niconicoviewer.detail.domain.Owner
 import com.bonborunote.niconicoviewer.detail.domain.OwnerId
+import com.bonborunote.niconicoviewer.detail.domain.RelationVideo
 import com.bonborunote.niconicoviewer.detail.domain.Tag
 import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoException
+import com.bonborunote.niconicoviewer.network.RssApi
+import com.bonborunote.niconicoviewer.network.response.ItemXml
 import com.bonborunote.niconicoviewer.network.response.ThumbXml
 
-class ContentDetailRepositoryImpl(private val api: NicoNicoDetailApi) : ContentDetailRepository {
+class ContentDetailRepositoryImpl(
+  private val detailApi: NicoNicoDetailApi,
+  private val rssApi: RssApi,
+  private val channelRssApi: RssApi
+) : ContentDetailRepository {
   override fun getDetail(contentId: ContentId): ContentDetail {
-    val response = api.detail(contentId.value).execute()
+    val response = detailApi.detail(contentId.value).execute()
     if (300 <= response.code()) {
       throw NicoNicoException(response.code(), "detail error", response.errorBody().toString())
     }
     val xmlResponse = response?.body() ?: throw RuntimeException()
     if (xmlResponse.status != RESULT_OK) throw RuntimeException()
     return xmlResponse.thumbXml?.toEntity() ?: throw RuntimeException()
+  }
+
+  override fun getUserVideos(ownerId: OwnerId): List<RelationVideo> {
+    val response = rssApi.getUserVideos(ownerId.value).execute()
+    if (300 <= response.code()) {
+      throw NicoNicoException(response.code(), "detail error", response.errorBody().toString())
+    }
+    val xmlResponse = response?.body() ?: throw RuntimeException()
+    return xmlResponse.channel?.items?.map { it.toRelationVideo() } ?: emptyList()
+  }
+
+  override fun getChannelVideos(channelId: ChannelId): List<RelationVideo> {
+    val response = channelRssApi.getChannelVideos(channelId.value).execute()
+    if (300 <= response.code()) {
+      throw NicoNicoException(response.code(), "detail error", response.errorBody().toString())
+    }
+    val xmlResponse = response?.body() ?: throw RuntimeException()
+    return xmlResponse.channel?.items?.map { it.toRelationVideo() } ?: emptyList()
   }
 
   private fun ThumbXml.toEntity(): ContentDetail {
@@ -54,7 +80,16 @@ class ContentDetailRepositoryImpl(private val api: NicoNicoDetailApi) : ContentD
     return Channel(id, name, thumb)
   }
 
+  private fun ItemXml.toRelationVideo(): RelationVideo {
+    return RelationVideo(
+      id = ContentId(Uri.parse(link).lastPathSegment),
+      title = title,
+      thumb = THUMB_URL_REGEX.findAll(description).firstOrNull()?.value ?: ""
+    )
+  }
+
   companion object {
     const val RESULT_OK = "ok"
+    private val THUMB_URL_REGEX = Regex("https://tn\\.smilevideo\\.jp/smile\\?i=[0-9]+")
   }
 }

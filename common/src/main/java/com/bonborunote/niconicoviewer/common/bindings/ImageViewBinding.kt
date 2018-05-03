@@ -12,3 +12,10 @@ fun ImageView.loadImage(uri: String) {
     .apply(RequestOptions().circleCrop())
     .into(this)
 }
+
+@BindingAdapter("image_uri")
+fun ImageView.load(uri: String) {
+  Glide.with(context)
+    .load(uri)
+    .into(this)
+}

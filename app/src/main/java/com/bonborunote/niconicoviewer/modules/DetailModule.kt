@@ -17,7 +17,7 @@ import org.kodein.di.generic.singleton
 val detailModule = Kodein.Module {
   bind<ContentDetailRepository>() with scoped(androidScope<Fragment>())
     .singleton {
-      ContentDetailRepositoryImpl(instance())
+      ContentDetailRepositoryImpl(instance(), instance("video_rss"), instance("channel_rss"))
     }
   bind<DetailUseCase>() with scoped(androidScope<Fragment>())
     .singleton {
