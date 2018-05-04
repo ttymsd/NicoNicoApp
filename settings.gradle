@@ -20,3 +20,10 @@ project(':detail-ui').projectDir = new File(detailModuleDir, 'detail-ui')
 project(':detail-domain').projectDir = new File(detailModuleDir, 'detail-domain')
 project(':detail-infra').projectDir = new File(detailModuleDir, 'detail-infra')
 project(':detail-usecase').projectDir = new File(detailModuleDir, 'detail-usecase')
+
+def latestModuleDir = new File('latest')
+include ':latest-ui', ':latest-usecase', ':latest-domain', ':latest-infra'
+project(':latest-ui').projectDir = new File(latestModuleDir, 'latest-ui')
+project(':latest-domain').projectDir = new File(latestModuleDir, 'latest-domain')
+project(':latest-infra').projectDir = new File(latestModuleDir, 'latest-infra')
+project(':latest-usecase').projectDir = new File(latestModuleDir, 'latest-usecase')
