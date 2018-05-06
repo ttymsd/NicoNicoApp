@@ -6,6 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface RssApi {
+  @GET("newarrival?rss=2.0")
+  fun getLatestVideos(): Call<VideosResponseXml>
+
   @GET("user/{userId}/video?rss=2.0")
   fun getUserVideos(@Path("userId") userId: String): Call<VideosResponseXml>
 
