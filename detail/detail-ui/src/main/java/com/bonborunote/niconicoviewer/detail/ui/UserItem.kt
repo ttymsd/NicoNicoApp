@@ -1,6 +1,6 @@
 package com.bonborunote.niconicoviewer.detail.ui
 
-import com.bonborunote.niconicoviewer.detail.domain.OwnerId
+import com.bonborunote.niconicoviewer.common.models.OwnerId
 import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutOwnerBinding
 import com.xwray.groupie.databinding.BindableItem
 

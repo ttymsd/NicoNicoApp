@@ -1,6 +1,6 @@
 package com.bonborunote.niconicoviewer.detail.ui
 
-import com.bonborunote.niconicoviewer.detail.domain.RelationVideo
+import com.bonborunote.niconicoviewer.common.models.RelationVideo
 import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutRelationVideoBinding
 import com.xwray.groupie.databinding.BindableItem
 

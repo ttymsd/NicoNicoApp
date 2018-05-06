@@ -1,5 +1,7 @@
 package com.bonborunote.niconicoviewer.search.infra
 
+import com.bonborunote.niconicoviewer.common.models.Content
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Target
@@ -7,8 +9,6 @@ import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.CONTENT_ID
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.LENGTH_SECONDS
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Field.TITLE
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi.Target.DESCRIPTION
-import com.bonborunote.niconicoviewer.search.domain.Content
-import com.bonborunote.niconicoviewer.search.domain.ContentId
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository.Filter
 import com.bonborunote.niconicoviewer.search.domain.Sort

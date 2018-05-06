@@ -5,8 +5,8 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.util.Log
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
-import com.bonborunote.niconicoviewer.detail.domain.ContentId
-import com.bonborunote.niconicoviewer.detail.domain.RelationVideo
+import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.common.models.RelationVideo
 import com.bonboruntoe.niconicoviewer.detail.usecase.DetailUseCase
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async

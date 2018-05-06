@@ -9,8 +9,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import android.support.v7.widget.SearchView
-import com.bonborunote.niconicoviewer.network.NicoNicoException
-import com.bonborunote.niconicoviewer.search.domain.Content
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository
 import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase
 import com.bonborunote.niconivoviewer.search.usecase.impl.SearchUseCaseFactory

@@ -2,7 +2,7 @@ package com.bonborunote.niconicoviewer.search.ui
 
 import android.databinding.BindingAdapter
 import android.widget.ImageView
-import com.bonborunote.niconicoviewer.search.domain.ContentId
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bumptech.glide.Glide
 
 @BindingAdapter("load_image_from_id")

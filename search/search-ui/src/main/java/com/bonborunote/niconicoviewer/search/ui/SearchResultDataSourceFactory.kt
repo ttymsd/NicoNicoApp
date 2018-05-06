@@ -2,7 +2,7 @@ package com.bonborunote.niconicoviewer.search.ui
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.DataSource
-import com.bonborunote.niconicoviewer.search.domain.Content
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase
 
 class SearchResultDataSourceFactory(

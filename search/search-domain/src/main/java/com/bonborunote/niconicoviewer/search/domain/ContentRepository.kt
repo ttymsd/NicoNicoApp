@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.search.domain
 
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository.Operator.AND
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository.Operator.EQUAL
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository.Operator.NOT

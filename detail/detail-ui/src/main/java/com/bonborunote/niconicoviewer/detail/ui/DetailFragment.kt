@@ -10,12 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.Identifier
-import com.bonborunote.niconicoviewer.detail.domain.ChannelId
+import com.bonborunote.niconicoviewer.common.models.ChannelId
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
-import com.bonborunote.niconicoviewer.detail.domain.ContentId
-import com.bonborunote.niconicoviewer.detail.domain.OwnerId
-import com.bonborunote.niconicoviewer.detail.domain.RelationVideo
-import com.bonborunote.niconicoviewer.detail.domain.Tag
+import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.common.models.OwnerId
+import com.bonborunote.niconicoviewer.common.models.RelationVideo
+import com.bonborunote.niconicoviewer.common.models.Tag
 import com.bonborunote.niconicoviewer.detail.ui.databinding.FragmentDescriptionBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item

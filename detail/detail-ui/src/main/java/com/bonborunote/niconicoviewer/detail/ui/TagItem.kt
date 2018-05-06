@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.bonborunote.niconicoviewer.detail.domain.Tag
+import com.bonborunote.niconicoviewer.common.models.Tag
 import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutTagContainerBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.xwray.groupie.Item

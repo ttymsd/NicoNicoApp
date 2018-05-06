@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.detail.domain
+package com.bonborunote.niconicoviewer.common.models
 
 import com.bonborunote.niconicoviewer.common.Entity
 

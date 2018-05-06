@@ -1,15 +1,15 @@
 package com.bonborunote.niconicoviewer.detail.infra
 
 import android.net.Uri
-import com.bonborunote.niconicoviewer.detail.domain.Channel
-import com.bonborunote.niconicoviewer.detail.domain.ChannelId
+import com.bonborunote.niconicoviewer.common.models.Channel
+import com.bonborunote.niconicoviewer.common.models.ChannelId
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetailRepository
-import com.bonborunote.niconicoviewer.detail.domain.ContentId
-import com.bonborunote.niconicoviewer.detail.domain.Owner
-import com.bonborunote.niconicoviewer.detail.domain.OwnerId
-import com.bonborunote.niconicoviewer.detail.domain.RelationVideo
-import com.bonborunote.niconicoviewer.detail.domain.Tag
+import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.common.models.Owner
+import com.bonborunote.niconicoviewer.common.models.OwnerId
+import com.bonborunote.niconicoviewer.common.models.RelationVideo
+import com.bonborunote.niconicoviewer.common.models.Tag
 import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.network.RssApi

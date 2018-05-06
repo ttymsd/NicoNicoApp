@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer.network.response
 
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
+import java.util.Date
 
 @Root(name = "channel", strict = false)
 class ItemXml {
@@ -14,4 +15,7 @@ class ItemXml {
   @set:Element(name = "description")
   @get:Element(name = "description")
   var description: String = ""
+  @set:Element(name = "pubDate")
+  @get:Element(name = "pubDate")
+  var pubDate: Date = Date()
 }

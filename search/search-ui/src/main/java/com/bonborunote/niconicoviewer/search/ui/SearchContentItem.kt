@@ -1,9 +1,9 @@
 package com.bonborunote.niconicoviewer.search.ui
 
 import android.view.View
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.search.R
 import com.bonborunote.niconicoviewer.search.databinding.LayoutSearchBinding
-import com.bonborunote.niconicoviewer.search.domain.Content
 import com.xwray.groupie.databinding.BindableItem
 import timber.log.Timber
 

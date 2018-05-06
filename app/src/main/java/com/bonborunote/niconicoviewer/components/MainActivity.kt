@@ -4,12 +4,12 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
-import com.bonborunote.niconicoviewer.player.domain.ContentId
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
-import com.bonborunote.niconicoviewer.search.domain.Content
 import com.bonborunote.niconicoviewer.search.ui.SearchContainer
 import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
               remove(it)
             }
           }
-          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(ContentId(content.id.value)),
+          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(
+              ContentId(content.id.value)),
               PlaybackFragment.TAG)
           .add(R.id.coordinator_layout, DetailFragment.newInstance(content.id),
               DetailFragment.TAG)

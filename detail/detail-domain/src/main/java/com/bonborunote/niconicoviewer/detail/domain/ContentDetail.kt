@@ -1,6 +1,10 @@
 package com.bonborunote.niconicoviewer.detail.domain
 
 import com.bonborunote.niconicoviewer.common.Entity
+import com.bonborunote.niconicoviewer.common.models.Channel
+import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.common.models.Owner
+import com.bonborunote.niconicoviewer.common.models.Tag
 
 class ContentDetail(
   id: ContentId,

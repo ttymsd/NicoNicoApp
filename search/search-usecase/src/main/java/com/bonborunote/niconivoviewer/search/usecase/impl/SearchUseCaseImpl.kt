@@ -1,6 +1,6 @@
 package com.bonborunote.niconivoviewer.search.usecase.impl
 
-import com.bonborunote.niconicoviewer.search.domain.Content
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository
 import com.bonborunote.niconicoviewer.search.domain.Sort
 import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase

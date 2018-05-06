@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.higherMashmallow
-import com.bonborunote.niconicoviewer.player.domain.ContentId
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
 import org.kodein.di.Kodein
