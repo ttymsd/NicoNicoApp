@@ -3,9 +3,11 @@ package com.bonborunote.niconicoviewer
 import android.support.multidex.MultiDexApplication
 import com.bonborunote.niconicoviewer.modules.applicationModule
 import com.bonborunote.niconicoviewer.modules.detailModule
+import com.bonborunote.niconicoviewer.modules.latestModule
 import com.bonborunote.niconicoviewer.modules.mainModule
 import com.bonborunote.niconicoviewer.modules.playbackModule
 import com.bonborunote.niconicoviewer.search.ui.searchModule
+import com.jakewharton.threetenabp.AndroidThreeTen
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -20,9 +22,15 @@ class App : MultiDexApplication(), KodeinAware {
     import(searchModule)
     import(playbackModule)
     import(detailModule)
+    import(latestModule)
   }
 
   private val okHttpClient: OkHttpClient by instance()
 
   fun okHttpClient(): OkHttpClient = okHttpClient
+
+  override fun onCreate() {
+    super.onCreate()
+    AndroidThreeTen.init(this)
+  }
 }

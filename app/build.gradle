@@ -86,6 +86,10 @@ dependencies {
   implementation project(':detail-infra')
   implementation project(':detail-usecase')
   implementation project(':detail-ui')
+  implementation project(':latest-domain')
+  implementation project(':latest-infra')
+  implementation project(':latest-usecase')
+  implementation project(':latest-ui')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINES_VERSION"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$COROUTINES_VERSION"

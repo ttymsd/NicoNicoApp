@@ -32,8 +32,12 @@ android {
 
 dependencies {
   implementation project(':common')
+  implementation project(':network')
+  implementation project(':latest-domain')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+  implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
   implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
+  implementation "com.jakewharton.threetenabp:threetenabp:$THREE_TEN_ABP_VERSION"
 
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'com.android.support.test:runner:1.0.1'

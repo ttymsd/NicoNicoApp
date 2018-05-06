@@ -2,7 +2,6 @@ package com.bonborunote.niconicoviewer.network.response
 
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
-import java.util.Date
 
 @Root(name = "channel", strict = false)
 class ItemXml {
@@ -17,5 +16,13 @@ class ItemXml {
   var description: String = ""
   @set:Element(name = "pubDate")
   @get:Element(name = "pubDate")
-  var pubDate: Date = Date()
+  var pubDate: String = ""
+
+  companion object {
+    private val THUMB_URL_REGEX = Regex("https?://tn\\.smilevideo\\.jp/smile\\?i=[0-9]+")
+
+    fun getThumbUrl(description: String): String {
+      return THUMB_URL_REGEX.findAll(description).firstOrNull()?.value ?: ""
+    }
+  }
 }

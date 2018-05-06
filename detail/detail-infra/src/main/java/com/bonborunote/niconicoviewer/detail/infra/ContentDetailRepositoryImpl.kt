@@ -84,12 +84,11 @@ class ContentDetailRepositoryImpl(
     return RelationVideo(
       id = ContentId(Uri.parse(link).lastPathSegment),
       title = title,
-      thumb = THUMB_URL_REGEX.findAll(description).firstOrNull()?.value ?: ""
+      thumb = ItemXml.getThumbUrl(description)
     )
   }
 
   companion object {
     const val RESULT_OK = "ok"
-    private val THUMB_URL_REGEX = Regex("https://tn\\.smilevideo\\.jp/smile\\?i=[0-9]+")
   }
 }

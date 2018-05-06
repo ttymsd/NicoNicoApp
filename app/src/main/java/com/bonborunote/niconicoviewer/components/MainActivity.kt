@@ -8,9 +8,9 @@ import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
 import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.latest.ui.LatestVideosFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
-import com.bonborunote.niconicoviewer.search.ui.SearchContainer
 import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
     if (supportFragmentManager.findFragmentById(R.id.coordinator_layout) == null) {
       supportFragmentManager.beginTransaction()
-          .add(R.id.coordinator_layout, SearchContainer.newInstance(), SearchContainer.TAG)
+          .add(R.id.coordinator_layout, LatestVideosFragment.newInstance(), LatestVideosFragment.TAG)
           .commit()
     }
   }
