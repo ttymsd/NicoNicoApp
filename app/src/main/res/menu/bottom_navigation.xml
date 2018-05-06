@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+    android:id="@+id/search"
+    android:icon="@android:drawable/ic_lock_idle_alarm"
+    android:title="新着"
+    />
+  <item
+    android:id="@+id/participation"
+    android:icon="@android:drawable/ic_lock_idle_alarm"
+    android:title="検索"
+    />
+  <item
+    android:id="@+id/bookmark"
+    android:icon="@android:drawable/ic_lock_idle_alarm"
+    android:title="ほげほげ"
+    />
+</menu>

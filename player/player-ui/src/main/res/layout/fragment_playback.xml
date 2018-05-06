@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:maxHeight="240dp"
-    android:elevation="18dp"
     app:layout_behavior="@string/coordinator_behaviors_youtube_behavior"
     >
 
