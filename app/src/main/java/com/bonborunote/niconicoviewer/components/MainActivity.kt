@@ -2,15 +2,18 @@ package com.bonborunote.niconicoviewer.components
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Content
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
-import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.latest.ui.LatestVideosFragment
+import com.bonborunote.niconicoviewer.models.Navigation
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
+import com.bonborunote.niconicoviewer.search.ui.SearchContainer
 import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
@@ -34,23 +37,18 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   private val searchViewModel: SearchViewModel by instance()
   private val contentObserver = Observer<Content> {
     it?.let { content ->
-      supportFragmentManager.beginTransaction()
-          .apply {
-            supportFragmentManager.findFragmentByTag(
-                PlaybackFragment.TAG)?.let {
-              remove(it)
-            }
-            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-              remove(it)
-            }
-          }
-          .add(R.id.coordinator_layout, PlaybackFragment.newInstance(
-              ContentId(content.id.value)),
-              PlaybackFragment.TAG)
-          .add(R.id.coordinator_layout, DetailFragment.newInstance(content.id),
-              DetailFragment.TAG)
-          .commit()
+      addPlaybackFragment(content)
     }
+  }
+  private val navigationSelector = BottomNavigationView.OnNavigationItemSelectedListener {
+    when (it.itemId) {
+      R.id.latest -> mainViewModel.navigateToLatest()
+      R.id.search -> mainViewModel.navigateToSearch()
+      else -> {
+
+      }
+    }
+    true
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,14 +57,22 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     lifecycle.addObserver(searchViewModel)
     binding.mainViewModel = mainViewModel
     binding.searchViewModel = searchViewModel
+    binding.navigation.setOnNavigationItemSelectedListener(navigationSelector)
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
     searchViewModel.playableContent.observe(this, contentObserver)
+    mainViewModel.currentPage.observe(this, Observer {
+      it?.let {
+        when (it) {
+          Navigation.LATEST -> switchToLatest()
+          Navigation.SEARCH -> switchToSearch()
+          Navigation.CONFIG -> switchToConfig()
+        }
+      }
+    })
 
     if (supportFragmentManager.findFragmentById(R.id.coordinator_layout) == null) {
-      supportFragmentManager.beginTransaction()
-          .add(R.id.coordinator_layout, LatestVideosFragment.newInstance(), LatestVideosFragment.TAG)
-          .commit()
+      switchToLatest()
     }
   }
 
@@ -78,15 +84,15 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
   override fun onBackPressed() {
     supportFragmentManager.findFragmentByTag(
-        PlaybackFragment.TAG)?.let {
+      PlaybackFragment.TAG)?.let {
       supportFragmentManager.beginTransaction()
-          .remove(it)
-          .apply {
-            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-              remove(it)
-            }
+        .remove(it)
+        .apply {
+          supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
+            remove(it)
           }
-          .commit()
+        }
+        .commit()
     } ?: run {
       super.onBackPressed()
     }
@@ -94,15 +100,52 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
   override fun remove() {
     supportFragmentManager.findFragmentByTag(
-        PlaybackFragment.TAG)?.let {
+      PlaybackFragment.TAG)?.let {
       supportFragmentManager.beginTransaction()
-          .remove(it)
-          .apply {
-            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-              remove(it)
-            }
+        .remove(it)
+        .apply {
+          supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
+            remove(it)
           }
-          .commit()
+        }
+        .commit()
     }
+  }
+
+  private fun addPlaybackFragment(content: Content) {
+    supportFragmentManager.beginTransaction()
+      .apply {
+        supportFragmentManager.findFragmentByTag(
+          PlaybackFragment.TAG)?.let {
+          remove(it)
+        }
+        supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
+          remove(it)
+        }
+      }
+      .add(R.id.coordinator_layout, PlaybackFragment.newInstance(
+        ContentId(content.id.value)),
+        PlaybackFragment.TAG)
+      .add(R.id.coordinator_layout, DetailFragment.newInstance(content.id),
+        DetailFragment.TAG)
+      .commit()
+  }
+
+  private fun switchToLatest() {
+    supportFragmentManager.beginTransaction()
+      .replace(R.id.coordinator_layout, LatestVideosFragment.newInstance(),
+        LatestVideosFragment.TAG)
+      .commit()
+  }
+
+  private fun switchToSearch() {
+    supportFragmentManager.beginTransaction()
+      .replace(R.id.coordinator_layout, SearchContainer.newInstance(),
+        SearchContainer.TAG)
+      .commit()
+  }
+
+  private fun switchToConfig() {
+    TODO()
   }
 }

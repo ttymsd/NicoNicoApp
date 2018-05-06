@@ -2,11 +2,17 @@ package com.bonborunote.niconicoviewer.components
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.bonborunote.niconicoviewer.models.Navigation
+import com.bonborunote.niconicoviewer.models.Navigation.LATEST
+import com.bonborunote.niconicoviewer.models.Navigation.SEARCH
 
 class MainViewModel private constructor() : ViewModel(), LifecycleObserver {
+
+  val currentPage = MutableLiveData<Navigation>()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   fun onCreate() {
@@ -14,6 +20,14 @@ class MainViewModel private constructor() : ViewModel(), LifecycleObserver {
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   fun onDestroy() {
+  }
+
+  fun navigateToLatest() {
+    currentPage.postValue(LATEST)
+  }
+
+  fun navigateToSearch() {
+    currentPage.postValue(SEARCH)
   }
 
   @Suppress("UNCHECKED_CAST")
