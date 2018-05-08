@@ -10,6 +10,7 @@ import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import android.support.v7.widget.SearchView
 import com.bonborunote.niconicoviewer.common.models.Content
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository
 import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase
 import com.bonborunote.niconivoviewer.search.usecase.impl.SearchUseCaseFactory
@@ -40,9 +41,9 @@ class SearchViewModel private constructor(
   })
   val loading = switchMap(dataSource, { it.networkState })
   val error = switchMap(dataSource, { it.error })
-  val playableContent = MutableLiveData<Content>()
+  val playableContent = MutableLiveData<ContentId>()
   private val itemClickCallback: (content: Content) -> Unit = {
-    playableContent.postValue(it)
+    playableContent.postValue(it.id)
   }
 
   override fun onQueryTextSubmit(query: String?): Boolean {

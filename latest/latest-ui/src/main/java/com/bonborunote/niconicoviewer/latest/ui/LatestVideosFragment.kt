@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.latest.ui
 
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -20,7 +21,7 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class LatestVideosFragment: Fragment(), KodeinAware {
+class LatestVideosFragment : Fragment(), KodeinAware {
 
   // instance作った時点ではactivity = null なので getterをoverrideする
   override val kodeinContext: KodeinContext<*> = kcontext(this)
@@ -28,9 +29,10 @@ class LatestVideosFragment: Fragment(), KodeinAware {
 
   private val latestViewModel: LatestViewModel by instance()
   private lateinit var binding: FragmentLatestVideosBinding
+  private var listener: LatestListItemClickListener? = null
   private val section = Section()
   private val clickCallback: (LatestVideo) -> Unit = {
-
+    listener?.clickLatestItem(it)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +40,13 @@ class LatestVideosFragment: Fragment(), KodeinAware {
     lifecycle.addObserver(latestViewModel)
   }
 
+  override fun onAttach(context: Context?) {
+    super.onAttach(context)
+    listener = context as? LatestListItemClickListener
+  }
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?): View? {
+      savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_latest_videos, container, false)
     return binding.root
   }
@@ -50,7 +57,8 @@ class LatestVideosFragment: Fragment(), KodeinAware {
     binding.videos.adapter = GroupAdapter<ViewHolder>().apply {
       add(section)
     }
-    binding.videos.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    binding.videos.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
+        false)
     binding.executePendingBindings()
     latestViewModel.loading.observe(this, Observer { loading ->
       if (loading == true) {
@@ -70,6 +78,10 @@ class LatestVideosFragment: Fragment(), KodeinAware {
   override fun onDestroy() {
     super.onDestroy()
     lifecycle.removeObserver(latestViewModel)
+  }
+
+  interface LatestListItemClickListener {
+    fun clickLatestItem(video: LatestVideo)
   }
 
   companion object {

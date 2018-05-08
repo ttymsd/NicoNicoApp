@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
 import com.bonborunote.niconicoviewer.latest.ui.LatestVideosFragment
@@ -25,7 +26,7 @@ import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListener {
+class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListener, LatestVideosFragment.LatestListItemClickListener {
   private val _parentKodein by closestKodein()
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by retainedKodein {
@@ -35,9 +36,9 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
   private val mainViewModel: MainViewModel by instance()
   private val searchViewModel: SearchViewModel by instance()
-  private val contentObserver = Observer<Content> {
-    it?.let { content ->
-      addPlaybackFragment(content)
+  private val contentObserver = Observer<ContentId> {
+    it?.let {
+      addPlaybackFragment(it)
     }
   }
   private val navigationSelector = BottomNavigationView.OnNavigationItemSelectedListener {
@@ -112,7 +113,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     }
   }
 
-  private fun addPlaybackFragment(content: Content) {
+  override fun clickLatestItem(video: LatestVideo) {
+    searchViewModel.playableContent.postValue(video.id)
+  }
+
+  private fun addPlaybackFragment(id: ContentId) {
     supportFragmentManager.beginTransaction()
       .apply {
         supportFragmentManager.findFragmentByTag(
@@ -123,11 +128,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
           remove(it)
         }
       }
-      .add(R.id.coordinator_layout, PlaybackFragment.newInstance(
-        ContentId(content.id.value)),
-        PlaybackFragment.TAG)
-      .add(R.id.coordinator_layout, DetailFragment.newInstance(content.id),
-        DetailFragment.TAG)
+      .add(R.id.coordinator_layout, PlaybackFragment.newInstance(id), PlaybackFragment.TAG)
+      .add(R.id.coordinator_layout, DetailFragment.newInstance(id), DetailFragment.TAG)
       .commit()
   }
 
