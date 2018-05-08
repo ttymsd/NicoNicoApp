@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.models.Navigation
 import com.bonborunote.niconicoviewer.models.Navigation.LATEST
 import com.bonborunote.niconicoviewer.models.Navigation.SEARCH
@@ -13,6 +14,7 @@ import com.bonborunote.niconicoviewer.models.Navigation.SEARCH
 class MainViewModel private constructor() : ViewModel(), LifecycleObserver {
 
   val currentPage = MutableLiveData<Navigation>()
+  val playableContent = MutableLiveData<ContentId>()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   fun onCreate() {
@@ -28,6 +30,10 @@ class MainViewModel private constructor() : ViewModel(), LifecycleObserver {
 
   fun navigateToSearch() {
     currentPage.postValue(SEARCH)
+  }
+
+  fun play(id: ContentId) {
+    playableContent.postValue(id)
   }
 
   @Suppress("UNCHECKED_CAST")

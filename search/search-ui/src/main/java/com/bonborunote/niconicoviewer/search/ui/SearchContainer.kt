@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.search.ui
 
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.groupie.aac.plugin.PagedSection
+import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.search.R
 import com.bonborunote.niconicoviewer.search.databinding.FragmentSearchBinding
 import com.xwray.groupie.GroupAdapter
@@ -29,6 +31,7 @@ class SearchContainer : Fragment(), KodeinAware {
   override val kodein: Kodein by closestKodein()
 
   private lateinit var binding: FragmentSearchBinding
+  private var listener: SearchListItemClickListener? = null
 
   private val searchViewModel: SearchViewModel by instance()
   private val searchContentSection = PagedSection<SearchContentItem>()
@@ -39,6 +42,11 @@ class SearchContainer : Fragment(), KodeinAware {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(searchViewModel)
+  }
+
+  override fun onAttach(context: Context?) {
+    super.onAttach(context)
+    listener = context as? SearchListItemClickListener
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,11 +75,20 @@ class SearchContainer : Fragment(), KodeinAware {
         searchContentSection.submitList(it)
       }
     })
+    searchViewModel.playableContent.observe(this, Observer {
+      it?.let {
+        listener?.clickSearchItem(it)
+      }
+    })
   }
 
   override fun onDestroy() {
     super.onDestroy()
     lifecycle.removeObserver(searchViewModel)
+  }
+
+  interface SearchListItemClickListener {
+    fun clickSearchItem(video: Content)
   }
 
   companion object {

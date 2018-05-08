@@ -8,4 +8,6 @@
   <dimen name="search_box_elevation">2dp</dimen>
   <dimen name="card_elevation">2dp</dimen>
   <dimen name="pickup_card_elevation">8dp</dimen>
+  <dimen name="playback_elevation">20dp</dimen>
+  <dimen name="detail_elevation">18dp</dimen>
 </resources>

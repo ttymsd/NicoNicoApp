@@ -41,9 +41,9 @@ class SearchViewModel private constructor(
   })
   val loading = switchMap(dataSource, { it.networkState })
   val error = switchMap(dataSource, { it.error })
-  val playableContent = MutableLiveData<ContentId>()
+  val playableContent = MutableLiveData<Content>()
   private val itemClickCallback: (content: Content) -> Unit = {
-    playableContent.postValue(it.id)
+    playableContent.postValue(it)
   }
 
   override fun onQueryTextSubmit(query: String?): Boolean {

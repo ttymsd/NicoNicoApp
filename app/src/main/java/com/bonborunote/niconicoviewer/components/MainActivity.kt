@@ -26,7 +26,7 @@ import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListener, LatestVideosFragment.LatestListItemClickListener {
+class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListener, LatestVideosFragment.LatestListItemClickListener, SearchContainer.SearchListItemClickListener {
   private val _parentKodein by closestKodein()
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by retainedKodein {
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     binding.navigation.setOnNavigationItemSelectedListener(navigationSelector)
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
-    searchViewModel.playableContent.observe(this, contentObserver)
+    mainViewModel.playableContent.observe(this, contentObserver)
     mainViewModel.currentPage.observe(this, Observer {
       it?.let {
         when (it) {
@@ -114,7 +114,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   }
 
   override fun clickLatestItem(video: LatestVideo) {
-    searchViewModel.playableContent.postValue(video.id)
+    mainViewModel.play(video.id)
+  }
+
+  override fun clickSearchItem(video: Content) {
+    mainViewModel.play(video.id)
   }
 
   private fun addPlaybackFragment(id: ContentId) {

@@ -12,7 +12,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
 class LatestViewModel private constructor(
-  private val latestUsecase: LatestUseCase
+    private val latestUsecase: LatestUseCase
 ) : ViewModel(), LifecycleObserver {
 
   val loading = MutableLiveData<Boolean>()
@@ -32,11 +32,11 @@ class LatestViewModel private constructor(
 
   @Suppress("UNCHECKED_CAST")
   class Factory(
-    private val latestVideoRepository: LatestVideoRepository
+      private val latestVideoRepository: LatestVideoRepository
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
       return LatestViewModel(LatestUseCaseFactory().build(latestVideoRepository)) as? T
-        ?: throw IllegalArgumentException()
+          ?: throw IllegalArgumentException()
     }
   }
 }
