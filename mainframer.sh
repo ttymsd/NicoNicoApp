@@ -30,6 +30,9 @@ CONFIG_FILE="$CONFIG_DIR/config"
 COMMON_IGNORE_FILE="$CONFIG_DIR/ignore"
 LOCAL_IGNORE_FILE="$CONFIG_DIR/localignore"
 REMOTE_IGNORE_FILE="$CONFIG_DIR/remoteignore"
+AFTER_EXECUTE_COMMANDS="$CONFIG_DIR/after_execute_commands"
+AFTER_PRIORITIZE_SYNC_EXECUTE_COMMANDS="$CONFIG_DIR/after_prioritize_execute_commands"
+PRIORITIZE_SYNC_FILES="$CONFIG_DIR/prioritize_sync_files"
 
 function readConfigProperty {
 	grep "^${1}=" "$CONFIG_FILE" | cut -d'=' -f2
@@ -148,18 +151,70 @@ function syncAfterRemoteCommand {
 		COMMAND+="--exclude-from='$REMOTE_IGNORE_FILE' "
 	fi
 
-	COMMAND+="--rsh ssh $REMOTE_MACHINE:'$PROJECT_DIR_ON_REMOTE_MACHINE'/ ./"
+	COMMAND+="--rsh ssh $REMOTE_MACHINE:'$PROJECT_DIR_ON_REMOTE_MACHINE'/ ./ &"
 	eval "$COMMAND"
 
 	endTime="$(date +%s)"
 	echo "Sync done: took $(formatTime $((endTime-startTime)))."
 }
 
+function syncAfterLocalCommand {
+	echo "execute local machine…"
+	startTime="$(date +%s)"
+  
+  if [ -f "$AFTER_EXECUTE_COMMANDS" ]; then
+    cat "$AFTER_EXECUTE_COMMANDS" | while read line
+    do
+      eval "$line"
+    done
+  fi
+
+	endTime="$(date +%s)"
+	echo "done: took $(formatTime $((endTime-startTime)))."
+}
+
+function syncPrioritizeCommand {
+	echo "prioritize execute local machine…"
+	startTime="$(date +%s)"
+
+  if [ -f "$PRIORITIZE_SYNC_FILES" ]; then
+    cat "$PRIORITIZE_SYNC_FILES" | while read line
+    do
+      eval file=$line
+      echo "sync $PROJECT_DIR_ON_REMOTE_MACHINE/$file -> ./$file"
+	    scp $REMOTE_MACHINE:$PROJECT_DIR_ON_REMOTE_MACHINE/$file ./$file
+    done
+  fi
+
+	endTime="$(date +%s)"
+	echo "Sync done: took $(formatTime $((endTime-startTime)))."
+
+}
+
+function syncAfterPrioritizeSyncLocalCommand {
+	echo "prioritize execute local machine…"
+	startTime="$(date +%s)"
+  
+  echo $AFTER_PRIORITIZE_SYNC_EXECUTE_COMMANDS
+  if [ -f "$AFTER_PRIORITIZE_SYNC_EXECUTE_COMMANDS" ]; then
+    cat "$AFTER_PRIORITIZE_SYNC_EXECUTE_COMMANDS" | while read line
+    do
+      eval "$line"
+    done
+  fi
+
+	endTime="$(date +%s)"
+	echo "done: took $(formatTime $((endTime-startTime)))."
+}
+
 pushd "$PROJECT_DIR" > /dev/null
 
 syncBeforeRemoteCommand
 executeRemoteCommand
+syncPrioritizeCommand
+syncAfterPrioritizeSyncLocalCommand
 syncAfterRemoteCommand
+#syncAfterLocalCommand
 
 popd > /dev/null
 
