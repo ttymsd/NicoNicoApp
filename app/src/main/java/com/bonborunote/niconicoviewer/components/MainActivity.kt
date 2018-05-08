@@ -3,7 +3,9 @@ package com.bonborunote.niconicoviewer.components
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.transition.Slide
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity.BOTTOM
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
@@ -132,8 +134,16 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
           remove(it)
         }
       }
-      .add(R.id.coordinator_layout, PlaybackFragment.newInstance(id), PlaybackFragment.TAG)
-      .add(R.id.coordinator_layout, DetailFragment.newInstance(id), DetailFragment.TAG)
+      .add(R.id.coordinator_layout, PlaybackFragment.newInstance(id).apply {
+        enterTransition = Slide().apply {
+          slideEdge = BOTTOM
+        }
+      }, PlaybackFragment.TAG)
+      .add(R.id.coordinator_layout, DetailFragment.newInstance(id).apply {
+        enterTransition = Slide().apply {
+          slideEdge = BOTTOM
+        }
+      }, DetailFragment.TAG)
       .commit()
   }
 
