@@ -42,8 +42,8 @@ class ThumbXml {
   @set:Element(name = "mylist_counter")
   @get:Element(name = "mylist_counter")
   var myListCounter: Long = 0L
-  @set:Element(name = "last_res_body")
-  @get:Element(name = "last_res_body")
+  @set:Element(name = "last_res_body", required = false)
+  @get:Element(name = "last_res_body", required = false)
   var lastResBody: String = ""
   @set:Element(name = "watch_url")
   @get:Element(name = "watch_url")
