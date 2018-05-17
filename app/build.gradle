@@ -186,6 +186,11 @@ dependencies {
   implementation "org.aspectj:aspectjrt:$ASPECTJ_VERSION"
 
   // debugging
+  ["hyperion-core", "hyperion-attr", "hyperion-measurement", "hyperion-disk", "hyperion-recorder", "hyperion-phoenix", "hyperion-crash",
+   "hyperion-shared-preferences", "hyperion-geiger-counter", "hyperion-timber"].forEach {
+    debugImplementation "com.willowtreeapps.hyperion:$it:0.9.23"
+  }
+  
   implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
   implementation("com.crashlytics.sdk.android:crashlytics:${CRASHLYTICS_VERSION}@aar") {
     transitive = true
