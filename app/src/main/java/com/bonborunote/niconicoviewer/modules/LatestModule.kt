@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
 import com.bonborunote.niconicoviewer.latest.domain.LatestVideoRepository
 import com.bonborunote.niconicoviewer.latest.infra.LatestVideoRepoitoryImpl
-import com.bonborunote.niconicoviewer.latest.ui.LatestViewModel
+import com.bonborunote.niconicoviewer.components.latest.LatestViewModel
 import com.bonborunote.niconicoviewer.latest.usecase.LatestUseCase
 import com.bonborunote.niconicoviewer.latest.usecase.LatestUseCaseFactory
 import org.kodein.di.Kodein

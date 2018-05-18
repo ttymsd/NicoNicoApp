@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.latest.ui
+package com.bonborunote.niconicoviewer.components.latest
 
 import android.arch.lifecycle.Observer
 import android.content.Context
@@ -10,7 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
-import com.bonborunote.niconicoviewer.latest.ui.databinding.FragmentLatestVideosBinding
+import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.databinding.FragmentLatestVideosBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -47,7 +48,8 @@ class LatestVideosFragment : Fragment(), KodeinAware {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
-    binding = DataBindingUtil.inflate(inflater, R.layout.fragment_latest_videos, container, false)
+    binding = DataBindingUtil.inflate(inflater,
+      R.layout.fragment_latest_videos, container, false)
     return binding.root
   }
 
@@ -69,7 +71,9 @@ class LatestVideosFragment : Fragment(), KodeinAware {
     })
     latestViewModel.videos.observe(this, Observer {
       it?.let {
-        section.update(it.map { LatestVideoItem(it, clickCallback) })
+        section.update(it.map {
+          LatestVideoItem(it, clickCallback)
+        })
       }
     })
     latestViewModel.load()

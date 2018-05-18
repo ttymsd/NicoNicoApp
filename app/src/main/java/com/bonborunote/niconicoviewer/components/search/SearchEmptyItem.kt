@@ -1,7 +1,7 @@
-package com.bonborunote.niconicoviewer.search.ui
+package com.bonborunote.niconicoviewer.components.search
 
-import com.bonborunote.niconicoviewer.search.R
-import com.bonborunote.niconicoviewer.search.databinding.LayoutSearchEmptyBinding
+import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.databinding.LayoutSearchEmptyBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class SearchEmptyItem : BindableItem<LayoutSearchEmptyBinding>() {

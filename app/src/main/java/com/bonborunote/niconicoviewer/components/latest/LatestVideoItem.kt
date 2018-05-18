@@ -1,7 +1,8 @@
-package com.bonborunote.niconicoviewer.latest.ui
+package com.bonborunote.niconicoviewer.components.latest
 
+import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
-import com.bonborunote.niconicoviewer.latest.ui.databinding.LayoutLatestVideoBinding
+import com.bonborunote.niconicoviewer.databinding.LayoutLatestVideoBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class LatestVideoItem(

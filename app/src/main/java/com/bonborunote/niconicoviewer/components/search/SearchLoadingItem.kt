@@ -1,9 +1,9 @@
-package com.bonborunote.niconicoviewer.search.ui
+package com.bonborunote.niconicoviewer.components.search
 
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import com.bonborunote.niconicoviewer.search.R
-import com.bonborunote.niconicoviewer.search.databinding.LayoutSearchLoadingBinding
+import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.databinding.LayoutSearchLoadingBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class SearchLoadingItem : BindableItem<LayoutSearchLoadingBinding>() {

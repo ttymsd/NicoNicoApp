@@ -1,7 +1,8 @@
-package com.bonborunote.niconicoviewer.search.ui
+package com.bonborunote.niconicoviewer.modules
 
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.FragmentActivity
+import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.search.domain.ContentRepository
 import com.bonborunote.niconicoviewer.search.infra.ContentRepositoryImpl
 import org.kodein.di.Kodein
@@ -18,7 +19,8 @@ val searchModule = Kodein.Module {
     }
   bind<SearchViewModel>() with scoped(androidScope<FragmentActivity>())
     .singleton {
-      ViewModelProviders.of(context, SearchViewModel.Factory(instance()))
+      ViewModelProviders.of(context,
+        SearchViewModel.Factory(instance()))
         .get(SearchViewModel::class.java)
     }
 }

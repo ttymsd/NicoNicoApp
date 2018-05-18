@@ -76,11 +76,16 @@ repositories {
 
 dependencies {
   implementation project(':common')
+  implementation project(':resources')
   implementation project(':network')
   implementation project(':groupie-aac-plugin')
   implementation project(':player-domain')
+  implementation project(':player-infra')
+  implementation project(':player-usecase')
   implementation project(':player-ui')
   implementation project(':search-domain')
+  implementation project(':search-infra')
+  implementation project(':search-usecase')
   implementation project(':search-ui')
   implementation project(':detail-domain')
   implementation project(':detail-infra')

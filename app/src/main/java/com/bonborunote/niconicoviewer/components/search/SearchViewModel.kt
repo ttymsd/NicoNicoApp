@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.search.ui
+package com.bonborunote.niconicoviewer.components.search
 
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.LiveData

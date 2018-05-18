@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.search.ui
+package com.bonborunote.niconicoviewer.components.search
 
 import android.arch.lifecycle.Observer
 import android.content.Context
@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.groupie.aac.plugin.PagedSection
 import com.bonborunote.niconicoviewer.common.models.Content
-import com.bonborunote.niconicoviewer.search.R
-import com.bonborunote.niconicoviewer.search.databinding.FragmentSearchBinding
+import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.databinding.FragmentSearchBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder

@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.latest.ui
+package com.bonborunote.niconicoviewer.components.latest
 
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
@@ -35,7 +35,8 @@ class LatestViewModel private constructor(
       private val latestVideoRepository: LatestVideoRepository
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return LatestViewModel(LatestUseCaseFactory().build(latestVideoRepository)) as? T
+      return LatestViewModel(
+        LatestUseCaseFactory().build(latestVideoRepository)) as? T
           ?: throw IllegalArgumentException()
     }
   }

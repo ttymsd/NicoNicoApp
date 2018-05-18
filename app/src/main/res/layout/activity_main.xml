@@ -11,20 +11,22 @@
       />
     <variable
       name="searchViewModel"
-      type="com.bonborunote.niconicoviewer.search.ui.SearchViewModel"
+      type="com.bonborunote.niconicoviewer.components.search.SearchViewModel"
       />
   </data>
 
-  <android.support.design.widget.CoordinatorLayout
+  <android.support.constraint.ConstraintLayout
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
     <android.support.design.widget.AppBarLayout
+      android:id="@+id/app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fitsSystemWindows="true"
+      app:layout_constraintTop_toTopOf="parent"
       >
 
       <android.support.v7.widget.Toolbar
@@ -53,9 +55,10 @@
       android:elevation="@dimen/bottom_navigation_elevation"
       app:itemIconTint="#f0f"
       app:itemTextColor="#fff"
-      app:layout_behavior="@string/coordinator_behaviors_bottom_navigation_behavior"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:menu="@menu/bottom_navigation"
-      tools:targetApi="lollipop" />
+      tools:targetApi="lollipop"
+      />
 
-  </android.support.design.widget.CoordinatorLayout>
+  </android.support.constraint.ConstraintLayout>
 </layout>

@@ -31,11 +31,6 @@ android {
   }
 }
 
-repositories {
-  jcenter()
-  maven { url "http://dl.bintray.com/ttymsd/maven" }
-}
-
 dependencies {
   implementation project(':resources')
   implementation project(':common')
@@ -57,7 +52,6 @@ dependencies {
   implementation "com.xwray:groupie:$GROUPIE"
   implementation "com.xwray:groupie-databinding:$GROUPIE"
   implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
-  implementation "jp.bglb.bonboru:coordinator-behaviors:$COORDINATOR_BEHAVIORS_VERSION"
   kapt 'com.android.databinding:compiler:3.1.1'
 
   // PDS

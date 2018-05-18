@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.search.ui
+package com.bonborunote.niconicoviewer.components.search
 
 import android.databinding.BindingAdapter
 import android.widget.ImageView

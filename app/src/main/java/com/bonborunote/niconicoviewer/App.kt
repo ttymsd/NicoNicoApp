@@ -6,7 +6,7 @@ import com.bonborunote.niconicoviewer.modules.detailModule
 import com.bonborunote.niconicoviewer.modules.latestModule
 import com.bonborunote.niconicoviewer.modules.mainModule
 import com.bonborunote.niconicoviewer.modules.playbackModule
-import com.bonborunote.niconicoviewer.search.ui.searchModule
+import com.bonborunote.niconicoviewer.modules.searchModule
 import com.jakewharton.threetenabp.AndroidThreeTen
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein

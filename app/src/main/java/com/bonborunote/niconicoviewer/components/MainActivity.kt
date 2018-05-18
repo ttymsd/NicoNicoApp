@@ -12,12 +12,12 @@ import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
-import com.bonborunote.niconicoviewer.latest.ui.LatestVideosFragment
+import com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment
 import com.bonborunote.niconicoviewer.models.Navigation
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
 import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
-import com.bonborunote.niconicoviewer.search.ui.SearchContainer
-import com.bonborunote.niconicoviewer.search.ui.SearchViewModel
+import com.bonborunote.niconicoviewer.components.search.SearchContainer
+import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
 import org.kodein.di.Kodein
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     lifecycle.addObserver(searchViewModel)
     binding.mainViewModel = mainViewModel
     binding.searchViewModel = searchViewModel
-    binding.navigation.setOnNavigationItemSelectedListener(navigationSelector)
+//    binding.navigation.setOnNavigationItemSelectedListener(navigationSelector)
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
     mainViewModel.playableContent.observe(this, contentObserver)
