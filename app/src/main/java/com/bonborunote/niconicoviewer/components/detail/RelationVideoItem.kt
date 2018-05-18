@@ -1,7 +1,8 @@
-package com.bonborunote.niconicoviewer.detail.ui
+package com.bonborunote.niconicoviewer.components.detail
 
+import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.RelationVideo
-import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutRelationVideoBinding
+import com.bonborunote.niconicoviewer.databinding.LayoutRelationVideoBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class RelationVideoItem(

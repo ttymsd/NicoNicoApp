@@ -2,9 +2,9 @@ package com.bonborunote.niconicoviewer.modules
 
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
+import com.bonborunote.niconicoviewer.components.detail.DetailViewModel
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetailRepository
 import com.bonborunote.niconicoviewer.detail.infra.ContentDetailRepositoryImpl
-import com.bonborunote.niconicoviewer.detail.ui.DetailViewModel
 import com.bonboruntoe.niconicoviewer.detail.usecase.DetailUseCase
 import com.bonboruntoe.niconicoviewer.detail.usecase.DetailUseCaseFactory
 import org.kodein.di.Kodein

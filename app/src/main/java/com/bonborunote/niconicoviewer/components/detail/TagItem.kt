@@ -1,11 +1,12 @@
-package com.bonborunote.niconicoviewer.detail.ui
+package com.bonborunote.niconicoviewer.components.detail
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Tag
-import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutTagContainerBinding
+import com.bonborunote.niconicoviewer.databinding.LayoutTagContainerBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem

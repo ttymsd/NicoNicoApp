@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.detail.ui
+package com.bonborunote.niconicoviewer.components.detail
 
 import android.databinding.BindingAdapter
 import android.widget.ImageView

@@ -1,6 +1,7 @@
-package com.bonborunote.niconicoviewer.detail.ui
+package com.bonborunote.niconicoviewer.components.detail
 
-import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutDescriptionBinding
+import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.databinding.LayoutDescriptionBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class DescriptionItem(

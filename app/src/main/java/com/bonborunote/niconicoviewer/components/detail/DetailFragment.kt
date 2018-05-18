@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.detail.ui
+package com.bonborunote.niconicoviewer.components.detail
 
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.Identifier
 import com.bonborunote.niconicoviewer.common.models.ChannelId
 import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
@@ -16,7 +17,7 @@ import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.OwnerId
 import com.bonborunote.niconicoviewer.common.models.RelationVideo
 import com.bonborunote.niconicoviewer.common.models.Tag
-import com.bonborunote.niconicoviewer.detail.ui.databinding.FragmentDescriptionBinding
+import com.bonborunote.niconicoviewer.databinding.FragmentDescriptionBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.Section

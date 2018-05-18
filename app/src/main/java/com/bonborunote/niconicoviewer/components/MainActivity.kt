@@ -15,9 +15,9 @@ import com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
 import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
-import com.bonborunote.niconicoviewer.detail.ui.DetailFragment
-import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment
-import com.bonborunote.niconicoviewer.player.ui.PlaybackFragment.OnPlayerStateChangedListener
+import com.bonborunote.niconicoviewer.components.detail.DetailFragment
+import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment
+import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
 import org.kodein.di.Kodein

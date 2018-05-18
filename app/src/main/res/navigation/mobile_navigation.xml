@@ -22,4 +22,16 @@
     android:label="MyList"
     tools:layout="@layout/fragment_search"
     />
+  <fragment
+    android:id="@+id/play_back"
+    android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"
+    android:label="MyList"
+    tools:layout="@layout/fragment_search"
+    />
+  <fragment
+    android:id="@+id/description"
+    android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"
+    android:label="MyList"
+    tools:layout="@layout/fragment_search"
+    />
 </navigation>

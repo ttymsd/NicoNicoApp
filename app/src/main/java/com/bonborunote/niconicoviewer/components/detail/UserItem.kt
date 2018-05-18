@@ -1,14 +1,15 @@
-package com.bonborunote.niconicoviewer.detail.ui
+package com.bonborunote.niconicoviewer.components.detail
 
-import com.bonborunote.niconicoviewer.common.models.ChannelId
-import com.bonborunote.niconicoviewer.detail.ui.databinding.LayoutOwnerBinding
+import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.common.models.OwnerId
+import com.bonborunote.niconicoviewer.databinding.LayoutOwnerBinding
 import com.xwray.groupie.databinding.BindableItem
 
-class ChannelItem(
-  private val channelId: ChannelId,
+class UserItem(
+  private val userId: OwnerId,
   private val name: String,
   private val thumb: String,
-  private val callback: (ChannelId) -> Unit
+  private val callback: (OwnerId) -> Unit
 ) : BindableItem<LayoutOwnerBinding>() {
   override fun getLayout(): Int {
     return R.layout.layout_owner
@@ -18,7 +19,7 @@ class ChannelItem(
     viewBinding.name = name
     viewBinding.thumb = thumb
     viewBinding.root.setOnClickListener {
-      callback(channelId)
+      callback(userId)
     }
   }
 }

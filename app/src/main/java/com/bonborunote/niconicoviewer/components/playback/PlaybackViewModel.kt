@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.player.ui
+package com.bonborunote.niconicoviewer.components.playback
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.bonborunote.niconicoviewer.player.ui
+package com.bonborunote.niconicoviewer.components.playback
 
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
@@ -7,9 +7,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
-import com.bonborunote.niconicoviewer.player.ui.databinding.FragmentPlaybackBinding
+import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
