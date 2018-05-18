@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -126,7 +127,11 @@ dependencies {
   implementation "com.xwray:groupie:$GROUPIE"
   implementation "com.xwray:groupie-databinding:$GROUPIE"
   implementation "com.xwray:groupie-kotlin-android-extensions:$GROUPIE"
-  kapt 'com.android.databinding:compiler:3.1.1'
+  kapt "com.android.databinding:compiler:$DATABIDING_VERSION"
+
+  // Navigation
+  implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha01"
+  implementation "android.arch.navigation:navigation-ui:1.0.0-alpha01"
 
   // multidex
   implementation "com.android.support:multidex:$MULTI_DEX_VERSION"
