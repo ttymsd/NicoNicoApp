@@ -93,10 +93,14 @@ class PlaybackFragment : Fragment(), KodeinAware {
   companion object {
     const val TAG = "PlaybackFragment"
 
-    fun newInstance(contentId: ContentId): Fragment = PlaybackFragment().apply {
-      arguments = Bundle().apply {
+    fun createArgs(contentId: ContentId): Bundle {
+      return Bundle().apply {
         putString(PlaybackFragment::contentId.name, contentId.value)
       }
+    }
+
+    fun newInstance(contentId: ContentId): Fragment = PlaybackFragment().apply {
+      arguments = createArgs(contentId)
     }
   }
 }
