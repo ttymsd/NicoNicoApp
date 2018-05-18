@@ -7,13 +7,9 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.bonborunote.niconicoviewer.common.models.ContentId
-import com.bonborunote.niconicoviewer.models.Navigation
-import com.bonborunote.niconicoviewer.models.Navigation.LATEST
-import com.bonborunote.niconicoviewer.models.Navigation.SEARCH
 
 class MainViewModel private constructor() : ViewModel(), LifecycleObserver {
 
-  val currentPage = MutableLiveData<Navigation>()
   val playableContent = MutableLiveData<ContentId>()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -22,14 +18,6 @@ class MainViewModel private constructor() : ViewModel(), LifecycleObserver {
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   fun onDestroy() {
-  }
-
-  fun navigateToLatest() {
-    currentPage.postValue(LATEST)
-  }
-
-  fun navigateToSearch() {
-    currentPage.postValue(SEARCH)
   }
 
   fun play(id: ContentId) {
