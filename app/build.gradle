@@ -83,20 +83,16 @@ dependencies {
   implementation project(':player-domain')
   implementation project(':player-infra')
   implementation project(':player-usecase')
-  implementation project(':player-ui')
   implementation project(':search-domain')
   implementation project(':search-infra')
   implementation project(':search-usecase')
-  implementation project(':search-ui')
   implementation project(':detail-domain')
   implementation project(':detail-infra')
   implementation project(':detail-usecase')
-  implementation project(':detail-ui')
   implementation project(':latest-domain')
   implementation project(':latest-infra')
   implementation project(':latest-usecase')
-  implementation project(':latest-ui')
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINES_VERSION"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$COROUTINES_VERSION"
 
