@@ -113,12 +113,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
             remove(it)
           }
         }
-        .add(R.id.coordinator_layout, PlaybackFragment.newInstance(id).apply {
+        .add(R.id.coordinator, PlaybackFragment.newInstance(id).apply {
           enterTransition = Slide().apply {
             slideEdge = BOTTOM
           }
         }, PlaybackFragment.TAG)
-        .add(R.id.coordinator_layout, DetailFragment.newInstance(id).apply {
+        .add(R.id.coordinator, DetailFragment.newInstance(id).apply {
           enterTransition = Slide().apply {
             slideEdge = BOTTOM
           }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:android="http://schemas.android.com/apk/res/android">
 
   <android.support.constraint.ConstraintLayout
@@ -7,6 +8,8 @@
     android:layout_height="wrap_content"
     android:elevation="@dimen/playback_elevation"
     android:maxHeight="240dp"
+    app:layout_behavior="@string/coordinator_behaviors_youtube_behavior"
+    app:ylb_marginBottom="@dimen/navigation_height"
     >
 
     <FrameLayout

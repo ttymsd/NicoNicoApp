@@ -11,6 +11,7 @@ import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
+import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
@@ -18,7 +19,7 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class PlaybackFragment : Fragment(), KodeinAware {
+class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehaviorStateListener {
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
@@ -31,6 +32,7 @@ class PlaybackFragment : Fragment(), KodeinAware {
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
     activity as? OnPlayerStateChangedListener
   }
+
   private lateinit var binding: FragmentPlaybackBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +58,7 @@ class PlaybackFragment : Fragment(), KodeinAware {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
+    YoutubeLikeBehavior.from(binding.root)?.listener = this
   }
 
   override fun onStart() {
@@ -83,6 +86,13 @@ class PlaybackFragment : Fragment(), KodeinAware {
     super.onStop()
     if (higherMashmallow()) {
       playbackViewModel.stop()
+    }
+  }
+
+  override fun onBehaviorStateChanged(newState: Int) {
+    if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
+    || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
+      onPlayerStateChangedListener?.remove()
     }
   }
 

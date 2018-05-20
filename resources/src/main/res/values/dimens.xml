@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <dimen name="navigation_height">58dp</dimen>
+
   <dimen name="list_thumb_width">84dp</dimen>
   <dimen name="list_thumb_height">66dp</dimen>
 
