@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
@@ -40,6 +41,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   }
 
   private lateinit var binding: FragmentPlaybackBinding
+  private var seekBarAnimator: ViewPropertyAnimator? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -68,6 +70,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.seekBar.max = 1000
     YoutubeLikeBehavior.from(binding.root)?.let {
       it.listener = this
       it.draggable = false
@@ -75,15 +78,16 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
     val detector = GestureDetector(activity, SimpleOnGestureListener())
     detector.setOnDoubleTapListener(object : OnDoubleTapListener {
-      override fun onDoubleTap(p0: MotionEvent?): Boolean {
+      override fun onDoubleTap(event: MotionEvent): Boolean {
         return false
       }
 
-      override fun onDoubleTapEvent(p0: MotionEvent?): Boolean {
+      override fun onDoubleTapEvent(event: MotionEvent): Boolean {
         return false
       }
 
-      override fun onSingleTapConfirmed(p0: MotionEvent?): Boolean {
+      override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+        showSeekBar()
         return true
       }
     })
@@ -137,38 +141,51 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   }
 
   private fun showSeekBar() {
-    binding.seekBar.animate()
-        .alphaBy(0f)
-        .alpha(1f)
-        .setUpdateListener {
-          playbackViewModel.updateProgress()
-        }
-        .setListener(object : AnimatorListenerAdapter() {
-          override fun onAnimationStart(animation: Animator?) {
-            ignoreDrag()
-          }
+    seekBarAnimator?.cancel()
 
-          override fun onAnimationEnd(animation: Animator?) {
-            dissMissSeekBar()
-          }
-        })
-        .start()
+    seekBarAnimator = binding.seekBar.animate().apply {
+      startDelay = 0
+      duration = 1_000L
+      alphaBy(0f)
+      alpha(1f)
+      setUpdateListener {
+        playbackViewModel.updateProgress()
+      }
+      setListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationStart(animation: Animator?) {
+          ignoreDrag()
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+          dissMissSeekBar()
+        }
+      })
+      start()
+    }
   }
 
   private fun dissMissSeekBar() {
-    binding.seekBar.animate()
-        .setStartDelay(3_000L)
-        .alphaBy(1f)
-        .alpha(0f)
-        .setUpdateListener {
-          playbackViewModel.updateProgress()
+    seekBarAnimator = binding.seekBar.animate().apply {
+      duration = 6_000L
+      alphaBy(1f)
+      alpha(0f)
+      setInterpolator {
+        if (it <= 0.8f) 0f else 1f - (1f - it) / 0.2f
+      }
+      setUpdateListener {
+        playbackViewModel.updateProgress()
+      }
+      setListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationCancel(animation: Animator?) {
+          binding.seekBar.alpha = 1f
         }
-        .setListener(object : AnimatorListenerAdapter() {
-          override fun onAnimationEnd(animation: Animator?) {
-            acceptDraggable()
-          }
-        })
-        .start()
+
+        override fun onAnimationEnd(animation: Animator?) {
+          acceptDraggable()
+        }
+      })
+      start()
+    }
   }
 
   interface OnPlayerStateChangedListener {
