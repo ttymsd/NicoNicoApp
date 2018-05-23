@@ -6,7 +6,6 @@ import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -49,6 +48,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     playbackViewModel.movieUrl.observe(this, Observer {
+      binding.progress.visibility = View.GONE
       showSeekBar()
       playbackViewModel.bind(binding.playerView)
       playbackViewModel.play()
