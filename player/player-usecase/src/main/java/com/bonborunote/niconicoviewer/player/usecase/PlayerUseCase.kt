@@ -16,4 +16,5 @@ interface PlayerUseCase {
   fun stop(): Long
   fun seekTo(positionMs: Long)
   fun currentPosition(): Long
+  fun duration(): Long
 }

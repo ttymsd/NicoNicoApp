@@ -17,6 +17,7 @@ class PlaybackViewModel(
 ) : ViewModel() {
   val movieUrl = MutableLiveData<String>()
   val seekPosition = MutableLiveData<Long>()
+  val progress = MutableLiveData<Int>()
 
   fun findMediaUrl(container: ViewGroup, contentId: String) {
     playbackUseCase.findMediaUrl(contentId, container) {
@@ -43,6 +44,12 @@ class PlaybackViewModel(
 
   fun seekTo(positionMs: Long) {
     playbackUseCase.seekTo(positionMs)
+  }
+
+  fun updateProgress() {
+    val position = playbackUseCase.currentPosition()
+    val duration = playbackUseCase.duration()
+    progress.postValue((1000 * position / duration).toInt())
   }
 
   @Suppress("UNCHECKED_CAST")

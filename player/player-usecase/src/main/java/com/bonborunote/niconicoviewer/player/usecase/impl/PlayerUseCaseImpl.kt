@@ -8,11 +8,17 @@ import com.bonborunote.niconicoviewer.player.domain.MediaUrlRepository
 import com.bonborunote.niconicoviewer.player.domain.NicoDataSource
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player.EventListener
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.util.EventLogger
@@ -61,6 +67,10 @@ internal class PlayerUseCaseImpl(
 
   override fun currentPosition(): Long {
     return player.currentPosition
+  }
+
+  override fun duration(): Long {
+    return player.duration
   }
 }
 

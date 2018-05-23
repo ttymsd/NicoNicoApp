@@ -4,7 +4,11 @@ import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.GestureDetector
+import android.view.GestureDetector.OnDoubleTapListener
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
@@ -47,6 +51,11 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
         playbackViewModel.seekTo(it)
       }
     })
+    playbackViewModel.progress.observe(this, Observer {
+      it?.let {
+        binding.seekBar.progress = it
+      }
+    })
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +67,32 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
-    YoutubeLikeBehavior.from(binding.root)?.listener = this
+    YoutubeLikeBehavior.from(binding.root)?.let {
+      it.listener = this
+      it.draggable = false
+    }
+    val detector = GestureDetector(activity, SimpleOnGestureListener())
+    detector.setOnDoubleTapListener(object: OnDoubleTapListener {
+      override fun onDoubleTap(p0: MotionEvent?): Boolean {
+        return false
+      }
+
+      override fun onDoubleTapEvent(p0: MotionEvent?): Boolean {
+        return false
+      }
+
+      override fun onSingleTapConfirmed(p0: MotionEvent?): Boolean {
+        YoutubeLikeBehavior.from(binding.root)?.let {
+          it.draggable = !it.draggable
+        }
+        playbackViewModel.updateProgress()
+        return true
+      }
+    })
+    binding.root.setOnTouchListener { _, motionEvent ->
+      detector.onTouchEvent(motionEvent)
+      true
+    }
   }
 
   override fun onStart() {
