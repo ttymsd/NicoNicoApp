@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -14,6 +15,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
+import android.widget.SeekBar
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
@@ -26,7 +28,8 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehaviorStateListener {
+class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehaviorStateListener, SeekBar.OnSeekBarChangeListener {
+
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
@@ -70,7 +73,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.seekBar.max = 1000
+    binding.seekBar.max = PlaybackViewModel.MAX_PROGRESS
     YoutubeLikeBehavior.from(binding.root)?.let {
       it.listener = this
       it.draggable = false
@@ -95,6 +98,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       detector.onTouchEvent(motionEvent)
       true
     }
+    binding.seekBar.setOnSeekBarChangeListener(this)
   }
 
   override fun onStart() {
@@ -132,6 +136,21 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     }
   }
 
+  override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+    if (fromUser) {
+      playbackViewModel.seekTo(progress)
+    }
+  }
+
+  override fun onStartTrackingTouch(seekBar: SeekBar) {
+    seekBarAnimator?.cancel()
+    binding.seekBar.alpha = 1f
+  }
+
+  override fun onStopTrackingTouch(seekBar: SeekBar) {
+    showSeekBar()
+  }
+
   private fun acceptDraggable() {
     YoutubeLikeBehavior.from(binding.root)?.draggable = true
   }
@@ -144,8 +163,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     seekBarAnimator?.cancel()
 
     seekBarAnimator = binding.seekBar.animate().apply {
-      startDelay = 0
-      duration = 1_000L
+      duration = SHOW_ANIMATION_DURATION
       alphaBy(0f)
       alpha(1f)
       setUpdateListener {
@@ -166,7 +184,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   private fun dissMissSeekBar() {
     seekBarAnimator = binding.seekBar.animate().apply {
-      duration = 6_000L
+      duration = DISMISS_ANIMATION_DURATION
       alphaBy(1f)
       alpha(0f)
       setInterpolator {
@@ -194,6 +212,8 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   companion object {
     const val TAG = "PlaybackFragment"
+    private val SHOW_ANIMATION_DURATION = 1_000L
+    private val DISMISS_ANIMATION_DURATION = 6_000L
 
     fun createArgs(contentId: ContentId): Bundle {
       return Bundle().apply {

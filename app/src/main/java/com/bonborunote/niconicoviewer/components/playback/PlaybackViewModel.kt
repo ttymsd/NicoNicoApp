@@ -11,6 +11,7 @@ import com.bonborunote.niconicoviewer.player.usecase.impl.PlayerUseCaseFactory
 import com.google.android.exoplayer2.ui.PlayerView
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import kotlin.math.roundToLong
 
 class PlaybackViewModel(
     private val playbackUseCase: PlayerUseCase
@@ -46,10 +47,15 @@ class PlaybackViewModel(
     playbackUseCase.seekTo(positionMs)
   }
 
+  fun seekTo(progress: Int) {
+    val ms: Long = (progress / MAX_PROGRESS.toFloat() * playbackUseCase.duration()).roundToLong()
+    playbackUseCase.seekTo(ms)
+  }
+
   fun updateProgress() {
     val position = playbackUseCase.currentPosition()
     val duration = playbackUseCase.duration()
-    progress.postValue((1000 * position / duration).toInt())
+    progress.postValue((MAX_PROGRESS.toFloat() * position / duration).toInt())
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -64,5 +70,9 @@ class PlaybackViewModel(
           MediaUrlRepositoryFactory().create())
       return PlaybackViewModel(useCase) as? T ?: throw IllegalArgumentException()
     }
+  }
+
+  companion object {
+    const val MAX_PROGRESS = 1000
   }
 }
