@@ -1,5 +1,7 @@
 package com.bonborunote.niconicoviewer.components.playback
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -42,9 +44,9 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     playbackViewModel.movieUrl.observe(this, Observer {
+      showSeekBar()
       playbackViewModel.bind(binding.playerView)
       playbackViewModel.play()
-      binding.root.parent.requestLayout()
     })
     playbackViewModel.seekPosition.observe(this, Observer {
       it?.let {
@@ -66,13 +68,13 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
     YoutubeLikeBehavior.from(binding.root)?.let {
       it.listener = this
       it.draggable = false
     }
+    playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
     val detector = GestureDetector(activity, SimpleOnGestureListener())
-    detector.setOnDoubleTapListener(object: OnDoubleTapListener {
+    detector.setOnDoubleTapListener(object : OnDoubleTapListener {
       override fun onDoubleTap(p0: MotionEvent?): Boolean {
         return false
       }
@@ -82,10 +84,6 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       }
 
       override fun onSingleTapConfirmed(p0: MotionEvent?): Boolean {
-        YoutubeLikeBehavior.from(binding.root)?.let {
-          it.draggable = !it.draggable
-        }
-        playbackViewModel.updateProgress()
         return true
       }
     })
@@ -125,9 +123,52 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onBehaviorStateChanged(newState: Int) {
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
-    || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
+        || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
       onPlayerStateChangedListener?.remove()
     }
+  }
+
+  private fun acceptDraggable() {
+    YoutubeLikeBehavior.from(binding.root)?.draggable = true
+  }
+
+  private fun ignoreDrag() {
+    YoutubeLikeBehavior.from(binding.root)?.draggable = false
+  }
+
+  private fun showSeekBar() {
+    binding.seekBar.animate()
+        .alphaBy(0f)
+        .alpha(1f)
+        .setUpdateListener {
+          playbackViewModel.updateProgress()
+        }
+        .setListener(object : AnimatorListenerAdapter() {
+          override fun onAnimationStart(animation: Animator?) {
+            ignoreDrag()
+          }
+
+          override fun onAnimationEnd(animation: Animator?) {
+            dissMissSeekBar()
+          }
+        })
+        .start()
+  }
+
+  private fun dissMissSeekBar() {
+    binding.seekBar.animate()
+        .setStartDelay(3_000L)
+        .alphaBy(1f)
+        .alpha(0f)
+        .setUpdateListener {
+          playbackViewModel.updateProgress()
+        }
+        .setListener(object : AnimatorListenerAdapter() {
+          override fun onAnimationEnd(animation: Animator?) {
+            acceptDraggable()
+          }
+        })
+        .start()
   }
 
   interface OnPlayerStateChangedListener {
