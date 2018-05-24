@@ -162,7 +162,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   private fun showSeekBar() {
     seekBarAnimator?.cancel()
 
-    seekBarAnimator = binding.seekBar.animate().apply {
+    seekBarAnimator = binding.controller.animate().apply {
       duration = SHOW_ANIMATION_DURATION
       alphaBy(0f)
       alpha(1f)
@@ -183,7 +183,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   }
 
   private fun dissMissSeekBar() {
-    seekBarAnimator = binding.seekBar.animate().apply {
+    seekBarAnimator = binding.controller.animate().apply {
       duration = DISMISS_ANIMATION_DURATION
       alphaBy(1f)
       alpha(0f)

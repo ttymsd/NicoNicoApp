@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">NicoNicoViewer</string>
+  <string name="replay">replay</string>
+  <string name="forward">forward</string>
 </resources>
