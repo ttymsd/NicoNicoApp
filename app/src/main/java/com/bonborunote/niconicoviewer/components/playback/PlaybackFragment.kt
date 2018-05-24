@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.SeekBar
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
@@ -99,6 +100,15 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       true
     }
     binding.seekBar.setOnSeekBarChangeListener(this)
+    binding.playPause.setOnClickListener {
+      playbackViewModel.togglePlay()
+    }
+    binding.forward.setOnClickListener {
+      playbackViewModel.forward()
+    }
+    binding.replay.setOnClickListener {
+      playbackViewModel.replay()
+    }
   }
 
   override fun onStart() {
@@ -164,6 +174,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
     seekBarAnimator = binding.controller.animate().apply {
       duration = SHOW_ANIMATION_DURATION
+      interpolator = AccelerateDecelerateInterpolator()
       alphaBy(0f)
       alpha(1f)
       setUpdateListener {

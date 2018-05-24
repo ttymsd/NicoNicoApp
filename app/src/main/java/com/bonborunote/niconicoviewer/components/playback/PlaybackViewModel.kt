@@ -58,6 +58,18 @@ class PlaybackViewModel(
     progress.postValue((MAX_PROGRESS.toFloat() * position / duration).toInt())
   }
 
+  fun togglePlay() {
+    playbackUseCase.togglePlay()
+  }
+
+  fun forward() {
+    playbackUseCase.seekTo(playbackUseCase.currentPosition() + FORWARD_DURATION)
+  }
+
+  fun replay() {
+    playbackUseCase.seekTo(playbackUseCase.currentPosition() - REPLAY_DURATION)
+  }
+
   @Suppress("UNCHECKED_CAST")
   class Factory(
       private val context: Context,
@@ -74,5 +86,7 @@ class PlaybackViewModel(
 
   companion object {
     const val MAX_PROGRESS = 1000
+    private const val FORWARD_DURATION = 30_000L
+    private const val REPLAY_DURATION = 10_000L
   }
 }

@@ -17,4 +17,5 @@ interface PlayerUseCase {
   fun seekTo(positionMs: Long)
   fun currentPosition(): Long
   fun duration(): Long
+  fun togglePlay()
 }
