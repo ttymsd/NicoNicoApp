@@ -49,7 +49,11 @@ class SearchContainer : Fragment(), KodeinAware {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(searchViewModel)
-    searchViewModel.search(keyword)
+    when {
+      keyword.isNotBlank() -> searchViewModel.search(keyword)
+      tagWord.isNotBlank() -> searchViewModel.searchFromTag(tagWord)
+      else -> Unit
+    }
   }
 
   override fun onAttach(context: Context?) {
@@ -78,10 +82,13 @@ class SearchContainer : Fragment(), KodeinAware {
         section.removeFooter()
       }
     })
-    searchViewModel.contents.observe(this, Observer {
+    searchViewModel.searchContents.observe(this, Observer {
       it?.let {
         searchContentSection.submitList(it)
       }
+    })
+    searchViewModel.tagSearchContents.observe(this, Observer {
+      it?.let { searchContentSection.submitList(it)}
     })
     searchViewModel.playableContent.observe(this, Observer {
       it?.let {

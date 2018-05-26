@@ -11,11 +11,18 @@ import com.google.gson.annotations.SerializedName
 
 interface ContentRepository {
   fun search(keyword: String,
-      sort: Sort,
-      offset: Int,
-      limit: Int,
-      context: String? = null,
-      jsonFilters: Filter? = null): List<Content>
+    sort: Sort,
+    offset: Int,
+    limit: Int,
+    context: String? = null,
+    jsonFilters: Filter? = null): List<Content>
+
+  fun searchFromTag(tag: String,
+    sort: Sort,
+    offset: Int,
+    limit: Int,
+    context: String? = null,
+    jsonFilters: Filter? = null): List<Content>
 
   enum class FilterableField(val key: String) {
     CONTENT_ID("contentId"),
@@ -38,13 +45,13 @@ interface ContentRepository {
   }
 
   data class Condition(
-      @SerializedName("type") val type: String,
-      @SerializedName("field") var field: String? = null,
-      @SerializedName("value") var value: String? = null,
-      @SerializedName("from") var from: String? = null,
-      @SerializedName("to") var to: String? = null,
-      @SerializedName("include_upper") var includeUpper: Boolean? = null,
-      @SerializedName("include_lower") var includeLower: Boolean? = null
+    @SerializedName("type") val type: String,
+    @SerializedName("field") var field: String? = null,
+    @SerializedName("value") var value: String? = null,
+    @SerializedName("from") var from: String? = null,
+    @SerializedName("to") var to: String? = null,
+    @SerializedName("include_upper") var includeUpper: Boolean? = null,
+    @SerializedName("include_lower") var includeLower: Boolean? = null
   ) {
     infix fun FilterableField.equal(value: String) {
       this@Condition.field = key
@@ -65,8 +72,8 @@ interface ContentRepository {
   }
 
   data class Filter(
-      @SerializedName("type") val type: String,
-      @SerializedName("filters") val conditions: List<Condition>
+    @SerializedName("type") val type: String,
+    @SerializedName("filters") val conditions: List<Condition>
   ) {
     override fun toString(): String {
       return Gson().toJson(this)

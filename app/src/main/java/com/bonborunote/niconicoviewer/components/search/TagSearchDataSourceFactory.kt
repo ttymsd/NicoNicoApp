@@ -5,16 +5,16 @@ import android.arch.paging.DataSource
 import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconivoviewer.search.usecase.SearchUseCase
 
-class SearchResultDataSourceFactory(
-    private val keyword: String,
-    private val searchUseCase: SearchUseCase,
-    private val clickCallback: (content: Content) -> Unit
+class TagSearchDataSourceFactory(
+  private val tag: String,
+  private val searchUseCase: SearchUseCase,
+  private val clickCallback: (content: Content) -> Unit
 ) : DataSource.Factory<Int, SearchContentItem>() {
 
-  val dataSourceLiveData = MutableLiveData<SearchResultDataSource>()
+  val dataSourceLiveData = MutableLiveData<TagSearchDataSource>()
 
   override fun create(): DataSource<Int, SearchContentItem> {
-    val dataSource = SearchResultDataSource(keyword, searchUseCase, clickCallback)
+    val dataSource = TagSearchDataSource(tag, searchUseCase, clickCallback)
     dataSourceLiveData.postValue(dataSource)
     return dataSource
   }

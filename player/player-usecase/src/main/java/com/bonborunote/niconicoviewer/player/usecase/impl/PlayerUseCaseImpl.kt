@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.EventListener
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -30,6 +31,8 @@ internal class PlayerUseCaseImpl(
     private val mediaUrlRepository: MediaUrlRepository,
     private val handler: Handler = Handler()
 ) : PlayerUseCase {
+  private var eventListener: Player.EventListener? = null
+
   private val mediaSourceFactory = ExtractorMediaSource.Factory(
       NicoDataSource.Factory(context, okHttpClient))
   private val renderersFactory = DefaultRenderersFactory(context)
@@ -37,9 +40,15 @@ internal class PlayerUseCaseImpl(
       DefaultBandwidthMeter())
   private val trackSelector = DefaultTrackSelector(adaptiveTrackSelectionFactory)
   private val logger = EventLogger(trackSelector)
+  private val listener = object : Player.DefaultEventListener() {
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+      eventListener?.onPlayerStateChanged(playWhenReady, playbackState)
+    }
+  }
   private val player: ExoPlayer by lazy {
     ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector).apply {
       playWhenReady = true
+      addListener(listener)
     }
   }
 
@@ -75,6 +84,14 @@ internal class PlayerUseCaseImpl(
 
   override fun duration(): Long {
     return player.duration
+  }
+
+  override fun addEventListener(listener: EventListener) {
+    eventListener = listener
+  }
+
+  override fun removeEventListener(listener: EventListener) {
+    eventListener = null
   }
 }
 

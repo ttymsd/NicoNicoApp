@@ -48,6 +48,39 @@ class ContentRepositoryImpl(private val api: NicoNicoSearchApi) : ContentReposit
       )
     }
   }
+
+  override fun searchFromTag(tag: String,
+      sort: Sort,
+      offset: Int,
+      limit: Int,
+      context: String?,
+      jsonFilters: Filter?): List<Content> {
+    if (tag.isBlank()) return emptyList()
+
+    val response = api.searchVideo(
+        keyword = tag,
+        targets = listOf(Target.TAGS).joinToString(",") { it.key },
+        sort = sort.convertToNetwork().key,
+        fields = listOf(CONTENT_ID, TITLE, LENGTH_SECONDS).joinToString(",") { it.key },
+        offset = offset,
+        limit = limit,
+        context = context,
+        filters = jsonFilters?.toString()
+    ).execute()
+
+    val body = response.body() ?: throw RuntimeException()
+    if (300 <= body.metaJson.status) {
+      throw NicoNicoException(body.metaJson.status, body.metaJson.errorCode,
+          body.metaJson.errorMessage)
+    }
+    return body.data.map {
+      Content(
+          id = ContentId(it.contentId),
+          title = it.title,
+          lengthSeconds = it.lengthSeconds
+      )
+    }
+  }
 }
 
 private fun Sort.convertToNetwork(): NicoNicoSearchApi.Sort {

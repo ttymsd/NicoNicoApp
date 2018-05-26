@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer.player.usecase
 
 import android.support.annotation.MainThread
 import android.view.ViewGroup
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
 
 interface PlayerUseCase {
@@ -18,4 +19,6 @@ interface PlayerUseCase {
   fun currentPosition(): Long
   fun duration(): Long
   fun togglePlay()
+  fun addEventListener(listener: Player.EventListener)
+  fun removeEventListener(listener: Player.EventListener)
 }

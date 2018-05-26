@@ -11,6 +11,9 @@ internal class SearchUseCaseImpl(
   override fun search(keyword: String, offset: Int, limit: Int, sort: Sort): List<Content> {
     return contentRepository.search(keyword, sort, offset, limit)
   }
+  override fun searchFromTag(tag: String, offset: Int, limit: Int, sort: Sort): List<Content> {
+    return contentRepository.search(tag, sort, offset, limit)
+  }
 }
 
 class SearchUseCaseFactory(

@@ -84,8 +84,9 @@ class DetailFragment : Fragment(), KodeinAware {
   }
 
   private fun update(detail: ContentDetail) {
+    val nonNullActivity = activity ?: return
     val items = mutableListOf<Item<*>>()
-    items.add(TagItem(requireContext(), detail.tags))
+    items.add(TagItem(nonNullActivity, detail.tags))
     items.add(DescriptionItem(detail.description))
     items.add(CountItem(detail.viewCount, detail.commentCount, detail.myListCount))
     detail.channel?.let {

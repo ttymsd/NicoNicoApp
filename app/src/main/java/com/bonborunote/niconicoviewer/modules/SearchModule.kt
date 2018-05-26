@@ -20,7 +20,7 @@ val searchModule = Kodein.Module {
   bind<SearchViewModel>() with scoped(androidScope<FragmentActivity>())
     .singleton {
       ViewModelProviders.of(context,
-        SearchViewModel.Factory(instance()))
+        SearchViewModel.Factory(instance(), instance()))
         .get(SearchViewModel::class.java)
     }
 }

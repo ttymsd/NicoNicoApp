@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+import okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -16,13 +17,16 @@ import org.kodein.di.generic.singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 val applicationModule = Kodein.Module {
+  bind<ExecutorService>() with singleton { Executors.newFixedThreadPool(5) }
   bind<okhttp3.CookieJar>() with singleton { CookieJar() }
   bind<Gson>() with singleton { GsonBuilder().create() }
   bind<HttpLoggingInterceptor>("log") with singleton {
     HttpLoggingInterceptor().apply {
-      level = BODY
+      level = HEADERS
     }
   }
   bind<OkHttpClient>() with singleton {

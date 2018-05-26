@@ -5,4 +5,6 @@ import com.bonborunote.niconicoviewer.search.domain.Sort
 
 interface SearchUseCase {
   fun search(keyword: String, offset: Int, limit: Int, sort: Sort): List<Content>
+
+  fun searchFromTag(tag: String, offset: Int, limit: Int, sort: Sort): List<Content>
 }

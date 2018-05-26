@@ -1,6 +1,11 @@
 package com.bonborunote.niconicoviewer.components.playback
 
+import android.arch.lifecycle.Lifecycle.Event.ON_CREATE
+import android.arch.lifecycle.Lifecycle.Event.ON_START
+import android.arch.lifecycle.Lifecycle.Event.ON_STOP
+import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
@@ -8,6 +13,7 @@ import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.player.infra.MediaUrlRepositoryFactory
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.bonborunote.niconicoviewer.player.usecase.impl.PlayerUseCaseFactory
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -15,10 +21,29 @@ import kotlin.math.roundToLong
 
 class PlaybackViewModel(
     private val playbackUseCase: PlayerUseCase
-) : ViewModel() {
+) : ViewModel(), LifecycleObserver {
   val movieUrl = MutableLiveData<String>()
   val seekPosition = MutableLiveData<Long>()
   val progress = MutableLiveData<Int>()
+  val playerState = MutableLiveData<Int>()
+  val isPlaying = MutableLiveData<Boolean>()
+
+  private val playerEventListener = object : Player.DefaultEventListener() {
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+      playerState.postValue(playbackState)
+      isPlaying.postValue(playWhenReady)
+    }
+  }
+
+  @OnLifecycleEvent(ON_START)
+  fun onStart() {
+    playbackUseCase.addEventListener(playerEventListener)
+  }
+
+  @OnLifecycleEvent(ON_STOP)
+  fun onStop() {
+    playbackUseCase.removeEventListener(playerEventListener)
+  }
 
   fun findMediaUrl(container: ViewGroup, contentId: String) {
     playbackUseCase.findMediaUrl(contentId, container) {

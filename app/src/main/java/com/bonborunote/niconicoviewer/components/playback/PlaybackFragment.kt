@@ -20,6 +20,7 @@ import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
+import com.google.android.exoplayer2.Player
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -48,6 +49,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    lifecycle.addObserver(playbackViewModel)
     playbackViewModel.movieUrl.observe(this, Observer {
       binding.progress.visibility = View.GONE
       showSeekBar()
@@ -62,6 +64,20 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     playbackViewModel.progress.observe(this, Observer {
       it?.let {
         binding.seekBar.progress = it
+      }
+    })
+    playbackViewModel.playerState.observe(this, Observer {
+      when (it) {
+        Player.STATE_ENDED -> binding.controller.animate().alpha(1f).start()
+        Player.STATE_READY -> showSeekBar()
+      }
+    })
+    playbackViewModel.isPlaying.observe(this, Observer { isPlaying ->
+      isPlaying ?: return@Observer
+      if (isPlaying) {
+        binding.playPause.setImageResource(R.drawable.ic_pause_white)
+      } else {
+        binding.playPause.setImageResource(R.drawable.ic_play_arrow_white)
       }
     })
   }
