@@ -4,8 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Tag
+import com.bonborunote.niconicoviewer.components.search.SearchContainer
+import com.bonborunote.niconicoviewer.components.search.SearchContainerArgs
 import com.bonborunote.niconicoviewer.databinding.LayoutTagContainerBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.xwray.groupie.Item
@@ -13,14 +17,16 @@ import com.xwray.groupie.databinding.BindableItem
 
 class TagItem(
   context: Context,
-  private val tags: List<Tag>,
-  private val callback: (Tag) -> Unit
+  private val tags: List<Tag>
 ) : BindableItem<LayoutTagContainerBinding>() {
 
   private val layoutInflater = LayoutInflater.from(context)
-  private val clickListener = View.OnClickListener {
-    (it.tag as? Tag)?.let {
-      callback(it)
+  private val clickListener = View.OnClickListener { view ->
+    (view.tag as? Tag)?.let { tag ->
+      val args = SearchContainerArgs.Builder().apply {
+        this.tag = tag.value
+      }.build().toBundle()
+      Navigation.findNavController(view).navigate(R.id.search, args)
     }
   }
 

@@ -15,7 +15,18 @@
     android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"
     android:label="Search"
     tools:layout="@layout/fragment_search"
-    />
+    >
+    <action
+      android:id="@+id/action_search" />
+    <argument
+      android:name="keyword"
+      android:defaultValue=""
+      />
+    <argument
+      android:name="tag"
+      android:defaultValue=""
+      />
+  </fragment>
   <fragment
     android:id="@+id/my_list"
     android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"

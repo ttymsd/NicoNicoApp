@@ -39,9 +39,17 @@ class SearchContainer : Fragment(), KodeinAware {
     add(searchContentSection)
   }
 
+  private val keyword by lazy {
+    SearchContainerArgs.fromBundle(arguments).keyword
+  }
+  private val tagWord by lazy {
+    SearchContainerArgs.fromBundle(arguments).tag
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(searchViewModel)
+    searchViewModel.search(keyword)
   }
 
   override fun onAttach(context: Context?) {
@@ -89,13 +97,5 @@ class SearchContainer : Fragment(), KodeinAware {
 
   interface SearchListItemClickListener {
     fun clickSearchItem(video: Content)
-  }
-
-  companion object {
-    const val TAG = "SearchContainer"
-
-    fun newInstance(): SearchContainer = SearchContainer().apply {
-      arguments = Bundle()
-    }
   }
 }

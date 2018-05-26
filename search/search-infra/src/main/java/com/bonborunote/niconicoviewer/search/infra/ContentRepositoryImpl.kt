@@ -22,6 +22,8 @@ class ContentRepositoryImpl(private val api: NicoNicoSearchApi) : ContentReposit
       limit: Int,
       context: String?,
       jsonFilters: Filter?): List<Content> {
+    if (keyword.isBlank()) return emptyList()
+
     val response = api.searchVideo(
         keyword = keyword,
         targets = listOf(Target.TITLE, DESCRIPTION, Target.TAGS).joinToString(",") { it.key },

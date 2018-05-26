@@ -37,10 +37,6 @@ class DetailFragment : Fragment(), KodeinAware {
     arguments?.getString(DetailFragment::contentId.name, "") ?: ""
   }
 
-  private val tagClickListener: (Tag) -> Unit = {
-    Log.d("AAA", it.toString())
-  }
-
   private val channelCallback: (ChannelId) -> Unit = {
 
   }
@@ -89,7 +85,7 @@ class DetailFragment : Fragment(), KodeinAware {
 
   private fun update(detail: ContentDetail) {
     val items = mutableListOf<Item<*>>()
-    items.add(TagItem(requireContext(), detail.tags, tagClickListener))
+    items.add(TagItem(requireContext(), detail.tags))
     items.add(DescriptionItem(detail.description))
     items.add(CountItem(detail.viewCount, detail.commentCount, detail.myListCount))
     detail.channel?.let {

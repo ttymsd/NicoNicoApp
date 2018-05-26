@@ -10,6 +10,7 @@
     android:elevation="@dimen/playback_elevation"
     app:layout_behavior="@string/coordinator_behaviors_youtube_behavior"
     app:ylb_marginBottom="@dimen/navigation_height"
+    android:background="@color/black"
     >
 
     <FrameLayout
@@ -23,8 +24,8 @@
       android:id="@+id/player_view"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      app:layout_constraintDimensionRatio="h,16:9"
       app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintDimensionRatio="h,16:9"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -49,11 +50,11 @@
       android:id="@+id/controller"
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:alpha="0"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      android:alpha="0"
       >
 
       <ImageButton

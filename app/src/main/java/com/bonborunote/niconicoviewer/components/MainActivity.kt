@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.transition.Slide
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity.BOTTOM
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.bonborunote.niconicoviewer.R
@@ -16,6 +17,7 @@ import com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment.OnPlayerStateChangedListener
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
+import com.bonborunote.niconicoviewer.components.search.SearchContainerArgs
 import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.utils.lazyBinding
@@ -37,22 +39,27 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
   private val mainViewModel: MainViewModel by instance()
-  private val searchViewModel: SearchViewModel by instance()
   private val contentObserver = Observer<ContentId> {
     it?.let {
       addPlaybackFragment(it)
     }
   }
+  private val keywordObserver = Observer<String> {
+    val args = SearchContainerArgs.Builder().apply {
+      this.keyword = it
+    }.build().toBundle()
+    Navigation.findNavController(this@MainActivity, R.id.my_nav_host_fragment)
+      .navigate(R.id.search, args)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(mainViewModel)
-    lifecycle.addObserver(searchViewModel)
     binding.mainViewModel = mainViewModel
-    binding.searchViewModel = searchViewModel
     binding.setLifecycleOwner(this)
     binding.executePendingBindings()
     mainViewModel.playableContent.observe(this, contentObserver)
+    mainViewModel.keyword.observe(this, keywordObserver)
     val host: NavHostFragment = supportFragmentManager
         .findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment ?: return
     NavigationUI.setupWithNavController(binding.navigation, host.navController)
@@ -61,7 +68,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   override fun onDestroy() {
     super.onDestroy()
     lifecycle.removeObserver(mainViewModel)
-    lifecycle.removeObserver(searchViewModel)
   }
 
   override fun onBackPressed() {
