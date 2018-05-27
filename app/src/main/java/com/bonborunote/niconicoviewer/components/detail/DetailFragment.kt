@@ -30,7 +30,8 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
 class DetailFragment : Fragment(), KodeinAware {
-  override val kodeinContext: KodeinContext<*> = kcontext(this)
+  override val kodeinContext: KodeinContext<*>
+    get() = kcontext(activity)
   override val kodein: Kodein by closestKodein()
 
   private val contentId: String by lazy {

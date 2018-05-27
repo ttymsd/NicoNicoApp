@@ -1,6 +1,6 @@
 package com.bonborunote.niconicoviewer.components.playback
 
-import android.arch.lifecycle.Lifecycle.Event.ON_CREATE
+import android.arch.lifecycle.Lifecycle.Event.ON_DESTROY
 import android.arch.lifecycle.Lifecycle.Event.ON_START
 import android.arch.lifecycle.Lifecycle.Event.ON_STOP
 import android.arch.lifecycle.LifecycleObserver
@@ -9,12 +9,14 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
+import android.util.Log
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.player.infra.MediaUrlRepositoryFactory
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.bonborunote.niconicoviewer.player.usecase.impl.PlayerUseCaseFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
+import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import kotlin.math.roundToLong
@@ -27,6 +29,7 @@ class PlaybackViewModel(
   val progress = MutableLiveData<Int>()
   val playerState = MutableLiveData<Int>()
   val isPlaying = MutableLiveData<Boolean>()
+  val playerSizeState = MutableLiveData<Int>()
 
   private val playerEventListener = object : Player.DefaultEventListener() {
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -45,11 +48,25 @@ class PlaybackViewModel(
     playbackUseCase.removeEventListener(playerEventListener)
   }
 
+  @OnLifecycleEvent(ON_DESTROY)
+  fun onDestroy() {
+    playerSizeState.postValue(-1)
+    playerState.postValue(-1)
+    isPlaying.postValue(false)
+    seekPosition.postValue(0)
+    progress.postValue(0)
+    movieUrl.postValue(null)
+  }
+
   fun findMediaUrl(container: ViewGroup, contentId: String) {
     playbackUseCase.findMediaUrl(contentId, container) {
       Timber.d("id:$contentId, $it")
       movieUrl.postValue(it)
     }
+  }
+
+  fun reload(contentId: String) {
+    Log.d("AAA", "reload:$contentId")
   }
 
   fun bind(playerView: PlayerView) {
@@ -93,6 +110,14 @@ class PlaybackViewModel(
 
   fun replay() {
     playbackUseCase.seekTo(playbackUseCase.currentPosition() - REPLAY_DURATION)
+  }
+
+  fun expand() {
+    playerSizeState.postValue(YoutubeLikeBehavior.STATE_EXPANDED)
+  }
+
+  fun shrink() {
+    playerSizeState.postValue(YoutubeLikeBehavior.STATE_SHRINK)
   }
 
   @Suppress("UNCHECKED_CAST")

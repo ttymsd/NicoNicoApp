@@ -31,7 +31,8 @@ import org.kodein.di.generic.kcontext
 
 class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehaviorStateListener, SeekBar.OnSeekBarChangeListener {
 
-  override val kodeinContext: KodeinContext<*> = kcontext(this)
+  override val kodeinContext: KodeinContext<*>
+    get() = kcontext(activity)
   override val kodein: Kodein by closestKodein()
 
   private val contentId: String by lazy {
@@ -51,10 +52,12 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(playbackViewModel)
     playbackViewModel.movieUrl.observe(this, Observer {
-      binding.progress.visibility = View.GONE
-      showSeekBar()
-      playbackViewModel.bind(binding.playerView)
-      playbackViewModel.play()
+      it?.let {
+        binding.progress.visibility = View.GONE
+        showSeekBar()
+        playbackViewModel.bind(binding.playerView)
+        playbackViewModel.play()
+      }
     })
     playbackViewModel.seekPosition.observe(this, Observer {
       it?.let {
@@ -70,6 +73,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       when (it) {
         Player.STATE_ENDED -> binding.controller.animate().alpha(1f).start()
         Player.STATE_READY -> showSeekBar()
+        else -> Unit
       }
     })
     playbackViewModel.isPlaying.observe(this, Observer { isPlaying ->
@@ -80,10 +84,17 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
         binding.playPause.setImageResource(R.drawable.ic_play_arrow_white)
       }
     })
+    playbackViewModel.playerSizeState.observe(this, Observer {
+      when (it) {
+        YoutubeLikeBehavior.STATE_EXPANDED -> binding.root.expand()
+        YoutubeLikeBehavior.STATE_SHRINK -> binding.root.shrink()
+        else -> Unit
+      }
+    })
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?): View? {
+    savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_playback, container, false)
     return binding.root
   }
@@ -95,7 +106,6 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       it.listener = this
       it.draggable = false
     }
-    playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
     val detector = GestureDetector(activity, SimpleOnGestureListener())
     detector.setOnDoubleTapListener(object : OnDoubleTapListener {
       override fun onDoubleTap(event: MotionEvent): Boolean {
@@ -125,6 +135,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     binding.replay.setOnClickListener {
       playbackViewModel.replay()
     }
+    playbackViewModel.findMediaUrl(binding.dummyContainer, contentId)
   }
 
   override fun onStart() {
@@ -157,7 +168,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onBehaviorStateChanged(newState: Int) {
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
-        || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
+      || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
       onPlayerStateChangedListener?.remove()
     }
   }
@@ -231,6 +242,14 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
       })
       start()
     }
+  }
+
+  private fun View.expand() {
+    YoutubeLikeBehavior.from(this)?.updateState(YoutubeLikeBehavior.STATE_EXPANDED)
+  }
+
+  private fun View.shrink() {
+    YoutubeLikeBehavior.from(this)?.updateState(YoutubeLikeBehavior.STATE_SHRINK)
   }
 
   interface OnPlayerStateChangedListener {

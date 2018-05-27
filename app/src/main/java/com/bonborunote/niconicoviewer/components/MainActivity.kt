@@ -16,9 +16,9 @@ import com.bonborunote.niconicoviewer.components.detail.DetailFragment
 import com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment.OnPlayerStateChangedListener
+import com.bonborunote.niconicoviewer.components.playback.PlaybackViewModel
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
 import com.bonborunote.niconicoviewer.components.search.SearchContainerArgs
-import com.bonborunote.niconicoviewer.components.search.SearchViewModel
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
@@ -39,9 +39,13 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
   private val mainViewModel: MainViewModel by instance()
+  private val playbackViewModel: PlaybackViewModel by instance()
   private val contentObserver = Observer<ContentId> {
-    it?.let {
+    it ?: return@Observer
+    if (supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) == null) {
       addPlaybackFragment(it)
+    } else {
+      playbackViewModel.reload(it.value)
     }
   }
   private val keywordObserver = Observer<String> {
@@ -61,8 +65,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
     mainViewModel.playableContent.observe(this, contentObserver)
     mainViewModel.keyword.observe(this, keywordObserver)
     val host: NavHostFragment = supportFragmentManager
-        .findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment ?: return
+      .findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment ?: return
     NavigationUI.setupWithNavController(binding.navigation, host.navController)
+    host.navController.addOnNavigatedListener { _, destination ->
+      when (destination.id) {
+        R.id.search -> playbackViewModel.shrink()
+        else -> Unit
+      }
+    }
   }
 
   override fun onDestroy() {
@@ -71,32 +81,16 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   }
 
   override fun onBackPressed() {
-    supportFragmentManager.findFragmentByTag(
-        PlaybackFragment.TAG)?.let {
-      supportFragmentManager.beginTransaction()
-          .remove(it)
-          .apply {
-            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-              remove(it)
-            }
-          }
-          .commit()
-    } ?: run {
+    if (attachedPlaybackFragment()) {
+      removePlaybackFragment()
+    } else {
       super.onBackPressed()
     }
   }
 
   override fun remove() {
-    supportFragmentManager.findFragmentByTag(
-        PlaybackFragment.TAG)?.let {
-      supportFragmentManager.beginTransaction()
-          .remove(it)
-          .apply {
-            supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-              remove(it)
-            }
-          }
-          .commit()
+    if (attachedPlaybackFragment()) {
+      removePlaybackFragment()
     }
   }
 
@@ -110,25 +104,33 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
   private fun addPlaybackFragment(id: ContentId) {
     supportFragmentManager.beginTransaction()
-        .apply {
-          supportFragmentManager.findFragmentByTag(
-              PlaybackFragment.TAG)?.let {
-            remove(it)
-          }
-          supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-            remove(it)
-          }
+      .add(R.id.coordinator, PlaybackFragment.newInstance(id).apply {
+        enterTransition = Slide().apply {
+          slideEdge = BOTTOM
         }
-        .add(R.id.coordinator, PlaybackFragment.newInstance(id).apply {
-          enterTransition = Slide().apply {
-            slideEdge = BOTTOM
-          }
-        }, PlaybackFragment.TAG)
-        .add(R.id.coordinator, DetailFragment.newInstance(id).apply {
-          enterTransition = Slide().apply {
-            slideEdge = BOTTOM
-          }
-        }, DetailFragment.TAG)
-        .commit()
+      }, PlaybackFragment.TAG)
+      .add(R.id.coordinator, DetailFragment.newInstance(id).apply {
+        enterTransition = Slide().apply {
+          slideEdge = BOTTOM
+        }
+      }, DetailFragment.TAG)
+      .commit()
+  }
+
+  private fun attachedPlaybackFragment(): Boolean {
+    return supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) != null
+  }
+
+  private fun removePlaybackFragment() {
+    supportFragmentManager.beginTransaction()
+      .apply {
+        supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+          remove(it)
+        }
+        supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
+          remove(it)
+        }
+      }
+      .commit()
   }
 }
