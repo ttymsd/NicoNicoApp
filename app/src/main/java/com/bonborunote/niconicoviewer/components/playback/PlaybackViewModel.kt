@@ -50,12 +50,11 @@ class PlaybackViewModel(
 
   @OnLifecycleEvent(ON_DESTROY)
   fun onDestroy() {
-    playerSizeState.postValue(-1)
-    playerState.postValue(-1)
-    isPlaying.postValue(false)
-    seekPosition.postValue(0)
-    progress.postValue(0)
-    movieUrl.postValue(null)
+    initialize()
+  }
+
+  fun finalize(container: ViewGroup) {
+    playbackUseCase.finalize(container)
   }
 
   fun findMediaUrl(container: ViewGroup, contentId: String) {
@@ -66,7 +65,11 @@ class PlaybackViewModel(
   }
 
   fun reload(contentId: String) {
-    Log.d("AAA", "reload:$contentId")
+    stop()
+    initialize()
+    playbackUseCase.reload(contentId) {
+      movieUrl.postValue(it)
+    }
   }
 
   fun bind(playerView: PlayerView) {
@@ -120,6 +123,15 @@ class PlaybackViewModel(
     playerSizeState.postValue(YoutubeLikeBehavior.STATE_SHRINK)
   }
 
+  private fun initialize() {
+    playerSizeState.postValue(-1)
+    playerState.postValue(-1)
+    isPlaying.postValue(false)
+    seekPosition.postValue(0)
+    progress.postValue(0)
+    movieUrl.postValue(null)
+  }
+
   @Suppress("UNCHECKED_CAST")
   class Factory(
       private val context: Context,
@@ -129,7 +141,7 @@ class PlaybackViewModel(
       val useCase = PlayerUseCaseFactory().build(
           context,
           okHttpClient,
-          MediaUrlRepositoryFactory().create())
+          MediaUrlRepositoryFactory(context).create())
       return PlaybackViewModel(useCase) as? T ?: throw IllegalArgumentException()
     }
   }

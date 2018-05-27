@@ -57,8 +57,16 @@ internal class PlayerUseCaseImpl(
     mediaUrlRepository.findMediaUrl(contentId, container, callback)
   }
 
+  override fun reload(contentId: String, callback: (mediaUrl: String) -> Unit) {
+    mediaUrlRepository.reload(contentId, callback)
+  }
+
   override fun bind(playerView: PlayerView) {
     playerView.player = player
+  }
+
+  override fun finalize(viewGroup: ViewGroup) {
+    mediaUrlRepository.finalize(viewGroup)
   }
 
   override fun play(mediaUrl: String) {

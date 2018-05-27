@@ -51,8 +51,12 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(playbackViewModel)
-    playbackViewModel.movieUrl.observe(this, Observer {
-      it?.let {
+    playbackViewModel.movieUrl.observe(this, Observer {url ->
+      if (url == null) {
+        seekBarAnimator?.cancel()
+        binding.progress.visibility = View.VISIBLE
+        binding.controller.alpha = 0f
+      } else {
         binding.progress.visibility = View.GONE
         showSeekBar()
         playbackViewModel.bind(binding.playerView)
@@ -164,6 +168,11 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     if (higherMashmallow()) {
       playbackViewModel.stop()
     }
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    playbackViewModel.finalize(binding.dummyContainer)
   }
 
   override fun onBehaviorStateChanged(newState: Int) {

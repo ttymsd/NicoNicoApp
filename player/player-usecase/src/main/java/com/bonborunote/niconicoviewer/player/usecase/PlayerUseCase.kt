@@ -11,7 +11,13 @@ interface PlayerUseCase {
   fun findMediaUrl(contentId: String, container: ViewGroup, callback: (mediaUrl: String) -> Unit)
 
   @MainThread
+  fun reload(contentId: String, callback: (mediaUrl: String) -> Unit)
+
+  @MainThread
   fun bind(playerView: PlayerView)
+
+  @MainThread
+  fun finalize(viewGroup: ViewGroup)
 
   fun play(mediaUrl: String)
   fun stop(): Long
