@@ -6,8 +6,8 @@ import com.bonborunote.niconicoviewer.latest.domain.LatestVideoRepository
 internal class LatestUseCaseImpl(
   private val repository: LatestVideoRepository
 ): LatestUseCase {
-  override fun getLatest(): List<LatestVideo> {
-    return repository.getLatestVideos()
+  override fun getLatest(page: Int): List<LatestVideo> {
+    return repository.getLatestVideos(page)
   }
 }
 

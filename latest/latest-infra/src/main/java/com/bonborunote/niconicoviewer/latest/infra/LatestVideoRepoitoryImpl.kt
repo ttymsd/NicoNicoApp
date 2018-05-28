@@ -12,8 +12,8 @@ import com.bonborunote.niconicoviewer.network.response.ItemXml
 class LatestVideoRepoitoryImpl(
   private val rssApi: RssApi
 ) : LatestVideoRepository {
-  override fun getLatestVideos(): List<LatestVideo> {
-    val response = rssApi.getLatestVideos().execute()
+  override fun getLatestVideos(page: Int): List<LatestVideo> {
+    val response = rssApi.getLatestVideos(page).execute()
     if (300 <= response.code()) {
       throw NicoNicoException(response.code(), "detail error", response.errorBody().toString())
     }

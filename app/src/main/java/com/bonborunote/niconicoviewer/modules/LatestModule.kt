@@ -25,7 +25,7 @@ val latestModule = Kodein.Module {
     }
   bind<LatestViewModel>() with scoped(androidScope<Fragment>())
     .singleton {
-      ViewModelProviders.of(context, LatestViewModel.Factory(instance()))
+      ViewModelProviders.of(context, LatestViewModel.Factory(instance(), instance()))
         .get(LatestViewModel::class.java)
     }
 }

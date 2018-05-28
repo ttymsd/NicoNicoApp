@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bonborunote.groupie.aac.plugin.PagedSection
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentLatestVideosBinding
@@ -24,14 +25,16 @@ import org.kodein.di.generic.kcontext
 
 class LatestVideosFragment : Fragment(), KodeinAware {
 
-  // instance作った時点ではactivity = null なので getterをoverrideする
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by closestKodein()
 
   private val latestViewModel: LatestViewModel by instance()
   private lateinit var binding: FragmentLatestVideosBinding
   private var listener: LatestListItemClickListener? = null
-  private val section = Section()
+  private val latestVideosSection = PagedSection<LatestVideoItem>()
+  private val section = Section().apply {
+    add(latestVideosSection)
+  }
   private val clickCallback: (LatestVideo) -> Unit = {
     listener?.clickLatestItem(it)
   }
@@ -47,7 +50,7 @@ class LatestVideosFragment : Fragment(), KodeinAware {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?): View? {
+    savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater,
       R.layout.fragment_latest_videos, container, false)
     return binding.root
@@ -60,7 +63,7 @@ class LatestVideosFragment : Fragment(), KodeinAware {
       add(section)
     }
     binding.videos.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
-        false)
+      false)
     binding.executePendingBindings()
     latestViewModel.loading.observe(this, Observer { loading ->
       if (loading == true) {
@@ -71,12 +74,10 @@ class LatestVideosFragment : Fragment(), KodeinAware {
     })
     latestViewModel.videos.observe(this, Observer {
       it?.let {
-        section.update(it.map {
-          LatestVideoItem(it, clickCallback)
-        })
+        latestVideosSection.submitList(it)
       }
     })
-    latestViewModel.load()
+    latestViewModel.load(clickCallback)
   }
 
   override fun onDestroy() {
