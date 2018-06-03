@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  >
+
+  <data>
+    <variable
+      name="content"
+      type="com.bonborunote.niconicoviewer.common.models.Content"
+      />
+  </data>
+
+  <android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:elevation="@dimen/card_elevation"
+    >
+
+    <ImageView
+      android:id="@+id/thumbnail"
+      android:layout_width="@dimen/list_thumb_width"
+      android:layout_height="@dimen/list_thumb_height"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="4dp"
+      android:layout_marginTop="8dp"
+      android:scaleType="centerCrop"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:load_image_from_id="@{content.id}"
+      tools:src="@android:color/holo_blue_dark"
+      />
+
+    <TextView
+      android:id="@+id/title"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="4dp"
+      android:layout_marginStart="4dp"
+      android:layout_marginTop="2dp"
+      android:ellipsize="end"
+      android:lines="2"
+      android:text="@{content.title}"
+      app:layout_constraintBottom_toTopOf="@+id/duration"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/thumbnail"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="シャド場シャド場シャド場シャド場シャド場シャド場シャド場シャド場"
+      />
+
+    <TextView
+      android:id="@+id/duration"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="2dp"
+      android:layout_marginEnd="4dp"
+      android:layout_marginStart="4dp"
+      android:layout_marginTop="2dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/thumbnail"
+      app:layout_constraintTop_toBottomOf="@id/title"
+      app:text_seconds="@{content.lengthSeconds}"
+      tools:text="00:00"
+      />
+
+  </android.support.constraint.ConstraintLayout>
+</layout>

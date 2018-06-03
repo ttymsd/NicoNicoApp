@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  compileSdkVersion COMPILE_SDK_VERSION as int
+  buildToolsVersion BUILD_TOOLS_VERSION
+
+  defaultConfig {
+    minSdkVersion 21
+    targetSdkVersion TARGET_SDK_VERSION as int
+    versionCode VERSION_CODE as int
+    versionName VERSION_NAME
+
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  dataBinding {
+    enabled = true
+  }
+  buildTypes {
+    release {
+      postprocessing {
+        removeUnusedCode false
+        removeUnusedResources false
+        obfuscate false
+        optimizeCode false
+        proguardFile 'proguard-rules.pro'
+      }
+    }
+  }
+}
+
+dependencies {
+  implementation project(':common')
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
+
+  testImplementation 'junit:junit:4.12'
+  androidTestImplementation 'com.android.support.test:runner:1.0.1'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}

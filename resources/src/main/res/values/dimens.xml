@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="navigation_height">58dp</dimen>
+
+  <dimen name="list_thumb_width">84dp</dimen>
+  <dimen name="list_thumb_height">66dp</dimen>
+
+  <dimen name="bottom_navigation_elevation">8dp</dimen>
+  <dimen name="navigation_drawer_elevation">16dp</dimen>
+  <dimen name="search_box_elevation">2dp</dimen>
+  <dimen name="card_elevation">2dp</dimen>
+  <dimen name="pickup_card_elevation">8dp</dimen>
+  <dimen name="playback_elevation">20dp</dimen>
+  <dimen name="detail_elevation">18dp</dimen>
+</resources>

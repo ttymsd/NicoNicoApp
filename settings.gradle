@@ -1,1 +1,25 @@
-include ':app'
+include ':app', ':network', ':groupie-aac-plugin', ':common', ':resources'
+
+def searchModuleDir = new File('search')
+include ':search-domain', ':search-infra', ':search-usecase'
+project(':search-domain').projectDir = new File(searchModuleDir, 'search-domain')
+project(':search-infra').projectDir = new File(searchModuleDir, 'search-infra')
+project(':search-usecase').projectDir = new File(searchModuleDir, 'search-usecase')
+
+def playerModuleDir = new File('player')
+include ':player-domain', ':player-infra', ':player-usecase'
+project(':player-domain').projectDir = new File(playerModuleDir, 'player-domain')
+project(':player-infra').projectDir = new File(playerModuleDir, 'player-infra')
+project(':player-usecase').projectDir = new File(playerModuleDir, 'player-usecase')
+
+def detailModuleDir = new File('detail')
+include ':detail-usecase', ':detail-domain', ':detail-infra'
+project(':detail-domain').projectDir = new File(detailModuleDir, 'detail-domain')
+project(':detail-infra').projectDir = new File(detailModuleDir, 'detail-infra')
+project(':detail-usecase').projectDir = new File(detailModuleDir, 'detail-usecase')
+
+def latestModuleDir = new File('latest')
+include ':latest-usecase', ':latest-domain', ':latest-infra'
+project(':latest-domain').projectDir = new File(latestModuleDir, 'latest-domain')
+project(':latest-infra').projectDir = new File(latestModuleDir, 'latest-infra')
+project(':latest-usecase').projectDir = new File(latestModuleDir, 'latest-usecase')

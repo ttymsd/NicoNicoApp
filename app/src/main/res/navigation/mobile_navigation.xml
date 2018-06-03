@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  app:startDestination="@+id/latest"
+  >
+  <fragment
+    android:id="@+id/latest"
+    android:name="com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment"
+    android:label="Latest"
+    tools:layout="@layout/fragment_latest_videos"
+    />
+  <fragment
+    android:id="@+id/search"
+    android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"
+    android:label="Search"
+    tools:layout="@layout/fragment_search"
+    >
+    <action
+      android:id="@+id/action_search" />
+    <argument
+      android:name="keyword"
+      android:defaultValue=""
+      />
+    <argument
+      android:name="tag"
+      android:defaultValue=""
+      />
+  </fragment>
+  <fragment
+    android:id="@+id/my_list"
+    android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"
+    android:label="MyList"
+    tools:layout="@layout/fragment_search"
+    />
+</navigation>

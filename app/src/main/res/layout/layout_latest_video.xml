@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  >
+  <data>
+    <variable
+      name="thumb"
+      type="String"
+      />
+    <variable
+      name="title"
+      type="String"
+      />
+  </data>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:elevation="@dimen/card_elevation"
+    tools:ignore="UseCompoundDrawables"
+    >
+
+    <ImageView
+      android:layout_width="@dimen/list_thumb_width"
+      android:layout_height="@dimen/list_thumb_height"
+      android:contentDescription="@null"
+      android:scaleType="centerCrop"
+      app:image_uri="@{thumb}"
+      />
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_gravity="center_vertical"
+      android:ellipsize="end"
+      android:lines="2"
+      android:paddingEnd="4dp"
+      android:paddingStart="4dp"
+      android:text="@{title}"
+      />
+
+  </LinearLayout>
+</layout>

@@ -1,0 +1,2 @@
+adb install -r "app/build/outputs/apk/develop/debug/app-develop-debug.apk"
+adb shell am start -n com.bonborunote.niconicoviewer.debug/com.bonborunote.niconicoviewer.components.MainActivity

@@ -6,7 +6,7 @@ debug.keystore.properties
 connpass-app-debug.jks
 keystore.properties
 connpass-app.jks
-.idea/codeStyles/Project.xml
+.idea/
 
 ### Android ###
 # Built application files
