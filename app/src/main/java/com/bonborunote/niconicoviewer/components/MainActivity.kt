@@ -75,7 +75,11 @@ class MainActivity : AppCompatActivity(),
     NavigationUI.setupWithNavController(binding.navigation, host.navController)
     host.navController.addOnNavigatedListener { _, destination ->
       when (destination.id) {
-        R.id.search -> playbackViewModel.shrink()
+        R.id.search -> {
+          if (supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) != null) {
+            playbackViewModel.shrink()
+          }
+        }
         else -> Unit
       }
     }
