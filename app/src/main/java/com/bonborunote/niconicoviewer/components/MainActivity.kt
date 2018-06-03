@@ -13,6 +13,7 @@ import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.components.detail.DetailFragment
+import com.bonborunote.niconicoviewer.components.detail.DetailViewModel
 import com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment.OnPlayerStateChangedListener
@@ -40,12 +41,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
   private val mainViewModel: MainViewModel by instance()
   private val playbackViewModel: PlaybackViewModel by instance()
+  private val detailViewModel: DetailViewModel by instance()
   private val contentObserver = Observer<ContentId> {
     it ?: return@Observer
     if (supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) == null) {
       addPlaybackFragment(it)
     } else {
       playbackViewModel.reload(it.value)
+      detailViewModel.reload(it.value)
     }
   }
   private val keywordObserver = Observer<String> {

@@ -9,7 +9,7 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
-import android.util.Log
+import android.support.annotation.MainThread
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.player.infra.MediaUrlRepositoryFactory
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
@@ -24,12 +24,12 @@ import kotlin.math.roundToLong
 class PlaybackViewModel(
     private val playbackUseCase: PlayerUseCase
 ) : ViewModel(), LifecycleObserver {
+  val playerSizeState = MutableLiveData<Int>()
+  val playerState = MutableLiveData<Int>()
   val movieUrl = MutableLiveData<String>()
   val seekPosition = MutableLiveData<Long>()
   val progress = MutableLiveData<Int>()
-  val playerState = MutableLiveData<Int>()
   val isPlaying = MutableLiveData<Boolean>()
-  val playerSizeState = MutableLiveData<Int>()
 
   private val playerEventListener = object : Player.DefaultEventListener() {
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -115,12 +115,12 @@ class PlaybackViewModel(
     playbackUseCase.seekTo(playbackUseCase.currentPosition() - REPLAY_DURATION)
   }
 
-  fun expand() {
-    playerSizeState.postValue(YoutubeLikeBehavior.STATE_EXPANDED)
+  @MainThread fun expand() {
+    playerSizeState.value = YoutubeLikeBehavior.STATE_EXPANDED
   }
 
-  fun shrink() {
-    playerSizeState.postValue(YoutubeLikeBehavior.STATE_SHRINK)
+  @MainThread fun shrink() {
+    playerSizeState.value = YoutubeLikeBehavior.STATE_SHRINK
   }
 
   private fun initialize() {

@@ -7,10 +7,10 @@
   <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/black"
     android:elevation="@dimen/playback_elevation"
     app:layout_behavior="@string/coordinator_behaviors_youtube_behavior"
     app:ylb_marginBottom="@dimen/navigation_height"
-    android:background="@color/black"
     >
 
     <FrameLayout
