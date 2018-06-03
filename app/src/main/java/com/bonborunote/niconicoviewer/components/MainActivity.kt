@@ -12,7 +12,9 @@ import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
+import com.bonborunote.niconicoviewer.common.models.RelationVideo
 import com.bonborunote.niconicoviewer.components.detail.DetailFragment
+import com.bonborunote.niconicoviewer.components.detail.DetailFragment.DetailClickListener
 import com.bonborunote.niconicoviewer.components.detail.DetailViewModel
 import com.bonborunote.niconicoviewer.components.latest.LatestVideosFragment
 import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment
@@ -31,7 +33,13 @@ import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListener, LatestVideosFragment.LatestListItemClickListener, SearchContainer.SearchListItemClickListener {
+class MainActivity : AppCompatActivity(),
+  KodeinAware,
+  OnPlayerStateChangedListener,
+  LatestVideosFragment.LatestListItemClickListener,
+  SearchContainer.SearchListItemClickListener,
+  DetailClickListener {
+
   private val _parentKodein by closestKodein()
   override val kodeinContext: KodeinContext<*> = kcontext(this)
   override val kodein: Kodein by retainedKodein {
@@ -44,12 +52,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
   private val detailViewModel: DetailViewModel by instance()
   private val contentObserver = Observer<ContentId> {
     it ?: return@Observer
-    if (supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) == null) {
-      addPlaybackFragment(it)
-    } else {
-      playbackViewModel.reload(it.value)
-      detailViewModel.reload(it.value)
-    }
+    reloadIfAttached(it)
   }
   private val keywordObserver = Observer<String> {
     val args = SearchContainerArgs.Builder().apply {
@@ -103,6 +106,19 @@ class MainActivity : AppCompatActivity(), KodeinAware, OnPlayerStateChangedListe
 
   override fun clickSearchItem(video: Content) {
     mainViewModel.play(video.id)
+  }
+
+  override fun onReleationClicked(item: RelationVideo) {
+    reloadIfAttached(item.id)
+  }
+
+  private fun reloadIfAttached(contentId: ContentId) {
+    if (supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) == null) {
+      addPlaybackFragment(contentId)
+    } else {
+      playbackViewModel.reload(contentId.value)
+      detailViewModel.reload(contentId.value)
+    }
   }
 
   private fun addPlaybackFragment(id: ContentId) {

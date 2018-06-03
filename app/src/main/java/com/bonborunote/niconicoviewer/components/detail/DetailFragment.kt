@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.components.detail
 
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -47,13 +48,19 @@ class DetailFragment : Fragment(), KodeinAware {
   }
 
   private val relationCallback: (RelationVideo) -> Unit = {
-
+    listener?.onReleationClicked(it)
   }
 
   private lateinit var binding: FragmentDescriptionBinding
   private val viewModel: DetailViewModel by instance()
   private val section = Section()
   private val relationSection = Section()
+  private var listener: DetailClickListener? = null
+
+  override fun onAttach(context: Context?) {
+    super.onAttach(context)
+    listener = context as? DetailClickListener
+  }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?): View? {
@@ -84,6 +91,11 @@ class DetailFragment : Fragment(), KodeinAware {
     viewModel.load(ContentId(contentId))
   }
 
+  override fun onDetach() {
+    super.onDetach()
+    listener = null
+  }
+
   private fun update(detail: ContentDetail) {
     val nonNullActivity = activity ?: return
     val items = mutableListOf<Item<*>>()
@@ -103,6 +115,10 @@ class DetailFragment : Fragment(), KodeinAware {
     relationSection.update(items.map {
       RelationVideoItem(it, relationCallback)
     })
+  }
+
+  interface DetailClickListener {
+    fun onReleationClicked(item: RelationVideo)
   }
 
   companion object {
