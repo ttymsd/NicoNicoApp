@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  checkout:
+  initialize:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-27-alpha
@@ -69,13 +69,13 @@ workflows:
   version: 2
   test_and_upload_fabric:
     jobs:
-      - checkout:
+      - initialize:
           filters:
             tags:
               ignore: /^release.*/
       - test:
           requires:
-            - checkout
+            - initialize
       - build:
           requires:
             - test
