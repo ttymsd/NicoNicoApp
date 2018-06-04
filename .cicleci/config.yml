@@ -6,6 +6,9 @@ jobs:
     docker:
       - image: circleci/android:api-27-alpha
     steps:
+      - run:
+          name: Accept Android license
+          command: mkdir -p $ANDROID_HOME/licenses;echo $ANDROID_SDK_LICENSE > /usr/local/android-sdk-linux/licenses/android-sdk-license
       - checkout
       - run:
           name: Create local.properties
