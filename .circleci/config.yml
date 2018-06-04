@@ -11,14 +11,14 @@ jobs:
           name: Create local.properties
           command: ./create_properties.sh
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mobile/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mobile/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - save_cache:
           paths:
             - ~/code
@@ -36,15 +36,15 @@ jobs:
             - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           keys:
-            - jars-{{ checksum "build.gradle" }}-{{ checksum  "mobile/build.gradle" }}
+            - jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
           command: ./gradlew test
       - store_artifacts:
-          path: mobile/build/reports
+          path: app/build/reports
           destination: reports
       - store_test_results:
-          path: mobile/build/test-results
+          path: app/build/test-results
   build:
     working_directory: ~/code
     docker:
@@ -57,13 +57,13 @@ jobs:
             - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           keys:
-            - jars-{{ checksum "build.gradle" }}-{{ checksum  "mobile/build.gradle" }}
+            - jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: build
-          command: ./gradlew :mobile:assembleDevelopDebug
+          command: ./gradlew :app:assembleDevelopDebug
       - save_cache:
           paths:
-            - ~/code/mobile/build
+            - ~/code/app/build
           key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
 workflows:
   version: 2
