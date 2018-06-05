@@ -22,18 +22,16 @@
       android:value="false"
       />
 
-    <activity android:name=".components.MainActivity"
-      android:screenOrientation="portrait">
+    <activity
+      android:name=".components.MainActivity"
+      android:screenOrientation="portrait"
+      >
       <intent-filter>
         <category android:name="android.intent.category.LAUNCHER"/>
         <action android:name="android.intent.action.MAIN"/>
       </intent-filter>
     </activity>
 
-    <activity android:name=".components.MediaSessionPlaybackActivity"
-      android:resizeableActivity="true"
-      android:supportsPictureInPicture="true"
-      android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-      />
+    <service android:name=".components.background.BackgroundPlaybackService"/>
   </application>
 </manifest>

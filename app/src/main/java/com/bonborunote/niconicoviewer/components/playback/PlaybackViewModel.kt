@@ -8,16 +8,13 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.content.Context
 import android.support.annotation.MainThread
+import android.util.Log
 import android.view.ViewGroup
-import com.bonborunote.niconicoviewer.player.infra.MediaUrlRepositoryFactory
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
-import com.bonborunote.niconicoviewer.player.usecase.impl.PlayerUseCaseFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
-import okhttp3.OkHttpClient
 import timber.log.Timber
 import kotlin.math.roundToLong
 
@@ -46,6 +43,7 @@ class PlaybackViewModel(
   @OnLifecycleEvent(ON_STOP)
   fun onStop() {
     playbackUseCase.removeEventListener(playerEventListener)
+    Log.d("AAA", "${playbackUseCase}")
   }
 
   @OnLifecycleEvent(ON_DESTROY)
@@ -134,14 +132,9 @@ class PlaybackViewModel(
 
   @Suppress("UNCHECKED_CAST")
   class Factory(
-      private val context: Context,
-      private val okHttpClient: OkHttpClient
+      private val useCase: PlayerUseCase
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      val useCase = PlayerUseCaseFactory().build(
-          context,
-          okHttpClient,
-          MediaUrlRepositoryFactory(context).create())
       return PlaybackViewModel(useCase) as? T ?: throw IllegalArgumentException()
     }
   }

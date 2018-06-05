@@ -86,6 +86,7 @@ repositories {
 dependencies {
   implementation project(':common')
   implementation project(':resources')
+  implementation project(':notification')
   implementation project(':network')
   implementation project(':groupie-aac-plugin')
   implementation project(':player-domain')
