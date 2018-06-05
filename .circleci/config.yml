@@ -79,6 +79,3 @@ workflows:
       - build:
           requires:
             - test
-      - uplaod_fabric:
-          requires:
-            - build
