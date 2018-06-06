@@ -2,6 +2,7 @@ package com.bonborunote.niconicoviewer.components.background
 
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
+import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.google.android.exoplayer2.Player
 
@@ -21,6 +22,16 @@ class BackgroundPlaybackViewModel(
       playerState.postValue(playbackState)
       isPlaying.postValue(playWhenReady)
     }
+  }
+
+  fun load(container: ViewGroup, contentId: String) {
+    playbackUseCase.findMediaUrl(contentId, container) {
+      Log.d("AAA", it)
+    }
+  }
+
+  fun finalize(container: ViewGroup) {
+    playbackUseCase.finalize(container)
   }
 
   fun onStart() {
