@@ -9,7 +9,6 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.annotation.MainThread
-import android.util.Log
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.google.android.exoplayer2.Player
@@ -43,7 +42,6 @@ class PlaybackViewModel(
   @OnLifecycleEvent(ON_STOP)
   fun onStop() {
     playbackUseCase.removeEventListener(playerEventListener)
-    Log.d("AAA", "${playbackUseCase}")
   }
 
   @OnLifecycleEvent(ON_DESTROY)

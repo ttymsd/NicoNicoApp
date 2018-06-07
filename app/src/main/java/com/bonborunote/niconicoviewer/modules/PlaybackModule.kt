@@ -3,7 +3,6 @@ package com.bonborunote.niconicoviewer.modules
 import android.app.Service
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.FragmentActivity
-import android.util.Log
 import com.bonborunote.niconicoviewer.components.background.BackgroundPlaybackViewModel
 import com.bonborunote.niconicoviewer.components.playback.PlaybackViewModel
 import com.bonborunote.niconicoviewer.player.infra.MediaUrlRepositoryFactory
@@ -18,7 +17,6 @@ import org.kodein.di.generic.singleton
 
 val playbackModule = Kodein.Module {
   bind<PlayerUseCase>() with singleton {
-    Log.d("AAA", "initialized")
     PlayerUseCaseFactory().build(
         instance(),
         instance(),

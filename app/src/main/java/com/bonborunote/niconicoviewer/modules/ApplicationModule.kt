@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.modules
 
+import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.bonborunote.niconicoviewer.network.RssApi
