@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.media.app.NotificationCompat.MediaStyle
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
@@ -79,7 +80,9 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     super.onStartCommand(intent, flags, startId)
+    Log.d("AAA", "hoge")
     intent?.let {
+      Log.d("AAA", "${it.action}")
       when (it.action) {
         "a" -> viewModel.replay()
         "b" -> viewModel.togglePlay()
@@ -126,9 +129,9 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
         .setSmallIcon(R.drawable.notification_icon_background)
         .setContentTitle("バックグラウンド再生")
         .setContentText("hello")
-        .addAction(R.drawable.notification_icon_background, "play", createAction("a"))
-        .addAction(R.drawable.notification_icon_background, "play2", createAction("b"))
-        .addAction(R.drawable.notification_icon_background, "play3", createAction("c"))
+        .addAction(NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "play", createAction("a")).build())
+        .addAction(NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "play2", createAction("b")).build())
+        .addAction(NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "play3", createAction("c")).build())
         .setStyle(MediaStyle().setMediaSession(mediaSession).setShowActionsInCompactView(0, 1))
         .apply {
           if (picture != null) {
@@ -138,7 +141,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
   }
 
   private fun createAction(action: String): PendingIntent {
-    return PendingIntent.getBroadcast(this, 0x0000,
+    return PendingIntent.getService(this, 0x0000,
         Intent(this, BackgroundPlaybackService::class.java).setAction(action),
         PendingIntent.FLAG_UPDATE_CURRENT)
   }
