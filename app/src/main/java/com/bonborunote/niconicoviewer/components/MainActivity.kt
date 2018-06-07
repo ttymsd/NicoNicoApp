@@ -8,6 +8,7 @@ import android.view.Gravity.BOTTOM
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
@@ -47,11 +48,13 @@ class MainActivity : AppCompatActivity(),
   }
 
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
+  private val appViewModel: AppViewModel by instance()
   private val mainViewModel: MainViewModel by instance()
   private val playbackViewModel: PlaybackViewModel by instance()
   private val detailViewModel: DetailViewModel by instance()
   private val contentObserver = Observer<ContentId> {
     it ?: return@Observer
+    appViewModel.startPlay(it)
     reloadIfAttached(it)
   }
   private val keywordObserver = Observer<String> {

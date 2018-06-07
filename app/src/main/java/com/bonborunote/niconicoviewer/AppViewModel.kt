@@ -4,13 +4,12 @@ import android.arch.lifecycle.Lifecycle.Event.ON_START
 import android.arch.lifecycle.Lifecycle.Event.ON_STOP
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
-import android.content.Intent
-import android.support.v4.content.ContextCompat
-import com.bonborunote.niconicoviewer.components.background.BackgroundPlaybackService
 import android.arch.lifecycle.OnLifecycleEvent
+import android.content.Context
+import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.components.background.BackgroundPlaybackService
 
-class AppViewModel(private val context: Context): LifecycleObserver {
+class AppViewModel(private val context: Context) : LifecycleObserver {
 
   val playingContentId = MutableLiveData<String>()
 
@@ -24,5 +23,13 @@ class AppViewModel(private val context: Context): LifecycleObserver {
     playingContentId.value?.let {
       BackgroundPlaybackService.startService(context, it)
     }
+  }
+
+  fun startPlay(contentId: ContentId) {
+    playingContentId.postValue(contentId.value)
+  }
+
+  fun stopPlay() {
+    playingContentId.postValue(null)
   }
 }

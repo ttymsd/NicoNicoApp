@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.SeekBar
+import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
@@ -39,6 +40,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     arguments?.getString(PlaybackFragment::contentId.name, "") ?: ""
   }
 
+  private val appViewModel: AppViewModel by instance()
   private val playbackViewModel: PlaybackViewModel by instance()
 
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
@@ -51,7 +53,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     lifecycle.addObserver(playbackViewModel)
-    playbackViewModel.movieUrl.observe(this, Observer {url ->
+    playbackViewModel.movieUrl.observe(this, Observer { url ->
       if (url == null) {
         seekBarAnimator?.cancel()
         binding.progress.visibility = View.VISIBLE
@@ -98,7 +100,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?): View? {
+      savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_playback, container, false)
     return binding.root
   }
@@ -172,12 +174,13 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onDestroyView() {
     super.onDestroyView()
+    appViewModel.stopPlay()
     playbackViewModel.finalize(binding.dummyContainer)
   }
 
   override fun onBehaviorStateChanged(newState: Int) {
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
-      || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
+        || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
       onPlayerStateChangedListener?.remove()
     }
   }
