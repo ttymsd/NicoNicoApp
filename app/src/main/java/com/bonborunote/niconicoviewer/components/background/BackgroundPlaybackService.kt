@@ -1,16 +1,21 @@
 package com.bonborunote.niconicoviewer.components.background
 
-import android.arch.lifecycle.Lifecycle
+import android.app.Notification
+import android.app.PendingIntent
+import android.app.Service
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.media.app.NotificationCompat.MediaStyle
+import android.support.v4.media.session.MediaSessionCompat
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
@@ -18,7 +23,8 @@ import android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
 import android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.LayoutServiceContainerBinding
-import com.bonborunote.niconicoviewer.notification.createPlaybackNotification
+import com.bonborunote.niconicoviewer.notification.PLAYBACK_NOTIFICATION_CHANNEL_ID
+import com.google.android.exoplayer2.Player
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
@@ -34,7 +40,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
 
   private val binding by lazy {
     DataBindingUtil.inflate<LayoutServiceContainerBinding>(layoutInflater,
-      R.layout.layout_service_container, null, false)
+        R.layout.layout_service_container, null, false)
   }
 
   private val viewModel: BackgroundPlaybackViewModel by instance()
@@ -47,18 +53,46 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
     viewModel.movieUrl.observe(this, Observer {
       viewModel.play()
     })
-    startForeground(0x0001, createPlaybackNotification())
+    viewModel.playerState.observe(this, Observer {
+      when (it) {
+        Player.STATE_ENDED -> stopSelf()
+        null -> Unit
+      }
+    })
+    val session = MediaSessionCompat(this, "hoge")
+    session.setCallback(object : MediaSessionCompat.Callback() {
+      override fun onPlay() {
+        super.onPlay()
+      }
+
+      override fun onStop() {
+        super.onStop()
+      }
+
+      override fun onPause() {
+        super.onPause()
+      }
+    })
+    startForeground(0x0001, createPlaybackNotification(session.sessionToken))
     attachContainer()
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    super.onStartCommand(intent, flags, startId)
     intent?.let {
-      val contentId = it.getStringExtra("contentId")
-      if (contentId.isNotBlank()) {
-        viewModel.load(binding.container, contentId)
+      when (it.action) {
+        "a" -> viewModel.replay()
+        "b" -> viewModel.togglePlay()
+        "c" -> viewModel.forward()
+        else -> {
+          val contentId = it.getStringExtra("contentId")
+          if (contentId.isNotBlank()) {
+            viewModel.load(binding.container, contentId)
+          }
+        }
       }
     }
-    return super.onStartCommand(intent, flags, startId)
+    return Service.START_NOT_STICKY
   }
 
   override fun onDestroy() {
@@ -76,7 +110,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
       TYPE_SYSTEM_OVERLAY
     }
     val params = WindowManager.LayoutParams(0, 0, flag, FLAG_WATCH_OUTSIDE_TOUCH,
-      PixelFormat.TRANSLUCENT)
+        PixelFormat.TRANSLUCENT)
     windowManager.addView(binding.root, params)
   }
 
@@ -84,12 +118,37 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
     windowManager.removeView(binding.root)
   }
 
+  private fun Context.createPlaybackNotification(
+      mediaSession: MediaSessionCompat.Token,
+      picture: Bitmap? = null
+  ): Notification {
+    return NotificationCompat.Builder(this, PLAYBACK_NOTIFICATION_CHANNEL_ID)
+        .setSmallIcon(R.drawable.notification_icon_background)
+        .setContentTitle("バックグラウンド再生")
+        .setContentText("hello")
+        .addAction(R.drawable.notification_icon_background, "play", createAction("a"))
+        .addAction(R.drawable.notification_icon_background, "play2", createAction("b"))
+        .addAction(R.drawable.notification_icon_background, "play3", createAction("c"))
+        .setStyle(MediaStyle().setMediaSession(mediaSession).setShowActionsInCompactView(0, 1))
+        .apply {
+          if (picture != null) {
+          }
+        }
+        .build()
+  }
+
+  private fun createAction(action: String): PendingIntent {
+    return PendingIntent.getBroadcast(this, 0x0000,
+        Intent(this, BackgroundPlaybackService::class.java).setAction(action),
+        PendingIntent.FLAG_UPDATE_CURRENT)
+  }
+
   companion object {
     fun startService(context: Context, contentId: String) {
       ContextCompat.startForegroundService(context,
-        Intent(context, BackgroundPlaybackService::class.java).apply {
-          putExtra("contentId", contentId)
-        })
+          Intent(context, BackgroundPlaybackService::class.java).apply {
+            putExtra("contentId", contentId)
+          })
     }
 
     fun stopService(context: Context) {
