@@ -8,6 +8,7 @@ import com.bonborunote.niconicoviewer.modules.latestModule
 import com.bonborunote.niconicoviewer.modules.mainModule
 import com.bonborunote.niconicoviewer.modules.playbackModule
 import com.bonborunote.niconicoviewer.modules.searchModule
+import com.bonborunote.niconicoviewer.notification.createPlaybackChannel
 import com.jakewharton.threetenabp.AndroidThreeTen
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
@@ -35,6 +36,7 @@ class App : MultiDexApplication(), KodeinAware {
 
   override fun onCreate() {
     super.onCreate()
+    createPlaybackChannel()
     AndroidThreeTen.init(this)
     ProcessLifecycleOwner.get().lifecycle.addObserver(appViewModel)
   }

@@ -6,12 +6,12 @@ import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
-import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.components.background.BackgroundPlaybackService
+import com.bonborunote.niconicoviewer.models.PlayingContent
 
 class AppViewModel(private val context: Context) : LifecycleObserver {
 
-  val playingContentId = MutableLiveData<String>()
+  val playingContent = MutableLiveData<PlayingContent>()
 
   @OnLifecycleEvent(ON_START)
   fun onStart() {
@@ -20,16 +20,16 @@ class AppViewModel(private val context: Context) : LifecycleObserver {
 
   @OnLifecycleEvent(ON_STOP)
   fun onStop() {
-    playingContentId.value?.let {
+    playingContent.value?.let {
       BackgroundPlaybackService.startService(context, it)
     }
   }
 
-  fun startPlay(contentId: ContentId) {
-    playingContentId.postValue(contentId.value)
+  fun startPlay(content: PlayingContent) {
+    playingContent.postValue(content)
   }
 
   fun stopPlay() {
-    playingContentId.postValue(null)
+    playingContent.postValue(null)
   }
 }

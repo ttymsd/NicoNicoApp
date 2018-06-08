@@ -43,7 +43,8 @@ class BackgroundPlaybackViewModel(
       movieUrl.postValue(it)
     }
   }
-   fun play() {
+
+  fun play() {
     movieUrl.value?.let {
       playbackUseCase.play(it)
       playbackUseCase.seekTo(seekPosition.value ?: 0)
@@ -82,9 +83,12 @@ class BackgroundPlaybackViewModel(
     playbackUseCase.seekTo(playbackUseCase.currentPosition() - REPLAY_DURATION)
   }
 
-
   fun finalize(container: ViewGroup) {
     playbackUseCase.finalize(container)
+  }
+
+  fun isPlaying(): Boolean {
+    return isPlaying.value ?: false
   }
 
   companion object {

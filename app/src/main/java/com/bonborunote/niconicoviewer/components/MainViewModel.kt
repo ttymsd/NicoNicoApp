@@ -8,11 +8,12 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.v7.widget.SearchView
 import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.models.PlayingContent
 
 class MainViewModel private constructor(
 ) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
-  val playableContent = MutableLiveData<ContentId>()
+  val playableContent = MutableLiveData<PlayingContent>()
   val keyword = MutableLiveData<String>()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -34,8 +35,8 @@ class MainViewModel private constructor(
     return false
   }
 
-  fun play(id: ContentId) {
-    playableContent.postValue(id)
+  fun play(id: ContentId, title: String, thumbnail: String) {
+    playableContent.postValue(PlayingContent(id, title, thumbnail))
   }
 
   @Suppress("UNCHECKED_CAST")
