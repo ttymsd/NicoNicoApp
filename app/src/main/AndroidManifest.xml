@@ -33,10 +33,6 @@
       </intent-filter>
     </activity>
 
-    <service
-      android:name=".components.playback.MediaSessionService"
-      android:exported="false"
-      />
     <service android:name=".components.background.BackgroundPlaybackService"/>
   </application>
 </manifest>

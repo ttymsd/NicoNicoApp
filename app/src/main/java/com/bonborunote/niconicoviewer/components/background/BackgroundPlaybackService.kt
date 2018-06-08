@@ -132,7 +132,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
         .addAction(NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "play", createAction("a")).build())
         .addAction(NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "play2", createAction("b")).build())
         .addAction(NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "play3", createAction("c")).build())
-        .setStyle(MediaStyle().setShowActionsInCompactView(0, 1))
+        .setStyle(MediaStyle().setMediaSession(mediaSession).setShowActionsInCompactView(0, 1))
         .apply {
           if (picture != null) {
           }
