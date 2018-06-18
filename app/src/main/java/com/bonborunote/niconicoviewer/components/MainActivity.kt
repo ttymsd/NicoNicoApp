@@ -1,6 +1,7 @@
 package com.bonborunote.niconicoviewer.components
 
 import android.arch.lifecycle.Observer
+import android.os.Build
 import android.os.Bundle
 import android.support.transition.Slide
 import android.support.v7.app.AppCompatActivity
@@ -82,6 +83,13 @@ class MainActivity : AppCompatActivity(),
         }
         else -> Unit
       }
+    }
+  }
+
+  override fun onPause() {
+    super.onPause()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      enterPictureInPictureMode()
     }
   }
 
