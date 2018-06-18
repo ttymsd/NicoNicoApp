@@ -35,11 +35,11 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
 class MainActivity : AppCompatActivity(),
-  KodeinAware,
-  OnPlayerStateChangedListener,
-  LatestVideosFragment.LatestListItemClickListener,
-  SearchContainer.SearchListItemClickListener,
-  DetailClickListener {
+    KodeinAware,
+    OnPlayerStateChangedListener,
+    LatestVideosFragment.LatestListItemClickListener,
+    SearchContainer.SearchListItemClickListener,
+    DetailClickListener {
 
   private val _parentKodein by closestKodein()
   override val kodeinContext: KodeinContext<*> = kcontext(this)
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(),
       this.keyword = it
     }.build().toBundle()
     Navigation.findNavController(this@MainActivity, R.id.my_nav_host_fragment)
-      .navigate(R.id.search, args)
+        .navigate(R.id.search, args)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(),
     mainViewModel.playableContent.observe(this, contentObserver)
     mainViewModel.keyword.observe(this, keywordObserver)
     val host: NavHostFragment = supportFragmentManager
-      .findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment ?: return
+        .findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment ?: return
     NavigationUI.setupWithNavController(binding.navigation, host.navController)
     host.navController.addOnNavigatedListener { _, destination ->
       when (destination.id) {
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity(),
 
   override fun onPause() {
     super.onPause()
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (enablePipMode()) {
       enterPictureInPictureMode()
     }
   }
@@ -124,6 +124,11 @@ class MainActivity : AppCompatActivity(),
     reloadIfAttached(item.id)
   }
 
+  private fun enablePipMode(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+        && attachedPlaybackFragment()
+  }
+
   private fun reloadIfAttached(contentId: ContentId) {
     if (supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG) == null) {
       addPlaybackFragment(contentId)
@@ -135,17 +140,17 @@ class MainActivity : AppCompatActivity(),
 
   private fun addPlaybackFragment(id: ContentId) {
     supportFragmentManager.beginTransaction()
-      .add(R.id.coordinator, PlaybackFragment.newInstance(id).apply {
-        enterTransition = Slide().apply {
-          slideEdge = BOTTOM
-        }
-      }, PlaybackFragment.TAG)
-      .add(R.id.coordinator, DetailFragment.newInstance(id).apply {
-        enterTransition = Slide().apply {
-          slideEdge = BOTTOM
-        }
-      }, DetailFragment.TAG)
-      .commit()
+        .add(R.id.coordinator, PlaybackFragment.newInstance(id).apply {
+          enterTransition = Slide().apply {
+            slideEdge = BOTTOM
+          }
+        }, PlaybackFragment.TAG)
+        .add(R.id.coordinator, DetailFragment.newInstance(id).apply {
+          enterTransition = Slide().apply {
+            slideEdge = BOTTOM
+          }
+        }, DetailFragment.TAG)
+        .commit()
   }
 
   private fun attachedPlaybackFragment(): Boolean {
@@ -154,14 +159,14 @@ class MainActivity : AppCompatActivity(),
 
   private fun removePlaybackFragment() {
     supportFragmentManager.beginTransaction()
-      .apply {
-        supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
-          remove(it)
+        .apply {
+          supportFragmentManager.findFragmentByTag(PlaybackFragment.TAG)?.let {
+            remove(it)
+          }
+          supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
+            remove(it)
+          }
         }
-        supportFragmentManager.findFragmentByTag(DetailFragment.TAG)?.let {
-          remove(it)
-        }
-      }
-      .commit()
+        .commit()
   }
 }
