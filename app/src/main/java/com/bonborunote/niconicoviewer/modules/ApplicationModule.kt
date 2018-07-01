@@ -1,5 +1,6 @@
 package com.bonborunote.niconicoviewer.modules
 
+import com.bonborunote.niconicoviewer.Preference
 import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoSearchApi
 import com.bonborunote.niconicoviewer.network.RssApi
@@ -8,7 +9,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind

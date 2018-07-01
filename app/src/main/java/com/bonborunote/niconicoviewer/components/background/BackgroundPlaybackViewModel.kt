@@ -1,25 +1,19 @@
-package com.bonborunote.niconicoviewer.components.playback
+package com.bonborunote.niconicoviewer.components.background
 
+import android.arch.lifecycle.Lifecycle.Event.ON_CREATE
 import android.arch.lifecycle.Lifecycle.Event.ON_DESTROY
-import android.arch.lifecycle.Lifecycle.Event.ON_START
-import android.arch.lifecycle.Lifecycle.Event.ON_STOP
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.support.annotation.MainThread
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.PlayerView
-import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
-import timber.log.Timber
 import kotlin.math.roundToLong
 
-class PlaybackViewModel(
+class BackgroundPlaybackViewModel(
     private val playbackUseCase: PlayerUseCase
-) : ViewModel(), LifecycleObserver {
+) : LifecycleObserver {
+
   val playerSizeState = MutableLiveData<Int>()
   val playerState = MutableLiveData<Int>()
   val movieUrl = MutableLiveData<String>()
@@ -34,42 +28,20 @@ class PlaybackViewModel(
     }
   }
 
-  @OnLifecycleEvent(ON_START)
+  @OnLifecycleEvent(ON_CREATE)
   fun onStart() {
     playbackUseCase.addEventListener(playerEventListener)
   }
 
-  @OnLifecycleEvent(ON_STOP)
+  @OnLifecycleEvent(ON_DESTROY)
   fun onStop() {
     playbackUseCase.removeEventListener(playerEventListener)
   }
 
-  @OnLifecycleEvent(ON_DESTROY)
-  fun onDestroy() {
-    initialize()
-  }
-
-  fun finalize(container: ViewGroup) {
-    playbackUseCase.finalize(container)
-  }
-
-  fun findMediaUrl(container: ViewGroup, contentId: String) {
+  fun load(container: ViewGroup, contentId: String) {
     playbackUseCase.findMediaUrl(contentId, container) {
-      Timber.d("id:$contentId, $it")
       movieUrl.postValue(it)
     }
-  }
-
-  fun reload(contentId: String) {
-    stop()
-    initialize()
-    playbackUseCase.reload(contentId) {
-      movieUrl.postValue(it)
-    }
-  }
-
-  fun bind(playerView: PlayerView) {
-    playbackUseCase.bind(playerView)
   }
 
   fun play() {
@@ -111,30 +83,12 @@ class PlaybackViewModel(
     playbackUseCase.seekTo(playbackUseCase.currentPosition() - REPLAY_DURATION)
   }
 
-  @MainThread fun expand() {
-    playerSizeState.value = YoutubeLikeBehavior.STATE_EXPANDED
+  fun finalize(container: ViewGroup) {
+    playbackUseCase.finalize(container)
   }
 
-  @MainThread fun shrink() {
-    playerSizeState.value = YoutubeLikeBehavior.STATE_SHRINK
-  }
-
-  private fun initialize() {
-    playerSizeState.postValue(-1)
-    playerState.postValue(-1)
-    isPlaying.postValue(false)
-    seekPosition.postValue(0)
-    progress.postValue(0)
-    movieUrl.postValue(null)
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  class Factory(
-      private val useCase: PlayerUseCase
-  ) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return PlaybackViewModel(useCase) as? T ?: throw IllegalArgumentException()
-    }
+  fun isPlaying(): Boolean {
+    return isPlaying.value ?: false
   }
 
   companion object {

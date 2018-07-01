@@ -7,10 +7,14 @@ import com.bumptech.glide.Glide
 
 @BindingAdapter("load_image_from_id")
 fun ImageView.load(contentId: ContentId) {
-  val base = "http://tn.smilevideo.jp/smile?i="
   Glide.with(context)
-      .load("$base${contentId.value.substring(2, contentId.value.length)}")
+      .load(contentId.getThumbnail())
       .into(this)
+}
+
+fun ContentId.getThumbnail(): String {
+  val base = "http://tn.smilevideo.jp/smile?i="
+  return "$base${value.substring(2, value.length)}"
 }
 
 
