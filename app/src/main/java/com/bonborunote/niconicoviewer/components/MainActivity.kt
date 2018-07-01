@@ -8,6 +8,7 @@ import android.view.Gravity.BOTTOM
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
@@ -22,7 +23,9 @@ import com.bonborunote.niconicoviewer.components.playback.PlaybackFragment.OnPla
 import com.bonborunote.niconicoviewer.components.playback.PlaybackViewModel
 import com.bonborunote.niconicoviewer.components.search.SearchContainer
 import com.bonborunote.niconicoviewer.components.search.SearchContainerArgs
+import com.bonborunote.niconicoviewer.components.search.getThumbnail
 import com.bonborunote.niconicoviewer.databinding.ActivityMainBinding
+import com.bonborunote.niconicoviewer.models.PlayingContent
 import com.bonborunote.niconicoviewer.utils.lazyBinding
 import org.kodein.di.Copy.All
 import org.kodein.di.Kodein
@@ -47,12 +50,14 @@ class MainActivity : AppCompatActivity(),
   }
 
   private val binding by lazyBinding<ActivityMainBinding>(R.layout.activity_main)
+  private val appViewModel: AppViewModel by instance()
   private val mainViewModel: MainViewModel by instance()
   private val playbackViewModel: PlaybackViewModel by instance()
   private val detailViewModel: DetailViewModel by instance()
-  private val contentObserver = Observer<ContentId> {
+  private val contentObserver = Observer<PlayingContent> {
     it ?: return@Observer
-    reloadIfAttached(it)
+    appViewModel.startPlay(it)
+    reloadIfAttached(it.contentId)
   }
   private val keywordObserver = Observer<String> {
     val args = SearchContainerArgs.Builder().apply {
@@ -105,11 +110,11 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun clickLatestItem(video: LatestVideo) {
-    mainViewModel.play(video.id)
+    mainViewModel.play(video.id, video.title, video.thumb)
   }
 
   override fun clickSearchItem(video: Content) {
-    mainViewModel.play(video.id)
+    mainViewModel.play(video.id, video.title, video.id.getThumbnail())
   }
 
   override fun onReleationClicked(item: RelationVideo) {

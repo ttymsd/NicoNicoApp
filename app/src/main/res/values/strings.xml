@@ -2,4 +2,15 @@
   <string name="app_name">NicoNicoViewer</string>
   <string name="replay">replay</string>
   <string name="forward">forward</string>
+  <string name="label_background_playback">バックグラウンド再生</string>
+  <string name="description_background_playback">他のアプリに移ってもバックグラウンドで再生を続けるようになります</string>
+  <string name="background_playback_enable">バックグラウンド再生を有効にしました</string>
+  <string name="background_playback_disable">バックグラウンド再生を無効にしました</string>
+  <string name="need_overlay_permission">バックグラウンド再生を行うには「他のアプリの上に重ねて描画」の許可が必要です</string>
+  <string name="player_action_back">戻す</string>
+  <string name="player_action_pause">一時停止</string>
+  <string name="player_action_play">再生</string>
+  <string name="player_action_forward">進める</string>
+  <string name="player_action_stop">停止</string>
+  <string name="background_notification_title">バックグラウンド再生</string>
 </resources>

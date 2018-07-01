@@ -1,0 +1,4 @@
+<resources>
+  <string name="app_name">notification</string>
+  <string name="background_playback_channel_name">バックグラウンド再生</string>
+</resources>

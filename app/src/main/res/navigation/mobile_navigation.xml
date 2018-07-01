@@ -28,9 +28,9 @@
       />
   </fragment>
   <fragment
-    android:id="@+id/my_list"
-    android:name="com.bonborunote.niconicoviewer.components.search.SearchContainer"
-    android:label="MyList"
-    tools:layout="@layout/fragment_search"
+    android:id="@+id/setting"
+    android:name="com.bonborunote.niconicoviewer.components.preferences.SettingFragment"
+    android:label="Setting"
+    tools:layout="@layout/fragment_setting"
     />
 </navigation>
