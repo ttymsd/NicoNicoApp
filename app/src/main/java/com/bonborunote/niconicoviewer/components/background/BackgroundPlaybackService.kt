@@ -16,7 +16,6 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.media.app.NotificationCompat.DecoratedMediaCustomViewStyle
-import android.support.v4.media.app.NotificationCompat.MediaStyle
 import android.support.v7.graphics.Palette
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -24,9 +23,11 @@ import android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
 import android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
 import android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.R.string
 import com.bonborunote.niconicoviewer.databinding.LayoutServiceContainerBinding
 import com.bonborunote.niconicoviewer.models.PlayingContent
 import com.bonborunote.niconicoviewer.notification.PLAYBACK_NOTIFICATION_CHANNEL_ID
+import com.bonborunote.niconicoviewer.utils.backgroundServiceId
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -44,7 +45,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
 
   private val binding by lazy {
     DataBindingUtil.inflate<LayoutServiceContainerBinding>(layoutInflater,
-        R.layout.layout_service_container, null, false)
+      R.layout.layout_service_container, null, false)
   }
 
   private val viewModel: BackgroundPlaybackViewModel by instance()
@@ -64,7 +65,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
         null -> Unit
       }
     })
-    startForeground(0x0001, createPlaybackNotification())
+    startForeground(backgroundServiceId, createPlaybackNotification())
     attachContainer()
   }
 
@@ -72,18 +73,19 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
     super.onStartCommand(intent, flags, startId)
     intent?.let {
       Glide.with(this)
-          .asBitmap()
-          .load(intent.getStringExtra(EXTRA_THUMBNAIL))
-          .into(object : SimpleTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-              notificationManager.notify(0x0001, createPlaybackNotification(resource))
-            }
-          })
+        .asBitmap()
+        .load(intent.getStringExtra(EXTRA_THUMBNAIL))
+        .into(object : SimpleTarget<Bitmap>() {
+          override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            notificationManager.notify(backgroundServiceId,
+              createPlaybackNotification(intent.getStringExtra(EXTRA_TITLE), resource))
+          }
+        })
       when (it.action) {
         ACTION_REPLAY -> viewModel.replay()
         ACTION_PAUSE, ACTION_PLAY -> viewModel.togglePlay()
         ACTION_FORWARD -> viewModel.forward()
-        ACTION_STOP -> viewModel.stop()
+        ACTION_STOP -> stopSelf()
         else -> {
           val contentId = it.getStringExtra(EXTRA_CONTENT_ID)
           if (contentId.isNotBlank()) {
@@ -110,7 +112,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
       TYPE_SYSTEM_OVERLAY
     }
     val params = WindowManager.LayoutParams(0, 0, flag, FLAG_WATCH_OUTSIDE_TOUCH,
-        PixelFormat.TRANSLUCENT)
+      PixelFormat.TRANSLUCENT)
     windowManager.addView(binding.root, params)
   }
 
@@ -118,52 +120,61 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
     windowManager.removeView(binding.root)
   }
 
-  private fun Context.createPlaybackNotification(picture: Bitmap? = null): Notification {
+  private fun Context.createPlaybackNotification(
+    title: String = "",
+    picture: Bitmap? = null
+  ): Notification {
     return NotificationCompat.Builder(this, PLAYBACK_NOTIFICATION_CHANNEL_ID)
-        .setSmallIcon(R.drawable.notification_icon_background)
-        .setContentTitle("バックグラウンド再生")
-        .setContentText("hello")
-        .addAction(
-            NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "戻す",
-                createAction(ACTION_REPLAY)).build())
-        .apply {
-          if (viewModel.isPlaying()) {
-            addAction(
-                NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "一時停止",
-                    createAction(ACTION_PAUSE)).build())
-          } else {
-            addAction(
-                NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "再生",
-                    createAction(ACTION_PLAY)).build())
+      .setSmallIcon(R.drawable.notification_icon_background)
+      .setContentTitle(getString(string.background_notification_title))
+      .setContentText(title)
+      .addAction(
+        NotificationCompat.Action.Builder(R.drawable.notification_icon_background,
+          getString(string.player_action_back),
+          createAction(ACTION_REPLAY)).build())
+      .apply {
+        if (viewModel.isPlaying()) {
+          addAction(
+            NotificationCompat.Action.Builder(R.drawable.notification_icon_background,
+              getString(string.player_action_pause),
+              createAction(ACTION_PAUSE)).build())
+        } else {
+          addAction(
+            NotificationCompat.Action.Builder(R.drawable.notification_icon_background,
+              getString(string.player_action_play),
+              createAction(ACTION_PLAY)).build())
+        }
+      }
+      .addAction(
+        NotificationCompat.Action.Builder(R.drawable.notification_icon_background,
+          getString(string.player_action_forward),
+          createAction(ACTION_FORWARD)).build())
+      .addAction(
+        NotificationCompat.Action.Builder(R.drawable.notification_icon_background,
+          getString(string.player_action_stop),
+          createAction(ACTION_STOP)).build())
+      .setStyle(DecoratedMediaCustomViewStyle().setShowActionsInCompactView(1, 3))
+      .apply {
+        if (picture != null) {
+          setLargeIcon(picture)
+          setColorized(true)
+          Palette.from(picture).generate().let {
+            setColor(it.getLightVibrantColor(Color.CYAN))
           }
         }
-        .addAction(
-            NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "進める",
-                createAction(ACTION_FORWARD)).build())
-        .addAction(
-            NotificationCompat.Action.Builder(R.drawable.notification_icon_background, "停止",
-                createAction(ACTION_STOP)).build())
-        .setStyle(DecoratedMediaCustomViewStyle().setShowActionsInCompactView(1, 3))
-        .apply {
-          if (picture != null) {
-            setLargeIcon(picture)
-            setColorized(true)
-            Palette.from(picture).generate().let {
-              setColor(it.getLightVibrantColor(Color.CYAN))
-            }
-          }
-        }
-        .build()
+      }
+      .build()
   }
 
   private fun createAction(action: String): PendingIntent {
     return PendingIntent.getService(this, 0x0000,
-        Intent(this, BackgroundPlaybackService::class.java).setAction(action),
-        PendingIntent.FLAG_UPDATE_CURRENT)
+      Intent(this, BackgroundPlaybackService::class.java).setAction(action),
+      PendingIntent.FLAG_UPDATE_CURRENT)
   }
 
   companion object {
     const val EXTRA_CONTENT_ID = "content_id"
+    const val EXTRA_TITLE = "title"
     const val EXTRA_THUMBNAIL = "thumbnail"
 
     const val ACTION_PLAY = "action_play"
@@ -174,10 +185,11 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
 
     fun startService(context: Context, content: PlayingContent) {
       ContextCompat.startForegroundService(context,
-          Intent(context, BackgroundPlaybackService::class.java).apply {
-            putExtra(EXTRA_CONTENT_ID, content.contentId.value)
-            putExtra(EXTRA_THUMBNAIL, content.thumbnail)
-          })
+        Intent(context, BackgroundPlaybackService::class.java).apply {
+          putExtra(EXTRA_CONTENT_ID, content.contentId.value)
+          putExtra(EXTRA_TITLE, content.title)
+          putExtra(EXTRA_THUMBNAIL, content.thumbnail)
+        })
     }
 
     fun stopService(context: Context) {

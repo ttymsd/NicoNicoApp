@@ -3,15 +3,17 @@ package com.bonborunote.niconicoviewer
 import android.arch.lifecycle.Lifecycle.Event.ON_START
 import android.arch.lifecycle.Lifecycle.Event.ON_STOP
 import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
 import com.bonborunote.niconicoviewer.components.background.BackgroundPlaybackService
 import com.bonborunote.niconicoviewer.models.PlayingContent
+import com.bonborunote.niconicoviewer.utils.checkOverlayPermission
 
-class AppViewModel(private val context: Context) : LifecycleObserver {
+class AppViewModel(private val context: Context,
+  private val preference: Preference
+) : LifecycleObserver {
 
-  val playingContent = MutableLiveData<PlayingContent>()
+  private var playingContent: PlayingContent? = null
 
   @OnLifecycleEvent(ON_START)
   fun onStart() {
@@ -20,16 +22,18 @@ class AppViewModel(private val context: Context) : LifecycleObserver {
 
   @OnLifecycleEvent(ON_STOP)
   fun onStop() {
-    playingContent.value?.let {
-      BackgroundPlaybackService.startService(context, it)
+    playingContent?.let {
+      if (context.checkOverlayPermission() && preference.backgroundPlaybackEnable()) {
+        BackgroundPlaybackService.startService(context, it)
+      }
     }
   }
 
   fun startPlay(content: PlayingContent) {
-    playingContent.postValue(content)
+    playingContent = content
   }
 
   fun stopPlay() {
-    playingContent.postValue(null)
+    playingContent = null
   }
 }
