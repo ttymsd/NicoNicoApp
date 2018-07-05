@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.common.higherOreo
 import com.bonborunote.niconicoviewer.databinding.FragmentSettingBinding
 import com.bonborunote.niconicoviewer.utils.showToast
 import com.xwray.groupie.Group
@@ -38,7 +39,7 @@ class SettingFragment : Fragment(), KodeinAware {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?): View? {
+      savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_setting, container, false)
     return binding.root
   }
@@ -50,7 +51,7 @@ class SettingFragment : Fragment(), KodeinAware {
     binding.settingList.adapter = adapter
     adapter.add(settingSection)
     binding.settingList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
-      false)
+        false)
     preferenceViewModel.observeBackgroundPlaybackEnable(this, Observer {
       it ?: return@Observer
       reload()
@@ -58,6 +59,15 @@ class SettingFragment : Fragment(), KodeinAware {
         R.string.background_playback_enable
       } else {
         R.string.background_playback_disable
+      })
+    })
+    preferenceViewModel.observePictureInPictureEnable(this, Observer {
+      it ?: return@Observer
+      reload()
+      showToast(if (it) {
+        R.string.pip_enable
+      } else {
+        R.string.pip_disable
       })
     })
     reload()
@@ -71,9 +81,17 @@ class SettingFragment : Fragment(), KodeinAware {
   private fun reload() {
     val groups = arrayListOf<Group>()
     groups.add(
-      BackgroundPlaybackSetting(preferenceViewModel.backgroundPlaybackEnable()) {
-        preferenceViewModel.updateBackgroundPlaybackEnable(it)
-      })
+        BackgroundPlaybackSetting(preferenceViewModel.backgroundPlaybackEnable()) {
+          preferenceViewModel.updateBackgroundPlaybackEnable(it)
+        })
+
+    if (higherOreo()) {
+      groups.add(
+          PictureInPictureSetting(preferenceViewModel.pictureInPictureEnable()) {
+            preferenceViewModel.updatePictureInPictureEnable(it)
+          }
+      )
+    }
 
     settingSection.update(groups)
   }
