@@ -3,9 +3,15 @@ package com.bonborunote.niconicoviewer.components.playback
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.arch.lifecycle.Observer
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.media.session.MediaButtonReceiver
+import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -20,6 +26,10 @@ import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_FORWARD
+import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_PAUSE
+import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_REPLAY
+import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_START
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
 import com.google.android.exoplayer2.Player
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
@@ -42,6 +52,10 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   private val appViewModel: AppViewModel by instance()
   private val playbackViewModel: PlaybackViewModel by instance()
+
+  private val mediaReceiver = object : MediaButtonReceiver() {
+
+  }
 
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
     activity as? OnPlayerStateChangedListener
@@ -146,6 +160,13 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onStart() {
     super.onStart()
+    if (this::binding.isInitialized) {
+      binding.controller.visibility = View.VISIBLE
+    }
+    receiver?.let {
+      activity?.unregisterReceiver(it)
+      receiver = null
+    }
     if (higherMashmallow()) {
       playbackViewModel.play()
     }
@@ -182,6 +203,31 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
         || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
       onPlayerStateChangedListener?.remove()
+    }
+  }
+
+  private var receiver: BroadcastReceiver? = null
+
+  override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode)
+    binding.controller.visibility = View.GONE
+    receiver = object : BroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        intent ?: return
+        when (intent.action) {
+          ACTION_REPLAY -> playbackViewModel.replay()
+          ACTION_FORWARD -> playbackViewModel.forward()
+          ACTION_PAUSE -> playbackViewModel.togglePlay()
+          ACTION_START -> playbackViewModel.togglePlay()
+        }
+      }
+    }.apply {
+      activity?.registerReceiver(this, IntentFilter().apply {
+        addAction(ACTION_REPLAY)
+        addAction(ACTION_FORWARD)
+        addAction(ACTION_PAUSE)
+        addAction(ACTION_START)
+      })
     }
   }
 
