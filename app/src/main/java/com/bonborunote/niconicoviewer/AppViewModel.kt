@@ -23,7 +23,9 @@ class AppViewModel(private val context: Context,
   @OnLifecycleEvent(ON_STOP)
   fun onStop() {
     playingContent?.let {
-      if (context.checkOverlayPermission() && preference.backgroundPlaybackEnable()) {
+      if (context.checkOverlayPermission()
+        && preference.backgroundPlaybackEnable()
+        && !preference.pictureInPictureEnable()) {
         BackgroundPlaybackService.startService(context, it)
       }
     }

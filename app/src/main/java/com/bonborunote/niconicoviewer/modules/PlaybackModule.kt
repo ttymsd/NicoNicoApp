@@ -25,7 +25,7 @@ val playbackModule = Kodein.Module {
 
   bind<PlaybackViewModel>() with scoped(androidScope<FragmentActivity>())
       .singleton {
-        ViewModelProviders.of(context, PlaybackViewModel.Factory(instance()))
+        ViewModelProviders.of(context, PlaybackViewModel.Factory(instance(), instance()))
             .get(PlaybackViewModel::class.java)
       }
 

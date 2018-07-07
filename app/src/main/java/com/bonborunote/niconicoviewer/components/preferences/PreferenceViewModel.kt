@@ -11,16 +11,21 @@ import android.arch.lifecycle.ViewModelProvider
 import com.bonborunote.niconicoviewer.Preference
 
 class PreferenceViewModel(
-  private val preference: Preference
+    private val preference: Preference
 ) : ViewModel(), LifecycleObserver {
 
   private val backgroundPlaybackEnable = MutableLiveData<Boolean>()
+  private val pictureInPictureEnable = MutableLiveData<Boolean>()
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   fun onCreate() {
     backgroundPlaybackEnable.observeForever {
       it ?: return@observeForever
       preference.updateBackgroundPlaybackEnable(it)
+    }
+    pictureInPictureEnable.observeForever {
+      it ?: return@observeForever
+      preference.updatePictureInPictureEnable(it)
     }
   }
 
@@ -32,7 +37,11 @@ class PreferenceViewModel(
     backgroundPlaybackEnable.observe(lifecycleOwner, observer)
   }
 
-  fun backgroundPlaybackEnable() : Boolean {
+  fun observePictureInPictureEnable(lifecycleOwner: LifecycleOwner, observer: Observer<Boolean>) {
+    pictureInPictureEnable.observe(lifecycleOwner, observer)
+  }
+
+  fun backgroundPlaybackEnable(): Boolean {
     return preference.backgroundPlaybackEnable()
   }
 
@@ -40,13 +49,21 @@ class PreferenceViewModel(
     backgroundPlaybackEnable.postValue(enable)
   }
 
+  fun pictureInPictureEnable(): Boolean {
+    return preference.pictureInPictureEnable()
+  }
+
+  fun updatePictureInPictureEnable(enable: Boolean) {
+    pictureInPictureEnable.postValue(enable)
+  }
+
   @Suppress("UNCHECKED_CAST")
   class Factory(
-    private val preference: Preference
+      private val preference: Preference
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
       return PreferenceViewModel(preference) as? T
-        ?: throw IllegalArgumentException()
+          ?: throw IllegalArgumentException()
     }
   }
 }

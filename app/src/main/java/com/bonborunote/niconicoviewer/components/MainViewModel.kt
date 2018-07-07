@@ -7,10 +7,12 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.v7.widget.SearchView
+import com.bonborunote.niconicoviewer.Preference
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.models.PlayingContent
 
 class MainViewModel private constructor(
+    private val preference: Preference
 ) : ViewModel(), LifecycleObserver, SearchView.OnQueryTextListener {
 
   val playableContent = MutableLiveData<PlayingContent>()
@@ -39,10 +41,16 @@ class MainViewModel private constructor(
     playableContent.postValue(PlayingContent(id, title, thumbnail))
   }
 
+  fun enablePip(): Boolean {
+    return preference.pictureInPictureEnable()
+  }
+
   @Suppress("UNCHECKED_CAST")
-  class Factory : ViewModelProvider.NewInstanceFactory() {
+  class Factory(
+      private val preference: Preference
+  ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return MainViewModel() as? T ?: throw IllegalArgumentException()
+      return MainViewModel(preference) as? T ?: throw IllegalArgumentException()
     }
   }
 }
