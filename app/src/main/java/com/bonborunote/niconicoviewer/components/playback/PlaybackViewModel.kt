@@ -10,6 +10,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.support.annotation.MainThread
 import android.view.ViewGroup
+import com.bonborunote.niconicoviewer.Preference
 import com.bonborunote.niconicoviewer.player.usecase.PlayerUseCase
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
@@ -18,7 +19,8 @@ import timber.log.Timber
 import kotlin.math.roundToLong
 
 class PlaybackViewModel(
-    private val playbackUseCase: PlayerUseCase
+  private val playbackUseCase: PlayerUseCase,
+  private val preference: Preference
 ) : ViewModel(), LifecycleObserver {
   val playerSizeState = MutableLiveData<Int>()
   val playerState = MutableLiveData<Int>()
@@ -119,6 +121,10 @@ class PlaybackViewModel(
     playerSizeState.value = YoutubeLikeBehavior.STATE_SHRINK
   }
 
+  fun enablePIP(): Boolean {
+    return preference.pictureInPictureEnable()
+  }
+
   private fun initialize() {
     playerSizeState.postValue(-1)
     playerState.postValue(-1)
@@ -130,10 +136,11 @@ class PlaybackViewModel(
 
   @Suppress("UNCHECKED_CAST")
   class Factory(
-      private val useCase: PlayerUseCase
+    private val useCase: PlayerUseCase,
+    private val preference: Preference
   ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return PlaybackViewModel(useCase) as? T ?: throw IllegalArgumentException()
+      return PlaybackViewModel(useCase, preference) as? T ?: throw IllegalArgumentException()
     }
   }
 

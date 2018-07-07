@@ -2,16 +2,23 @@ package com.bonborunote.niconicoviewer.components.playback
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.PendingIntent
+import android.app.PictureInPictureParams
+import android.app.RemoteAction
 import android.arch.lifecycle.Observer
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.databinding.DataBindingUtil
+import android.graphics.drawable.Icon
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v4.media.session.MediaButtonReceiver
-import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -26,10 +33,6 @@ import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
 import com.bonborunote.niconicoviewer.common.models.ContentId
-import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_FORWARD
-import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_PAUSE
-import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_REPLAY
-import com.bonborunote.niconicoviewer.components.MainActivity.Companion.ACTION_START
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
 import com.google.android.exoplayer2.Player
 import jp.bglb.bonboru.behaviors.YoutubeLikeBehavior
@@ -53,16 +56,14 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   private val appViewModel: AppViewModel by instance()
   private val playbackViewModel: PlaybackViewModel by instance()
 
-  private val mediaReceiver = object : MediaButtonReceiver() {
-
-  }
-
   private val onPlayerStateChangedListener: OnPlayerStateChangedListener? by lazy {
     activity as? OnPlayerStateChangedListener
   }
 
   private lateinit var binding: FragmentPlaybackBinding
   private var seekBarAnimator: ViewPropertyAnimator? = null
+  private var receiver: BroadcastReceiver? = null
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -181,7 +182,11 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onPause() {
     super.onPause()
-    if (!higherMashmallow()) {
+    val currentActivity = activity
+    if (enablePipMode() && currentActivity != null) {
+      startPipMode(currentActivity)
+    }
+    if (!higherMashmallow() || currentActivity == null) {
       playbackViewModel.stop()
     }
   }
@@ -206,7 +211,36 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     }
   }
 
-  private var receiver: BroadcastReceiver? = null
+  private fun enablePipMode(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    && playbackViewModel.enablePIP()
+    && !isRemoving
+  }
+
+  @RequiresApi(VERSION_CODES.O)
+  private fun startPipMode(activity: FragmentActivity) {
+    val actions = arrayListOf<RemoteAction>()
+
+    val replayIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_REPLAY, Intent(ACTION_REPLAY),
+        0)
+    val replayIcon = Icon.createWithResource(activity, R.drawable.baseline_replay_10_white_48)
+    actions.add(RemoteAction(replayIcon, "replay", "replay movie", replayIntent))
+
+    val pauseIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_PAUSE, Intent(ACTION_PAUSE), 0)
+    val pauseIcon = Icon.createWithResource(activity, R.drawable.ic_pause_white)
+    actions.add(RemoteAction(pauseIcon, "pause", "pause movie", pauseIntent))
+
+    val forwardIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_FORWARD,
+        Intent(ACTION_FORWARD), 0)
+    val forwardIcon = Icon.createWithResource(activity, R.drawable.baseline_forward_30_white_48)
+    actions.add(RemoteAction(forwardIcon, "forward", "forward movie", forwardIntent))
+
+    val params = PictureInPictureParams.Builder()
+        .setActions(actions)
+        .build()
+    activity.enterPictureInPictureMode(params)
+  }
+
 
   override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
     super.onPictureInPictureModeChanged(isInPictureInPictureMode)
@@ -318,6 +352,16 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
     const val TAG = "PlaybackFragment"
     private val SHOW_ANIMATION_DURATION = 1_000L
     private val DISMISS_ANIMATION_DURATION = 6_000L
+
+    const val ACTION_REPLAY = "action_replay"
+    const val ACTION_START = "action_start"
+    const val ACTION_PAUSE = "action_pause"
+    const val ACTION_FORWARD = "action_forward"
+
+    const val REQUEST_CODE_REPLAY = 0x0000
+    const val REQUEST_CODE_START = 0x0001
+    const val REQUEST_CODE_PAUSE = 0x0002
+    const val REQUEST_CODE_FORWARD = 0x0003
 
     fun createArgs(contentId: ContentId): Bundle {
       return Bundle().apply {

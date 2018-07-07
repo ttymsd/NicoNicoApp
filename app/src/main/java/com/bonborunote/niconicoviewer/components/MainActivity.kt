@@ -1,15 +1,7 @@
 package com.bonborunote.niconicoviewer.components
 
-import android.app.PendingIntent
-import android.app.PictureInPictureParams
-import android.app.RemoteAction
 import android.arch.lifecycle.Observer
-import android.content.Intent
-import android.graphics.drawable.Icon
-import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.transition.Slide
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity.BOTTOM
@@ -98,13 +90,6 @@ class MainActivity : AppCompatActivity(),
     }
   }
 
-  override fun onPause() {
-    super.onPause()
-    if (enablePipMode()) {
-      startPipMode()
-    }
-  }
-
   override fun onDestroy() {
     super.onDestroy()
     lifecycle.removeObserver(mainViewModel)
@@ -134,36 +119,6 @@ class MainActivity : AppCompatActivity(),
 
   override fun onReleationClicked(item: RelationVideo) {
     reloadIfAttached(item.id)
-  }
-
-  private fun enablePipMode(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-        && attachedPlaybackFragment()
-        && mainViewModel.enablePip()
-  }
-
-  @RequiresApi(VERSION_CODES.O)
-  private fun startPipMode() {
-    val actions = arrayListOf<RemoteAction>()
-
-    val replayIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_REPLAY, Intent(ACTION_REPLAY),
-        0)
-    val replayIcon = Icon.createWithResource(this, R.drawable.baseline_replay_10_white_48)
-    actions.add(RemoteAction(replayIcon, "replay", "replay movie", replayIntent))
-
-    val pauseIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_PAUSE, Intent(ACTION_PAUSE), 0)
-    val pauseIcon = Icon.createWithResource(this, R.drawable.ic_pause_white)
-    actions.add(RemoteAction(pauseIcon, "pause", "pause movie", pauseIntent))
-
-    val forwardIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_FORWARD,
-        Intent(ACTION_FORWARD), 0)
-    val forwardIcon = Icon.createWithResource(this, R.drawable.baseline_forward_30_white_48)
-    actions.add(RemoteAction(forwardIcon, "forward", "forward movie", forwardIntent))
-
-    val params = PictureInPictureParams.Builder()
-        .setActions(actions)
-        .build()
-    enterPictureInPictureMode(params)
   }
 
   private fun reloadIfAttached(contentId: ContentId) {
@@ -205,17 +160,5 @@ class MainActivity : AppCompatActivity(),
           }
         }
         .commit()
-  }
-
-  companion object {
-    const val ACTION_REPLAY = "action_replay"
-    const val ACTION_START = "action_start"
-    const val ACTION_PAUSE = "action_pause"
-    const val ACTION_FORWARD = "action_forward"
-
-    const val REQUEST_CODE_REPLAY = 0x0000
-    const val REQUEST_CODE_START = 0x0001
-    const val REQUEST_CODE_PAUSE = 0x0002
-    const val REQUEST_CODE_FORWARD = 0x0003
   }
 }
