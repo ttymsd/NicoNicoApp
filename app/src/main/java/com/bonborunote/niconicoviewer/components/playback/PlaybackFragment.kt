@@ -18,7 +18,7 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.support.v4.media.session.MediaButtonReceiver
+import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -32,6 +32,7 @@ import android.widget.SeekBar
 import com.bonborunote.niconicoviewer.AppViewModel
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.common.higherMashmallow
+import com.bonborunote.niconicoviewer.common.higherOreo
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.databinding.FragmentPlaybackBinding
 import com.google.android.exoplayer2.Player
@@ -63,7 +64,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   private lateinit var binding: FragmentPlaybackBinding
   private var seekBarAnimator: ViewPropertyAnimator? = null
   private var receiver: BroadcastReceiver? = null
-
+  private var playingObserver: Observer<Boolean>? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -115,7 +116,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?): View? {
+    savedInstanceState: Bundle?): View? {
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_playback, container, false)
     return binding.root
   }
@@ -161,13 +162,6 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onStart() {
     super.onStart()
-    if (this::binding.isInitialized) {
-      binding.controller.visibility = View.VISIBLE
-    }
-    receiver?.let {
-      activity?.unregisterReceiver(it)
-      receiver = null
-    }
     if (higherMashmallow()) {
       playbackViewModel.play()
     }
@@ -175,6 +169,17 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onResume() {
     super.onResume()
+    if (this::binding.isInitialized) {
+      binding.controller.visibility = View.VISIBLE
+    }
+    receiver?.let {
+      activity?.unregisterReceiver(it)
+    }
+    receiver = null
+    playingObserver?.let {
+      playbackViewModel.isPlaying.removeObserver(it)
+    }
+    playingObserver = null
     if (!higherMashmallow()) {
       playbackViewModel.play()
     }
@@ -206,45 +211,87 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onBehaviorStateChanged(newState: Int) {
     if (newState == YoutubeLikeBehavior.STATE_TO_LEFT
-        || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
+      || newState == YoutubeLikeBehavior.STATE_TO_RIGHT) {
       onPlayerStateChangedListener?.remove()
     }
   }
 
   private fun enablePipMode(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-    && playbackViewModel.enablePIP()
-    && !isRemoving
+      && playbackViewModel.enablePIP()
+      && !isRemoving
   }
 
   @RequiresApi(VERSION_CODES.O)
   private fun startPipMode(activity: FragmentActivity) {
-    val actions = arrayListOf<RemoteAction>()
-
-    val replayIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_REPLAY, Intent(ACTION_REPLAY),
-        0)
-    val replayIcon = Icon.createWithResource(activity, R.drawable.baseline_replay_10_white_48)
-    actions.add(RemoteAction(replayIcon, "replay", "replay movie", replayIntent))
-
-    val pauseIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_PAUSE, Intent(ACTION_PAUSE), 0)
-    val pauseIcon = Icon.createWithResource(activity, R.drawable.ic_pause_white)
-    actions.add(RemoteAction(pauseIcon, "pause", "pause movie", pauseIntent))
-
-    val forwardIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_FORWARD,
-        Intent(ACTION_FORWARD), 0)
-    val forwardIcon = Icon.createWithResource(activity, R.drawable.baseline_forward_30_white_48)
-    actions.add(RemoteAction(forwardIcon, "forward", "forward movie", forwardIntent))
-
     val params = PictureInPictureParams.Builder()
-        .setActions(actions)
-        .build()
+      .build()
     activity.enterPictureInPictureMode(params)
+    updatePipAction(activity, true)
   }
 
+  @RequiresApi(VERSION_CODES.O)
+  private fun updatePipAction(activity: FragmentActivity, isPlay: Boolean) {
+    val actions = arrayListOf<RemoteAction>()
+
+    val replayIntent = PendingIntent.getBroadcast(activity,
+      REQUEST_CODE_REPLAY,
+      Intent(ACTION_REPLAY),
+      0)
+    val replayIcon = Icon.createWithResource(activity, R.drawable.baseline_replay_10_white_48)
+    actions.add(RemoteAction(replayIcon,
+      getString(R.string.player_action_back),
+      getString(R.string.player_action_back),
+      replayIntent))
+
+    if (isPlay) {
+      val pauseIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_PAUSE,
+        Intent(ACTION_PAUSE),
+        0)
+      val pauseIcon = Icon.createWithResource(activity, R.drawable.ic_pause_white)
+      actions.add(RemoteAction(pauseIcon,
+        getString(R.string.player_action_pause),
+        getString(R.string.player_action_pause),
+        pauseIntent))
+    } else {
+      val playIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_PAUSE,
+        Intent(ACTION_PAUSE),
+        0)
+      val playIcon = Icon.createWithResource(activity, R.drawable.ic_play_arrow_white)
+      actions.add(RemoteAction(playIcon,
+        getString(R.string.player_action_play),
+        getString(R.string.player_action_play),
+        playIntent))
+    }
+
+    val forwardIntent = PendingIntent.getBroadcast(activity, REQUEST_CODE_FORWARD,
+      Intent(ACTION_FORWARD), 0)
+    val forwardIcon = Icon.createWithResource(activity, R.drawable.baseline_forward_30_white_48)
+    actions.add(RemoteAction(forwardIcon,
+      getString(R.string.player_action_forward),
+      getString(R.string.player_action_forward),
+      forwardIntent))
+
+    val params = PictureInPictureParams.Builder()
+      .setActions(actions)
+      .build()
+    activity.setPictureInPictureParams(params)
+  }
 
   override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
     super.onPictureInPictureModeChanged(isInPictureInPictureMode)
     binding.controller.visibility = View.GONE
+    playingObserver = Observer { isPlaying ->
+      isPlaying ?: return@Observer
+      activity?.let { activity ->
+        if (higherOreo()) {
+          updatePipAction(activity, isPlaying)
+        }
+      }
+    }
+    playingObserver?.let {
+      playbackViewModel.isPlaying.observeForever(it)
+    }
     receiver = object : BroadcastReceiver() {
       override fun onReceive(context: Context?, intent: Intent?) {
         intent ?: return
