@@ -10,6 +10,7 @@ import com.bonborunote.niconicoviewer.common.models.Owner
 import com.bonborunote.niconicoviewer.common.models.OwnerId
 import com.bonborunote.niconicoviewer.common.models.RelationVideo
 import com.bonborunote.niconicoviewer.common.models.Tag
+import com.bonborunote.niconicoviewer.common.models.fromDescription
 import com.bonborunote.niconicoviewer.network.NicoNicoDetailApi
 import com.bonborunote.niconicoviewer.network.NicoNicoException
 import com.bonborunote.niconicoviewer.network.RssApi
@@ -84,7 +85,7 @@ class ContentDetailRepositoryImpl(
     return RelationVideo(
       id = ContentId(Uri.parse(link).lastPathSegment),
       title = title,
-      thumb = ItemXml.getThumbUrl(description)
+      thumb = description.fromDescription()
     )
   }
 

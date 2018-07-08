@@ -14,6 +14,7 @@ import com.bonborunote.niconicoviewer.common.models.Content
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.common.models.RelationVideo
+import com.bonborunote.niconicoviewer.common.models.thumbnailFromId
 import com.bonborunote.niconicoviewer.components.detail.DetailFragment
 import com.bonborunote.niconicoviewer.components.detail.DetailFragment.DetailClickListener
 import com.bonborunote.niconicoviewer.components.detail.DetailViewModel
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun clickSearchItem(video: Content) {
-    mainViewModel.play(video.id, video.title, video.id.getThumbnail())
+    mainViewModel.play(video.id, video.title, video.id.thumbnailFromId())
   }
 
   override fun onReleationClicked(item: RelationVideo) {

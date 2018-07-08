@@ -8,6 +8,6 @@ import java.util.Date
 class LatestVideo(
   id: ContentId,
   val title: String,
-  val thumb: String,
+  val thumb: Thumbnail,
   val publishDate: LocalDateTime
 ) : Entity<ContentId>(id)

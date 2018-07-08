@@ -188,7 +188,7 @@ class BackgroundPlaybackService : LifecycleService(), KodeinAware {
         Intent(context, BackgroundPlaybackService::class.java).apply {
           putExtra(EXTRA_CONTENT_ID, content.contentId.value)
           putExtra(EXTRA_TITLE, content.title)
-          putExtra(EXTRA_THUMBNAIL, content.thumbnail)
+          putExtra(EXTRA_THUMBNAIL, content.thumbnail.smallThumbnail)
         })
     }
 

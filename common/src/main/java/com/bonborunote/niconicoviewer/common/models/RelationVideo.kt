@@ -5,5 +5,5 @@ import com.bonborunote.niconicoviewer.common.Entity
 class RelationVideo(
   id: ContentId,
   val title: String,
-  val thumb: String
+  val thumb: Thumbnail
 ) : Entity<ContentId>(id)

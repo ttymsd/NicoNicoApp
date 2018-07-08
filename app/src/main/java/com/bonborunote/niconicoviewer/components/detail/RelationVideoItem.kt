@@ -14,7 +14,7 @@ class RelationVideoItem(
   }
 
   override fun bind(viewBinding: LayoutRelationVideoBinding, position: Int) {
-    viewBinding.thumb = relationVideo.thumb
+    viewBinding.thumb = relationVideo.thumb.smallThumbnail
     viewBinding.title = relationVideo.title
     viewBinding.root.setOnClickListener {
       callback(relationVideo)

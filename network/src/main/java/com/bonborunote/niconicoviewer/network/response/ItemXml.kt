@@ -17,12 +17,4 @@ class ItemXml {
   @set:Element(name = "pubDate")
   @get:Element(name = "pubDate")
   var pubDate: String = ""
-
-  companion object {
-    private val THUMB_URL_REGEX = Regex("https?://tn\\.smilevideo\\.jp/smile\\?i=[0-9]+")
-
-    fun getThumbUrl(description: String): String {
-      return THUMB_URL_REGEX.findAll(description).firstOrNull()?.value ?: ""
-    }
-  }
 }

@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.support.v7.widget.SearchView
 import com.bonborunote.niconicoviewer.Preference
 import com.bonborunote.niconicoviewer.common.models.ContentId
+import com.bonborunote.niconicoviewer.common.models.Thumbnail
 import com.bonborunote.niconicoviewer.models.PlayingContent
 
 class MainViewModel private constructor(
@@ -37,7 +38,7 @@ class MainViewModel private constructor(
     return false
   }
 
-  fun play(id: ContentId, title: String, thumbnail: String) {
+  fun play(id: ContentId, title: String, thumbnail: Thumbnail) {
     playableContent.postValue(PlayingContent(id, title, thumbnail))
   }
 

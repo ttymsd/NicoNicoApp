@@ -3,6 +3,7 @@ package com.bonborunote.niconicoviewer.latest.infra
 import android.net.Uri
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
+import com.bonborunote.niconicoviewer.common.models.fromDescription
 import com.bonborunote.niconicoviewer.common.utils.convert
 import com.bonborunote.niconicoviewer.latest.domain.LatestVideoRepository
 import com.bonborunote.niconicoviewer.network.NicoNicoException
@@ -25,7 +26,7 @@ class LatestVideoRepoitoryImpl(
     return LatestVideo(
       id = ContentId(Uri.parse(link).lastPathSegment),
       title = title,
-      thumb = ItemXml.getThumbUrl(description),
+      thumb = description.fromDescription(),
       publishDate = convert(pubDate)
     )
   }

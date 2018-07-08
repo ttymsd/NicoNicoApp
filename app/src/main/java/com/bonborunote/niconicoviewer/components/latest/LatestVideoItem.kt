@@ -15,7 +15,7 @@ class LatestVideoItem(
 
   override fun bind(viewBinding: LayoutLatestVideoBinding, position: Int) {
     viewBinding.title = latestVideo.title
-    viewBinding.thumb = latestVideo.thumb
+    viewBinding.thumb = latestVideo.thumb.largeThumbnail
     viewBinding.root.setOnClickListener {
       clickCallback(latestVideo)
     }
