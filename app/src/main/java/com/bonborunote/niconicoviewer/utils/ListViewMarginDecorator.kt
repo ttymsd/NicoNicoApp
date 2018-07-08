@@ -9,7 +9,8 @@ import android.view.View
 import android.support.v7.widget.RecyclerView.State
 
 class ListViewMarginDecorator(
-  private val marginTop: Int
+  private val marginTop: Int,
+  private val hasHeader: Boolean = false
 ) : ItemDecoration() {
   override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: State) {
     super.getItemOffsets(outRect, view, parent, state)
@@ -23,8 +24,10 @@ class ListViewMarginDecorator(
   }
 
   companion object {
-    fun create(context: Context?, @DimenRes resId: Int): ListViewMarginDecorator {
-      return ListViewMarginDecorator(context?.resources?.getDimensionPixelOffset(resId) ?: 0)
+    fun create(context: Context?, @DimenRes resId: Int,
+      hasHeader: Boolean): ListViewMarginDecorator {
+      return ListViewMarginDecorator(context?.resources?.getDimensionPixelOffset(resId) ?: 0,
+        hasHeader)
     }
   }
 }

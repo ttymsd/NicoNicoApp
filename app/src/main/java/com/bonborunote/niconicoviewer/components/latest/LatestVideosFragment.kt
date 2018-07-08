@@ -71,7 +71,7 @@ class LatestVideosFragment : Fragment(), KodeinAware {
     binding.videos.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
       false)
     binding.videos.addItemDecoration(
-      ListViewMarginDecorator.create(activity, R.dimen.margin_list_top))
+      ListViewMarginDecorator.create(activity, R.dimen.margin_list_top, true))
     binding.executePendingBindings()
     section.setHeader(LatestVideoHeaderItem())
     latestViewModel.loading.observe(this, Observer { loading ->
