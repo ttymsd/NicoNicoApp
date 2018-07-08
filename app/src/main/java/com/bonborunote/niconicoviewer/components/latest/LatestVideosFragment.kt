@@ -3,9 +3,13 @@ package com.bonborunote.niconicoviewer.components.latest
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.databinding.DataBindingUtil
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.ItemDecoration
+import android.support.v7.widget.RecyclerView.State
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +17,7 @@ import com.bonborunote.groupie.aac.plugin.PagedSection
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.R
 import com.bonborunote.niconicoviewer.databinding.FragmentLatestVideosBinding
+import com.bonborunote.niconicoviewer.utils.ListViewMarginDecorator
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -64,6 +69,7 @@ class LatestVideosFragment : Fragment(), KodeinAware {
     }
     binding.videos.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
       false)
+    binding.videos.addItemDecoration(ListViewMarginDecorator.create(activity, R.dimen.margin_list_top))
     binding.executePendingBindings()
     latestViewModel.loading.observe(this, Observer { loading ->
       if (loading == true) {
