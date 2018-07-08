@@ -15,7 +15,7 @@ class ListViewMarginDecorator(
     super.getItemOffsets(outRect, view, parent, state)
     val index = parent.getChildAdapterPosition(view)
     when (index) {
-      0, parent.adapter.itemCount -> Unit
+      0, 1, parent.adapter.itemCount -> Unit
       else -> {
         outRect.top = marginTop
       }

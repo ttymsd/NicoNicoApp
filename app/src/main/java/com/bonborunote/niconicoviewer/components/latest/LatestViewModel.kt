@@ -24,8 +24,10 @@ class LatestViewModel private constructor(
     .setPageSize(30)
     .setInitialLoadSizeHint(30)
     .build()
+
+  private var listener: ((LatestVideo) -> Unit)? = null
   private val clickCallback: (LatestVideo) -> Unit = {
-    l?.invoke(it)
+    listener?.invoke(it)
   }
   private val dataSourceFactory = MutableLiveData<LatestDataSourceFactory>()
   val videos = switchMap(dataSourceFactory, {
@@ -33,10 +35,9 @@ class LatestViewModel private constructor(
       .setFetchExecutor(executor)
       .build()
   })
-  private var l: ((LatestVideo) -> Unit)? = null
 
   fun load(l: ((LatestVideo) -> Unit)?) {
-    this.l = l
+    this.listener = l
     dataSourceFactory.postValue(LatestDataSourceFactory(latestUsecase, clickCallback))
   }
 

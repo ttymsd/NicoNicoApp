@@ -5,7 +5,7 @@
   <dimen name="list_thumb_width">84dp</dimen>
   <dimen name="list_thumb_height">66dp</dimen>
 
-  <dimen name="margin_list_top">2dp</dimen>
+  <dimen name="margin_list_top">12dp</dimen>
 
   <dimen name="bottom_navigation_elevation">8dp</dimen>
   <dimen name="navigation_drawer_elevation">16dp</dimen>

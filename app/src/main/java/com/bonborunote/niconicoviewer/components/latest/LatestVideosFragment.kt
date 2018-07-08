@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import com.bonborunote.groupie.aac.plugin.PagedSection
 import com.bonborunote.niconicoviewer.common.models.LatestVideo
 import com.bonborunote.niconicoviewer.R
+import com.bonborunote.niconicoviewer.components.search.SearchLoadingItem
 import com.bonborunote.niconicoviewer.databinding.FragmentLatestVideosBinding
 import com.bonborunote.niconicoviewer.utils.ListViewMarginDecorator
 import com.xwray.groupie.GroupAdapter
@@ -69,13 +70,15 @@ class LatestVideosFragment : Fragment(), KodeinAware {
     }
     binding.videos.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,
       false)
-    binding.videos.addItemDecoration(ListViewMarginDecorator.create(activity, R.dimen.margin_list_top))
+    binding.videos.addItemDecoration(
+      ListViewMarginDecorator.create(activity, R.dimen.margin_list_top))
     binding.executePendingBindings()
+    section.setHeader(LatestVideoHeaderItem())
     latestViewModel.loading.observe(this, Observer { loading ->
       if (loading == true) {
-//        section.setFooter(SearchLoadingItem())
+        section.setFooter(SearchLoadingItem())
       } else {
-//        section.removeFooter()
+        section.removeFooter()
       }
     })
     latestViewModel.videos.observe(this, Observer {
