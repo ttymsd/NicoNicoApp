@@ -19,7 +19,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="@dimen/card_elevation"
-    android:foreground="@drawable/ripple_theme_color"
     >
 
     <ImageView
@@ -33,24 +32,43 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      tools:src="@color/black"
+      />
+
+    <View
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@drawable/grad_"
+      android:paddingBottom="2dp"
+      android:paddingTop="2dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/title_view"
       />
 
     <TextView
+      android:id="@+id/title_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="12dp"
       android:layout_marginStart="12dp"
       android:ellipsize="end"
+      android:gravity="center_vertical"
       android:maxLines="2"
       android:minHeight="36dp"
+      android:paddingBottom="2dp"
       android:paddingEnd="4dp"
       android:paddingStart="4dp"
+      android:paddingTop="2dp"
       android:text="@{title}"
+      android:textColor="@color/black"
       android:textSize="18sp"
       android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
+      tools:text="hogehoge"
       />
 
   </android.support.constraint.ConstraintLayout>
