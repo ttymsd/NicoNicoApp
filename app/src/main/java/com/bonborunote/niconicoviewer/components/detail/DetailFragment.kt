@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +16,8 @@ import com.bonborunote.niconicoviewer.detail.domain.ContentDetail
 import com.bonborunote.niconicoviewer.common.models.ContentId
 import com.bonborunote.niconicoviewer.common.models.OwnerId
 import com.bonborunote.niconicoviewer.common.models.RelationVideo
-import com.bonborunote.niconicoviewer.common.models.Tag
 import com.bonborunote.niconicoviewer.databinding.FragmentDescriptionBinding
+import com.bonborunote.niconicoviewer.models.LoadStatus.LOADING
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.Section
@@ -76,6 +75,12 @@ class DetailFragment : Fragment(), KodeinAware {
       add(section)
       add(relationSection)
     }
+    viewModel.loadState.observe(this, Observer {
+      it ?: return@Observer
+      if (it == LOADING) {
+        section.update(emptyList())
+      }
+    })
     viewModel.detail.observe(this, Observer {
       it ?: return@Observer
       update(it)
@@ -99,9 +104,10 @@ class DetailFragment : Fragment(), KodeinAware {
   private fun update(detail: ContentDetail) {
     val nonNullActivity = activity ?: return
     val items = mutableListOf<Item<*>>()
+    items.add(TitleItem(detail.title))
+    items.add(CountItem(detail.viewCount, detail.commentCount, detail.myListCount))
     items.add(TagItem(nonNullActivity, detail.tags))
     items.add(DescriptionItem(detail.description))
-    items.add(CountItem(detail.viewCount, detail.commentCount, detail.myListCount))
     detail.channel?.let {
       items.add(ChannelItem(it.id, it.name, it.thumb, channelCallback))
     }

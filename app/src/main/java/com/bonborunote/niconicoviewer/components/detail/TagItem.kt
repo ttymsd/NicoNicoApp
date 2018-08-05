@@ -14,8 +14,8 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 
 class TagItem(
-  activity: FragmentActivity,
-  private val tags: List<Tag>
+    activity: FragmentActivity,
+    private val tags: List<Tag>
 ) : BindableItem<LayoutTagContainerBinding>() {
 
   private val layoutInflater = LayoutInflater.from(activity)
@@ -53,7 +53,7 @@ class TagItem(
 
   override fun equals(other: Any?): Boolean {
     if (other !is TagItem) return false
-    return other.tags !== tags
+    return other.tags === tags
   }
 
   override fun hashCode(): Int {
