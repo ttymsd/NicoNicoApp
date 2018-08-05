@@ -123,6 +123,7 @@ class PlaybackFragment : Fragment(), KodeinAware, YoutubeLikeBehavior.OnBehavior
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.seekBar.setPadding(0, 0, 0, 0)
     binding.seekBar.max = PlaybackViewModel.MAX_PROGRESS
     YoutubeLikeBehavior.from(binding.root)?.let {
       it.listener = this
