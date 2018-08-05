@@ -88,6 +88,8 @@ class MainActivity : AppCompatActivity(),
         }
         else -> Unit
       }
+      binding.navId = destination.id
+      binding.executePendingBindings()
     }
   }
 
